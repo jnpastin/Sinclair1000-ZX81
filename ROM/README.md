@@ -10,4 +10,4 @@ The goal was to read each address on the ROM and ensure that data was returned. 
 5. Allowed manual changes of the address and chip select lines
 6. Could be built out on breadboards
 
-The schematic for the circuit has been uploaded here.  Manual stepping through the program is accomplished by bringing the `Halt` pin on the second device high.  Bringing the `ManualStep` pin high momentarily will execute one iteration of the loop.  If the two devices ever get out of sync, simply press the reset switch on both.
+The schematic for the circuit and the program flowchart have been uploaded here.  Manual stepping through the program is accomplished by bringing the `Halt` pin on the second device high.  Bringing the `ManualStep` pin high momentarily will execute one iteration of the loop.  If the two devices ever get out of sync, simply press the reset switch on both.
