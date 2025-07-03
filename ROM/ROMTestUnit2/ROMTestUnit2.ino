@@ -73,6 +73,9 @@ void setup() {
   //Count through all 8K addresses
   for (int i=0; i<8192; i++) {
 
+    //Add a delay to allow the Serial buffer to keep up with the data stream
+    delay(10);
+
     //If the system is halted, wait for a manual step through
     if (digitalRead(Halt) == HIGH) {
       while (digitalRead(ManualStep) == LOW) {
