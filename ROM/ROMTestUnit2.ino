@@ -1,3 +1,11 @@
+/*
++-----------------------------------------+
+| Timex Sinclair 1000/ZX81 ROM Tester     |
+| Jeremy Pastin   7/25                    |
++-----------------------------------------+
+*/
+
+
 //Define address pins
 const int A_11=4;
 const int A_12=5;
@@ -38,7 +46,8 @@ const int O_7_Mask=128;   //binary 10000000
 
 
 void setup() {
- 
+
+  //Define vairables 
   int currentValue;
 
   //Set pin modes
@@ -58,11 +67,13 @@ void setup() {
   pinMode(Halt, INPUT);
   pinMode(ManualStep, INPUT);
 
+  //Start the serial terminal.  This is necessary to output the contents of the ROM.
   Serial.begin(115200);
 
   //Count through all 8K addresses
   for (int i=0; i<8192; i++) {
 
+    //If the system is halted, wait for a manual step through
     if (digitalRead(Halt) == HIGH) {
       while (digitalRead(ManualStep) == LOW) {
         delay (1);
@@ -76,11 +87,13 @@ void setup() {
     digitalWrite(AddressSetEnable, HIGH);
 
     //For each address bit, do a bitwise AND with the mask and the current target address to get the intended state for that bit, then set it accordingly.
+    //Yes, doing it this way is inelegant, but my focus is on readability
     if (i & A_11_Mask){
       digitalWrite(A_11, HIGH);
     } else {
       digitalWrite(A_11, LOW);
     }
+    
     if (i & A_12_Mask){
       digitalWrite(A_12, HIGH);
     } else {
@@ -93,42 +106,51 @@ void setup() {
     }
 
     //Set the Chip Select pin
+    //NOTE: The data sheet for the ROM (NEC uPD2364) does not specify that CS is active LOW, but mine is
     digitalWrite(CS, LOW);
 
     //Wait for the chip to become ready
     delay(1);
 
     //For each output bit, if it is set, add the mask to the current Value
+    //Yes, doing it this way is inelegant, but my focus is on readability
+
     if (digitalRead(O_0) == HIGH) { 
       currentValue+=O_0_Mask;
     }
+
     if (digitalRead(O_1) == HIGH) { 
       currentValue+=O_1_Mask;
     }
+
     if (digitalRead(O_2) == HIGH) { 
       currentValue+=O_2_Mask;
     }
+
     if (digitalRead(O_3) == HIGH) { 
       currentValue+=O_3_Mask;
     }
+
     if (digitalRead(O_4) == HIGH) { 
       currentValue+=O_4_Mask;
     }
+
     if (digitalRead(O_5) == HIGH) { 
       currentValue+=O_5_Mask;
     }
+
     if (digitalRead(O_6) == HIGH) { 
       currentValue+=O_6_Mask;
     }
+
     if (digitalRead(O_7) == HIGH) { 
       currentValue+=O_7_Mask;
     }
 
-    //Store the current value
+    //Store the current value.  Prepend with a '0' if it would be a single digit.
     if (currentValue<16){
       Serial.print("0");
     }
-    //Serial.print(highByte(currentValue), HEX);
     Serial.print(currentValue, HEX);
 
 
@@ -141,11 +163,14 @@ void setup() {
       delay(1);
     }
 
+    //If the system is halted, ensure that a button press only allows one cycle
     if (digitalRead(Halt) == HIGH) {
       while (digitalRead(ManualStep) == HIGH) {
         delay (1);
       }
     }
+
+    //Disable the chip
     digitalWrite(CS, HIGH);
   }
 }

@@ -1,3 +1,11 @@
+/*
++-----------------------------------------+
+| Timex Sinclair 1000/ZX81 ROM Tester     |
+| Jeremy Pastin   7/25                    |
++-----------------------------------------+
+*/
+
+
 //Define address pins
 const int A_0=7;
 const int A_1=6;
@@ -61,56 +69,67 @@ void setup() {
     }
 
     //For each address bit, do a bitwise AND with the mask and the current target address to get the intended state for that bit, then set it accordingly.
+    //Yes, doing it this way is inelegant, but my focus is on readability
     if (i & A_10_Mask){
       digitalWrite(A_10, HIGH);
     } else {
       digitalWrite(A_10, LOW);
     }
+    
     if (i & A_9_Mask){
       digitalWrite(A_9, HIGH);
     } else {
       digitalWrite(A_9, LOW);
     }
+    
     if (i & A_8_Mask){
       digitalWrite(A_8, HIGH);
     } else {
       digitalWrite(A_8, LOW);
     }
+    
     if (i & A_7_Mask){
       digitalWrite(A_7, HIGH);
     } else {
       digitalWrite(A_7, LOW);
     }
+    
     if (i & A_6_Mask){
       digitalWrite(A_6, HIGH);
     } else {
       digitalWrite(A_6, LOW);
     }
+    
     if (i & A_5_Mask){
       digitalWrite(A_5, HIGH);
     } else {
       digitalWrite(A_5, LOW);
     }
+    
     if (i & A_4_Mask){
       digitalWrite(A_4, HIGH);
     } else {
       digitalWrite(A_4, LOW);
     }
+    
     if (i & A_3_Mask){
       digitalWrite(A_3, HIGH);
     } else {
       digitalWrite(A_3, LOW);
     }
+    
     if (i & A_2_Mask){
       digitalWrite(A_2, HIGH);
     } else {
       digitalWrite(A_2, LOW);
     }
+    
     if (i & A_1_Mask){
       digitalWrite(A_1, HIGH);
     } else {
       digitalWrite(A_1, LOW);
     }
+    
     if (i & A_0_Mask){
       digitalWrite(A_0, HIGH);
     } else {
