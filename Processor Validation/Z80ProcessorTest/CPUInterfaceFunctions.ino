@@ -1,3 +1,4 @@
+//Read the address currently on the Address Bus
 uint16_t readAddressBus(int delayTime) {
 
   //The address bus may need time to stabilize
@@ -6,7 +7,6 @@ uint16_t readAddressBus(int delayTime) {
   }
 
   uint16_t curAddr = 0;
-
   //Read each line and add the bitmask for that line if it is high
   for (int i = 0; i < 16; i++) {
     if (digitalReadFast(AddressBus[i])) {

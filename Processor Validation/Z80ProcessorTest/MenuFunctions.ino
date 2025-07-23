@@ -130,3 +130,59 @@ void showInstructionMenu(InstructionGroup group) {
     Serial.println(F("Invalid instruction selection."));
   }
 }
+
+int findInstructionIndexByMnemonic(const char* targetMnemonic) {
+    char buffer[32];
+    for (int i = 0; i < numInstructions; ++i) {
+        instructionDefinitionType inst;
+        memcpy_P(&inst, &InstructionDefinitions[i], sizeof(inst));
+        strcpy_P(buffer, inst.mnemonic); // copy mnemonic from PROGMEM
+        if (strcmp(buffer, targetMnemonic) == 0) {
+            return i; // Found!
+        }
+    }
+    return -1; // Not found
+}
+
+
+
+void runAllTests() {
+  Serial.println(F("Running all tests..."));
+
+  for (size_t i = 0; i < numInstructions; ++i) {
+    instructionDefinitionType inst;
+    memcpy_P(&inst, &InstructionDefinitions[i], sizeof(inst));
+    runTest(inst);
+  }
+}
+
+void runAllTestsForGroup(InstructionGroup group) {
+  Serial.print(F("Running all tests for group: "));
+  const char* groupNamePtr;
+  memcpy_P(&groupNamePtr, &InstructionGroupNames[group], sizeof(groupNamePtr));
+  printProgmemString(groupNamePtr);
+  Serial.println();
+
+  for (size_t i = 0; i < numInstructions; ++i) {
+    instructionDefinitionType inst;
+    memcpy_P(&inst, &InstructionDefinitions[i], sizeof(inst));
+    if (inst.group == group && inst.testFunction) {
+      runTest(inst); // Call your runTest function for this instruction
+    }
+  }
+  
+}
+
+void runTest(const instructionDefinitionType& inst) {
+  Serial.print(F("Running test for instruction: "));
+  char buffer[24];
+  if (inst.mnemonic) {
+    strcpy_P(buffer, inst.mnemonic);
+    Serial.print(buffer);
+  }
+  Serial.println();
+  
+  if (inst.testFunction) {
+    bool result = inst.testFunction();
+  }
+}
