@@ -1,4 +1,33 @@
+//Helper function to load Register A with an 8 bit value 
+//Expects a single byte data value
+void helper_ld_a_n(byte data)
+{
+  char targetMnemonic[]="LD A,n";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
 
+  byte localData[]={inst.opCode, data};
+  writeSingleInstruction(localData, 1, 1, 0);
+}
+
+//Helper function to load memory address nn witht the contents of the A register
+//Expects a byte array consisting of:
+// [0] = Address Low Byte
+// [1] = Address High Byte
+// [2] = Data Byte to overwrite with the retrieved data
+void helper_ld_ptr_nn_a(byte* data)
+{
+   char targetMnemonic[]="LD (nn),A";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+
+  byte localData[]={inst.opCode, data[0], data[1], data[2]};
+  writeSingleInstruction(localData, 1, 2, 1);
+
+  data[2]=localData[3];
+}
 
 bool NOP() {
   //Mnemonic:  NOP
@@ -7,14 +36,28 @@ bool NOP() {
   //Test methodology: Run a NOP until all 16 bits of the address space have been cycled through
   //Success criteria: Verify that the address bus reads one higher than prior to the execution of the instruction
 
-  //Initialize some data
+  //Initialize some variables
   bool error = false;
   byte data[] = { 0x0 };
+  uint16_t prevAddr = 0;
   uint16_t curAddr = 0;
-  int delayTime = 5;
+  char targetMnemonic[]="NOP";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  char buffer[24];
 
-  Serial.print(F("Testing NOP "));
+  //Get the instruction information
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+
+  strcpy_P(buffer, inst.mnemonic);
+  Serial.print(F("Testing "));
+  Serial.print(buffer);
+
+  //Test enough times to ensure that we have hit every addressable value
   for (unsigned int i = 0; i < 65535; i++) {
+
+    //Read the current address on the bus
+    prevAddr = readAddressBus(0);
 
     //This instruction only takes a single M1 cycle
     writeSingleInstruction(data, 1, 0, 0);
@@ -24,12 +67,16 @@ bool NOP() {
       delayMicroseconds(0.1);
     }
 
-    //Read the address bus, delaying long enough for the address bus to settl out after the refresh
-    curAddr = readAddressBus(delayTime);
+    //Read the address bus, delaying long enough for the address bus to settle out after the refresh
+    curAddr = readAddressBus(period/2);
 
     //Test if the address bus reads the expected value
-    if (curAddr != i + 1) {
+    if (curAddr != prevAddr + 1) {
       error = true;
+      Serial.print(F("Expected: "));
+      Serial.print(prevAddr+1);
+      Serial.print(F(" got "));
+      Serial.println(curAddr);
     }
 
     //Display progress
@@ -45,7 +92,70 @@ bool NOP() {
     Serial.println(F("Pass"));
   }
 }
-bool LD_A_N() {}
+bool LD_A_N() {
+  //Mnemonic:  LD A,N
+  //Assembled command: 0x3E
+  //Expected behavior: A value is loaded into Register A
+  //Test methodology: Load all pissible 8 bit values into Register A, retrieve the value of Register A to verify.  NOTE: This tests `LD (nn),A` for a single address as well.
+  //Success criteria: Verify that the returned data matches the loaded data.
+
+  //Initialize some variables
+  bool error = false;
+//  byte data[] = {0x00, 0x00, 0x00, 0x00};
+  byte data[] = {0x00, 0x00, 0x00};
+  char buffer[24];
+
+  //Get the instruction information
+  char targetMnemonic[]="LD A,n";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+
+  //For this test, we need two instructions, a second to verify
+  char targetMnemonic2[]="LD (nn),A";
+  int inst2Index=findInstructionIndexByMnemonic(targetMnemonic2);
+  instructionDefinitionType inst2;
+  memcpy_P(&inst2, &InstructionDefinitions[inst2Index], sizeof(inst2));
+
+  strcpy_P(buffer, inst.mnemonic);
+  Serial.print(F("Testing "));
+  Serial.print(buffer);
+
+  //Test enough times to ensure that we have hit every possible data value
+  for (unsigned int i = 0; i < 256; i++) {
+
+    //Send the LD A,n command
+    helper_ld_a_n(i);
+
+    //Read the data in the A register   
+    for (int j=0; j<3; j++) {
+      data[j]=0x0;
+    }
+    helper_ld_ptr_nn_a(data);
+
+   
+    //Test if the Data Bus reads the expected value
+    if (data[2] != i) {
+      error = true;
+      Serial.print(F("Expected: "));
+      Serial.print(i);
+      Serial.print(F(" got: "));
+      Serial.println(data[2]);
+    }
+
+    //Display progress
+    if ((i % 8) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
+}
 bool LD_B_N() {}
 bool LD_C_N() {}
 bool LD_D_N() {}
@@ -674,7 +784,64 @@ bool SET_7_L() {}
 bool SET_7_PTR_HL() {}
 bool SET_7_PTR_IX_PLUS_D() {}
 bool SET_7_PTR_IY_PLUS_D() {}
-bool JP_NN() {}
+bool JP_NN() {
+  //Mnemonic:  JP nn
+  //Assembled command: 0xC3 n n
+  //Expected behavior: PC is set to value nn
+  //Test methodology: Run a JP that targets each possible address
+  //Success criteria: Verify that the address bus reads the target address
+
+  //Initialize some variables
+  bool error = false;
+  uint16_t targetAddr=0;
+  uint16_t curAddr = 0;
+  char targetMnemonic[]="JP nn";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  char buffer[24];
+
+  //Get the instruction information
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+
+  strcpy_P(buffer, inst.mnemonic);
+  Serial.print(F("Testing "));
+  Serial.print(buffer);
+  
+  byte data[] = {inst.opCode, lowByte(targetAddr), highByte(targetAddr) };
+
+  //Test enough times to ensure that we have hit every addressable value
+  for (unsigned int i = 0; i < 65535; i++) {
+
+    //This instruction requires one M1 cycle and two Read cycles
+    writeSingleInstruction(data, 1, 2, 0);
+
+    //Read the address bus, delaying long enough for the address bus to settle out
+    curAddr = readAddressBus(period);
+
+    //Test if the address bus reads the expected value
+    if (curAddr != targetAddr) {
+      error = true;
+    }
+
+    //Display progress
+    if ((i % 1000) == 0) {
+      Serial.print(F("."));
+    }
+
+    //Update the target address for the next iteration
+    targetAddr++;
+    data[1] = lowByte(targetAddr);
+    data[2] = highByte(targetAddr);
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
+
+}
 bool JP_C_NN() {}
 bool JP_NC_NN() {}
 bool JP_Z_NN() {}
