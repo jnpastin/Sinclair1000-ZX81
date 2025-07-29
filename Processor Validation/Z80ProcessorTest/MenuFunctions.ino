@@ -17,7 +17,6 @@ void readLine(char* buffer, size_t bufferSize) {
   buffer[idx] = '\0';  // Null-terminate
 }
 
-
 //Print PROGMEM string by pointer
 void printProgmemString(const char* progmemPtr) {
   char buffer[30];
@@ -143,8 +142,6 @@ int findInstructionIndexByMnemonic(const char* targetMnemonic) {
     }
     return -1; // Not found
 }
-
-
 
 void runAllTests() {
   Serial.println(F("Running all tests..."));

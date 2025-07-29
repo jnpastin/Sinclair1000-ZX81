@@ -18,13 +18,10 @@ uint16_t readAddressBus(int delayTime) {
 
 void writeData(byte data) {
   //Write the bitwise AND of the data byte and each bitmask onto the appropriate pins
-//  Serial.println(data,HEX);
   for (int i = 0; i < 8; i++) {
     pinMode(DataBus[i], OUTPUT);
     digitalWriteFast(DataBus[i], data & DataBusMask[i]);
-//    Serial.println(data & DataBusMask[i],BIN);
   }
-//  Serial.println("");
 }
 
 //Read the address currently on the Address Bus
@@ -45,9 +42,9 @@ uint16_t readDataBus(int delayTime) {
   return curData;
 }
 
-void writeSingleInstruction(byte* data, int numM1Cycles, int numReadCycles, int numWriteCycles) {
-
-byte curData=0;
+void writeSingleInstruction(byte* data, int numM1Cycles, int numReadCycles, int numWriteCycles, uint16_t* addresses) {
+  byte curData=0;
+  uint16_t curAddr=0;
   //Process the M1 cycles
   for (int i = 0; i < (numM1Cycles+numReadCycles+numWriteCycles); i++) {
 
@@ -99,7 +96,7 @@ byte curData=0;
       digitalWriteFast(WAIT, HIGH);
 
       //Wait for the next Read cycle to start
-      while (digitalReadFast(RD) || digitalReadFast(MREQ)) {// || !digitalReadFast(M1) || !digitalReadFast(RFSH)) {
+      while (digitalReadFast(RD) || digitalReadFast(MREQ)) {
         delayMicroseconds(1);
       }
 
@@ -109,11 +106,15 @@ byte curData=0;
       //Set the Data lines
       writeData(data[i]);
 
+      curAddr=readAddressBus(0);
+
       //Tell the CPU that the data is valid
       while (digitalReadFast(CLK)) {
         delayMicroseconds(1);
       }
       digitalWriteFast(WAIT, HIGH);
+
+      addresses[i]=curAddr;
 
       //Wait until the end of the current Read Cycle
       while (!digitalReadFast(RD) || !digitalReadFast(MREQ)) {
@@ -141,6 +142,7 @@ byte curData=0;
 
       //Read the Data lines
       curData=readDataBus(0);
+      curAddr=readAddressBus(0);
 
       //Tell the CPU that we have read the data
       while (digitalReadFast(CLK)) {
@@ -150,6 +152,7 @@ byte curData=0;
 
       //Write the retrieved data back to the passed array
       data[i]=curData;
+      addresses[i]=curAddr;
 
       //Wait for the end of the Write cycle
       while (!digitalReadFast(WR) || !digitalReadFast(MREQ)){
@@ -166,13 +169,5 @@ byte curData=0;
       Serial.println(F(" which does not match"));
 
     }
-
-    //Clean up by ensuring all of the data pins are set back to input
-    for (int i = 0; i < 8; i++) {
-      pinMode(DataBus[i], INPUT);
-    }
-
-    //Tell the CPU to wait while we process everything
-    //digitalWriteFast(WAIT, LOW);
   }
 }

@@ -2316,7 +2316,7 @@
 
   uint16_t readAddressBus(int delayTime);
   void writeData(byte data);
-  void writeSingleInstruction(byte* data, int numM1Cycles, int numReadCycles, int numWriteCycles);
+  void writeSingleInstruction(byte* data, int numM1Cycles, int numReadCycles, int numWriteCycles, uint16_t* writtenAddress);
 
 
   //
@@ -2327,7 +2327,8 @@
   void runAllTestsForGroup(InstructionGroup group);
   void runTest(const instructionDefinitionType& inst);
   int findInstructionIndexByMnemonic(const char* targetMnemonic);
-  void helper_ld_a_n(byte data);
+  void helper_ld_X_n(char targetRegister, byte data);
+  void helper_ld_X_Y(char targetRegister, char sourceRegister);
   void helper_ld_ptr_nn_a(byte* data);
 
 
