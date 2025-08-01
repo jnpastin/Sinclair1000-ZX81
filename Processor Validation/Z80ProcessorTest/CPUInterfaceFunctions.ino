@@ -5,14 +5,27 @@ uint16_t readAddressBus(int delayTime) {
   if (delayTime > 0) {
     delayMicroseconds(delayTime);
   }
-
+  bool value;
   uint16_t curAddr = 0;
+
   //Read each line and add the bitmask for that line if it is high
+
+
   for (int i = 0; i < 16; i++) {
-    if (digitalReadFast(AddressBus[i])) {
+    value=digitalReadFast(AddressBus[i]);
+
+    if (value) {
       curAddr += AddressBusMask[i];
     }
+      /*Serial.print(F("Address "));
+      Serial.print(i);
+      Serial.print(F(" value: "));
+      Serial.print(value);
+      Serial.print(F(" current value: "));
+      Serial.println(curAddr, HEX);*/
+
   }
+
   return curAddr;
 }
 
@@ -35,6 +48,7 @@ uint16_t readDataBus(int delayTime) {
   uint16_t curData = 0;
   //Read each line and add the bitmask for that line if it is high
   for (int i = 0; i < 8; i++) {
+    pinMode(DataBus[i], INPUT);
     if (digitalReadFast(DataBus[i])) {
       curData += DataBusMask[i];
     }
@@ -47,7 +61,6 @@ void writeSingleInstruction(byte* data, int numM1Cycles, int numReadCycles, int 
   uint16_t curAddr=0;
   //Process the M1 cycles
   for (int i = 0; i < (numM1Cycles+numReadCycles+numWriteCycles); i++) {
-
     //There are three possible next cycles. M1, Read, Write
 
     //Execute all of the M1 cycles first
@@ -55,7 +68,7 @@ void writeSingleInstruction(byte* data, int numM1Cycles, int numReadCycles, int 
 
       //We always have to wait for the second half of a T cycle to deactivate Wait
       while (digitalReadFast(CLK)) {
-        delayMicroseconds(1);
+        delayMicroseconds(period/2);
       }
       digitalWriteFast(WAIT, HIGH);
 
@@ -126,9 +139,11 @@ void writeSingleInstruction(byte* data, int numM1Cycles, int numReadCycles, int 
 
     //Then execute the Write cycles
     } else if (numWriteCycles >= (i - numM1Cycles - numReadCycles + 1)) {
-      
+    
+
       while (digitalReadFast(CLK)) {
         delayMicroseconds(1);
+
       }
       digitalWriteFast(WAIT, HIGH);
 
@@ -153,6 +168,9 @@ void writeSingleInstruction(byte* data, int numM1Cycles, int numReadCycles, int 
       //Write the retrieved data back to the passed array
       data[i]=curData;
       addresses[i]=curAddr;
+      //Serial.println(curAddr,HEX);
+      //Serial.println(i,HEX);
+
 
       //Wait for the end of the Write cycle
       while (!digitalReadFast(WR) || !digitalReadFast(MREQ)){

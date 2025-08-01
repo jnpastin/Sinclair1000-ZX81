@@ -2330,6 +2330,8 @@
   void helper_ld_X_n(char targetRegister, byte data);
   void helper_ld_X_Y(char targetRegister, char sourceRegister);
   void helper_ld_ptr_nn_a(byte* data);
+  void helper_ld_XY_nn(char targetRegister, char targetRegister2, byte* data);
+  void helper_ld_ptr_nn_XY(char targetRegister, char targetRegister2, byte* data);
 
 
   //
@@ -2342,6 +2344,8 @@
 //
 
 float period = 0;
+int prescaler;
+int eraser = 7; //0b111
 
 void setup() {
   //Start the serial console
@@ -2407,7 +2411,7 @@ void setup() {
   //
 
   //First clear the bits the timer uses for generating the frequency
-  int eraser = 7;  //0b111
+
   TCCR4B &= ~eraser;
   //Next set the desired frequency using the prescaler
   // 1 = 31kHz
@@ -2415,7 +2419,7 @@ void setup() {
   // 3 = 490Hz (default value)
   // 4 = 120Hz
   // 5 = 30Hz
-  int prescaler = 1;
+  prescaler = 1;
   TCCR4B |= prescaler;
   
   switch (prescaler) {

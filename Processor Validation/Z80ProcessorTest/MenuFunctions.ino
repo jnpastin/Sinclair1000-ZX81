@@ -177,7 +177,6 @@ void runTest(const instructionDefinitionType& inst) {
     strcpy_P(buffer, inst.mnemonic);
     Serial.print(buffer);
   }
-  Serial.println();
   
   if (inst.testFunction) {
     bool result = inst.testFunction();

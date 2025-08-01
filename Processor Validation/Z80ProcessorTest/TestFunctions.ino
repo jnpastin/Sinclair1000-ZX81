@@ -10,19 +10,8 @@ bool NOP() {
   byte data[] = { 0x0 };
   uint16_t prevAddr = 0;
   uint16_t curAddr = 0;
-  uint16_t addr[]={0x00};
-  char targetMnemonic[]="NOP";
-  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
-  char buffer[24];
-
-  //Get the instruction information
-  instructionDefinitionType inst;
-  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
-
-  strcpy_P(buffer, inst.mnemonic);
-  Serial.print(F("Testing "));
-  Serial.print(buffer);
-
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
+  
   //Test enough times to ensure that we have hit every addressable value
   for (unsigned int i = 0; i < 65535; i++) {
 
@@ -68,10 +57,8 @@ bool LD_A_N() {
   //Initialize some variables
   bool error = false;
   byte data[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD A,n"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -84,8 +71,7 @@ bool LD_A_N() {
       data[j]=0x0;
     }
     helper_ld_ptr_nn_a(data, addr);
-
-   
+  
     //Test if the Data Bus reads the expected value
     if (data[2] != i) {
       error = true;
@@ -114,10 +100,8 @@ bool LD_B_N() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD B,n"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -130,18 +114,20 @@ bool LD_B_N() {
 
     //Read the data in the A register   
     for (int j=0; j<3; j++) {
-      outputData[j]=0x0;
+      outputData[j]=0x00;
     }
+
     helper_ld_ptr_nn_a(outputData, addr);
+
 
    
     //Test if the Data Bus reads the expected value
     if (outputData[2] != i) {
       error = true;
       Serial.print(F("Expected: "));
-      Serial.print(i);
+      Serial.print(i,HEX);
       Serial.print(F(" got: "));
-      Serial.println(outputData[2]);
+      Serial.println(outputData[2],HEX);
     }
 
     //Display progress
@@ -167,10 +153,8 @@ bool LD_C_N() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD C,n"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -217,10 +201,8 @@ bool LD_D_N() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD D,n"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -266,10 +248,8 @@ bool LD_E_N() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD E,n"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -315,10 +295,8 @@ bool LD_H_N() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD H,n"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -364,10 +342,8 @@ bool LD_L_N() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD L,n"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -412,7 +388,6 @@ bool LD_PTR_HL_N() {
 
   //Initialize some variables
   bool error = false;
-  char buffer[24];
 
   char targetMnemonic[]="LD (HL),n";
   int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
@@ -420,9 +395,8 @@ bool LD_PTR_HL_N() {
   memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
   byte data[] = {inst.opCode, 0x00, 0x00};
   byte loadHLData[]={0x00, 0x00, 0x00, 0x00};
-  uint16_t addr[]={0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD HL,n"));
 
   //Test enough times to ensure that we have hit every possible address value with random data
   for (uint16_t i = 0; i < 65535; i++) {
@@ -438,8 +412,17 @@ bool LD_PTR_HL_N() {
     //Load the target address into the HL Register
 
     writeSingleInstruction(data, 1, 1, 1, addr);
-    if (data[2] != lowByte(sentData) || addr != i) {
+    if (data[2] != lowByte(sentData) || addr[2] != i) {
       error=true;
+      Serial.print(F("Expected data: "));
+      Serial.print(lowByte(sentData),HEX);
+      Serial.print(F(" got: "));
+      Serial.print(data[2],HEX);
+      Serial.print(F(" Expected address:"));
+      Serial.print(i, HEX);
+      Serial.print(F(" got: "));
+      Serial.println(addr[2],HEX);
+
     } 
     
     //Display progress
@@ -464,8 +447,16 @@ bool LD_PTR_HL_N() {
     //Load the target address into the HL Register
 
     writeSingleInstruction(data, 1, 1, 1, addr);
-    if (data[1] != j || addr != sentAddress) {
+    if (data[2] != j || addr[2] != sentAddress) {
       error=true;
+      Serial.print(F("Expected data: "));
+      Serial.print(j,HEX);
+      Serial.print(F(" got: "));
+      Serial.print(data[2],HEX);
+      Serial.print(F(" Expected address:"));
+      Serial.print(sentAddress, HEX);
+      Serial.print(F(" got: "));
+      Serial.println(addr[2],HEX);
     }
         //Display progress
     if ((j % 8) == 0) {
@@ -491,10 +482,8 @@ bool LD_A_A() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD A,A"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -543,10 +532,8 @@ bool LD_B_A() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD B,A"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -595,10 +582,8 @@ bool LD_C_A() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD C,A"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -647,10 +632,8 @@ bool LD_D_A() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD D,A"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -699,10 +682,8 @@ bool LD_E_A() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD E,A"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -751,10 +732,8 @@ bool LD_H_A() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD H,A"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -803,10 +782,8 @@ bool LD_L_A() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD L,A"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -855,10 +832,8 @@ bool LD_A_B() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD A,B"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -907,10 +882,8 @@ bool LD_B_B() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD B,B"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -959,10 +932,8 @@ bool LD_C_B() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD C,B"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -1011,10 +982,8 @@ bool LD_D_B() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD D,B"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -1063,10 +1032,8 @@ bool LD_E_B() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD E,B"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -1115,10 +1082,8 @@ bool LD_H_B() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD H,B"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -1167,10 +1132,8 @@ bool LD_L_B() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD L,B"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -1219,10 +1182,8 @@ bool LD_A_C() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD A,C"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -1271,10 +1232,8 @@ bool LD_B_C() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD B,C"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -1323,10 +1282,8 @@ bool LD_C_C() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD C,C"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -1375,10 +1332,8 @@ bool LD_D_C() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD D,C"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -1427,10 +1382,8 @@ bool LD_E_C() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD E,C"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -1479,10 +1432,8 @@ bool LD_H_C() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD H,C"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -1531,10 +1482,8 @@ bool LD_L_C() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD L,C"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -1583,10 +1532,8 @@ bool LD_A_D() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD A,D"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -1635,10 +1582,8 @@ bool LD_B_D() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD B,D"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -1687,10 +1632,8 @@ bool LD_C_D() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD C,D"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -1739,10 +1682,8 @@ bool LD_D_D() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD D,D"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -1791,10 +1732,8 @@ bool LD_E_D() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD E,D"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -1843,10 +1782,8 @@ bool LD_H_D() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD H,D"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -1895,10 +1832,8 @@ bool LD_L_D() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD L,D"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -1947,10 +1882,8 @@ bool LD_A_E() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD A,E"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -1999,10 +1932,8 @@ bool LD_B_E() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD B,E"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -2051,10 +1982,8 @@ bool LD_C_E() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD C,E"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -2103,10 +2032,8 @@ bool LD_D_E() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD D,E"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -2155,10 +2082,8 @@ bool LD_E_E() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD E,E"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -2207,10 +2132,8 @@ bool LD_H_E() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD H,E"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -2259,10 +2182,8 @@ bool LD_L_E() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD L,E"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -2311,10 +2232,8 @@ bool LD_A_H() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD A,H"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -2363,10 +2282,8 @@ bool LD_B_H() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD B,H"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -2415,10 +2332,8 @@ bool LD_C_H() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD C,H"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -2467,10 +2382,8 @@ bool LD_D_H() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD D,H"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -2519,10 +2432,8 @@ bool LD_E_H() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD E,H"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -2571,10 +2482,8 @@ bool LD_H_H() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD H,H"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -2623,10 +2532,8 @@ bool LD_L_H() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD L,H"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -2675,10 +2582,8 @@ bool LD_A_L() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD A,L"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -2727,10 +2632,8 @@ bool LD_B_L() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD B,L"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -2779,10 +2682,8 @@ bool LD_C_L() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD C,L"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -2831,10 +2732,8 @@ bool LD_D_L() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD D,L"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -2883,10 +2782,8 @@ bool LD_E_L() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD E,L"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -2935,10 +2832,8 @@ bool LD_H_L() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD H,L"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -2987,10 +2882,8 @@ bool LD_L_L() {
   //Initialize some variables
   bool error = false;
   byte outputData[] = {0x00, 0x00, 0x00};
-  char buffer[24];
-  uint16_t addr[]={0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  Serial.print(F("Testing LD L,L"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
@@ -3029,17 +2922,15 @@ bool LD_L_L() {
     Serial.println(F("Pass"));
   }
 }
-
 bool LD_A_PTR_HL() {
   //Mnemonic:  LD A,(HL)
-  //Assembled command: 0x36
+  //Assembled command: 0x7E
   //Expected behavior: A value is loaded into the memory address in the HL Register
   //Test methodology: Load Register HL with each possible address, load a random value into the memory address (HL).  Load Register HL with a random address, load each possible value into that memory address.
   //Success criteria: Verify that the returned data & address matches the loaded data & address.
 
   //Initialize some variables
   bool error = false;
-  char buffer[24];
 
   char targetMnemonic[]="LD A,(HL)";
   int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
@@ -3048,10 +2939,10 @@ bool LD_A_PTR_HL() {
   byte data[] = {inst.opCode, 0x00, 0x00};
   byte loadHLData[]={0x00, 0x00, 0x00, 0x00};
   uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
+  uint16_t receivedAddr=0x00;
 
-  Serial.print(F("Testing A,(HL)"));
 
-  //Test enough times to ensure that we have hit every possible address value with random data.  We are not explicitly verifying the address read, just the data returned.  This will only be consistently correct if the address being read is correct.
+  //Test enough times to ensure that we have hit every possible address value with random data. 
   for (uint16_t i = 0; i < 65535; i++) {
 
     //Load the target address into the HL Register
@@ -3065,16 +2956,22 @@ bool LD_A_PTR_HL() {
 
     //Load that data into the A register
     writeSingleInstruction(data, 1, 1, 0, addr);
-    
+
+    receivedAddr=addr[1];
+
     helper_ld_ptr_nn_a(data, addr);
 
 
-    if (data[2] != lowByte(sentData)) {
+    if (data[2] != lowByte(sentData) || receivedAddr != i) {
       error=true;
       Serial.print(F("Expected data: "));
       Serial.print(lowByte(sentData),HEX);
       Serial.print(F(" got: "));
-      Serial.println(data[2],HEX);
+      Serial.print(data[2],HEX);
+      Serial.print(F(" Expected address: "));
+      Serial.print(i, HEX);
+      Serial.print(F(" got: "));
+      Serial.println(receivedAddr,HEX);
     } 
     
     //Display progress
@@ -3084,7 +2981,97 @@ bool LD_A_PTR_HL() {
     
   }
   
-  //Test enough times to ensure that we have hit every possible data value with a random address.  We are not explicitly verifying the address read, just the data returned.  This will only be consistently correct if the address being read is correct.
+  //Test enough times to ensure that we have hit every possible data value with a random address. 
+  for (int j=0; j<256; j++)
+  {
+
+    //Load a random address into 
+    long sentAddress=random(65535);
+    loadHLData[0]=lowByte(sentAddress);
+    loadHLData[1]=highByte(sentAddress);
+    helper_ld_XY_nn('H', 'L', loadHLData);
+
+    data[1]=j;
+
+    writeSingleInstruction(data, 1, 1, 0, addr);
+    receivedAddr=addr[1];    
+    helper_ld_ptr_nn_a(data, addr);
+
+
+    if (data[2] != j || sentAddress != receivedAddr) {
+      error=true;
+      Serial.print(F("Expected data: "));
+      Serial.print(lowByte(j),HEX);
+      Serial.print(F(" got: "));
+      Serial.print(data[2],HEX);
+      Serial.print(F(" Expected address: "));
+      Serial.print(sentAddress, HEX);
+      Serial.print(F(" got: "));
+      Serial.println(receivedAddr,HEX);
+    } 
+    
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
+}
+bool LD_B_PTR_HL() {
+  //Mnemonic:  LD B,(HL)
+  //Assembled command: 0x46
+  //Expected behavior: A value is loaded into the memory address in the HL Register
+  //Test methodology: Load Register HL with each possible address, load a random value into the memory address (HL).  Load Register HL with a random address, load each possible value into that memory address.
+  //Success criteria: Verify that the returned data & address matches the loaded data & address.
+
+  //Initialize some variables
+  bool error = false;
+
+  char targetMnemonic[]="LD B,(HL)";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+  byte data[] = {inst.opCode, 0x00, 0x00};
+  byte loadHLData[]={0x00, 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
+  uint16_t receivedAddr=0x00;
+
+
+  //Test enough times to ensure that we have hit every possible address value with random data. 
+  for (uint16_t i = 0; i < 65535; i++) {
+
+    //Load the target address into the HL Register
+    loadHLData[0]=lowByte(i);
+    loadHLData[1]=highByte(i);
+    helper_ld_XY_nn('H', 'L', loadHLData);
+
+    //Generate random data
+    long sentData=random(255);
+    data[1]=lowByte(sentData);
+
+    //Load that data into the B register
+    writeSingleInstruction(data, 1, 1, 0, addr);
+    receivedAddr=addr[1];
+
+    helper_ld_X_Y('A', 'B');
+    
+    helper_ld_ptr_nn_a(data, addr);
+
+
+    if (data[2] != lowByte(sentData) || receivedAddr != i) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((i % 1000) == 0) {
+      Serial.print(F("."));
+    }
+    
+  }
+  
+  //Test enough times to ensure that we have hit every possible data value with a random address. 
   for (int j=0; j<256; j++)
   {
 
@@ -3098,15 +3085,1075 @@ bool LD_A_PTR_HL() {
 
     writeSingleInstruction(data, 1, 1, 0, addr);
     
+    receivedAddr=addr[1];
+
+    helper_ld_X_Y('A', 'B');
+
     helper_ld_ptr_nn_a(data, addr);
 
 
-    if (data[2] != j) {
+    if (data[2] != j || sentAddress != receivedAddr) {
+      error=true;
+    }
+    
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
+}
+bool LD_C_PTR_HL() {
+    //Mnemonic:  LD C,(HL)
+  //Assembled command: 0x4E
+  //Expected behavior: A value is loaded into the memory address in the HL Register
+  //Test methodology: Load Register HL with each possible address, load a random value into the memory address (HL).  Load Register HL with a random address, load each possible value into that memory address.
+  //Success criteria: Verify that the returned data & address matches the loaded data & address.
+
+  //Initialize some variables
+  bool error = false;
+
+  char targetMnemonic[]="LD C,(HL)";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+  byte data[] = {inst.opCode, 0x00, 0x00};
+  byte loadHLData[]={0x00, 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
+  uint16_t receivedAddr=0x00;
+
+
+  //Test enough times to ensure that we have hit every possible address value with random data. 
+  for (uint16_t i = 0; i < 65535; i++) {
+
+    //Load the target address into the HL Register
+    loadHLData[0]=lowByte(i);
+    loadHLData[1]=highByte(i);
+    helper_ld_XY_nn('H', 'L', loadHLData);
+
+    //Generate random data
+    long sentData=random(255);
+    data[1]=lowByte(sentData);
+
+    //Load that data into the B register
+    writeSingleInstruction(data, 1, 1, 0, addr);
+    receivedAddr=addr[1];
+
+    helper_ld_X_Y('A', 'C');
+    
+    helper_ld_ptr_nn_a(data, addr);
+
+
+    if (data[2] != lowByte(sentData) || receivedAddr != i) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((i % 1000) == 0) {
+      Serial.print(F("."));
+    }
+    
+  }
+  
+  //Test enough times to ensure that we have hit every possible data value with a random address. 
+  for (int j=0; j<256; j++)
+  {
+
+    //Load a random address into 
+    long sentAddress=random(65535);
+    loadHLData[0]=lowByte(sentAddress);
+    loadHLData[1]=highByte(sentAddress);
+    helper_ld_XY_nn('H', 'L', loadHLData);
+
+    data[1]=j;
+
+    writeSingleInstruction(data, 1, 1, 0, addr);
+    
+    receivedAddr=addr[1];
+
+    helper_ld_X_Y('A', 'C');
+
+    helper_ld_ptr_nn_a(data, addr);
+
+
+    if (data[2] != j || sentAddress != receivedAddr) {
+      error=true;
+    }
+    
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
+
+}
+bool LD_D_PTR_HL() {
+    //Mnemonic:  LD D,(HL)
+  //Assembled command: 0x56
+  //Expected behavior: A value is loaded into the memory address in the HL Register
+  //Test methodology: Load Register HL with each possible address, load a random value into the memory address (HL).  Load Register HL with a random address, load each possible value into that memory address.
+  //Success criteria: Verify that the returned data & address matches the loaded data & address.
+
+  //Initialize some variables
+  bool error = false;
+
+  char targetMnemonic[]="LD D,(HL)";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+  byte data[] = {inst.opCode, 0x00, 0x00};
+  byte loadHLData[]={0x00, 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
+  uint16_t receivedAddr=0x00;
+
+
+  //Test enough times to ensure that we have hit every possible address value with random data. 
+  for (uint16_t i = 0; i < 65535; i++) {
+
+    //Load the target address into the HL Register
+    loadHLData[0]=lowByte(i);
+    loadHLData[1]=highByte(i);
+    helper_ld_XY_nn('H', 'L', loadHLData);
+
+    //Generate random data
+    long sentData=random(255);
+    data[1]=lowByte(sentData);
+
+    //Load that data into the B register
+    writeSingleInstruction(data, 1, 1, 0, addr);
+    receivedAddr=addr[1];
+
+    helper_ld_X_Y('A', 'D');
+    
+    helper_ld_ptr_nn_a(data, addr);
+
+
+    if (data[2] != lowByte(sentData) || receivedAddr != i) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((i % 1000) == 0) {
+      Serial.print(F("."));
+    }
+    
+  }
+  
+  //Test enough times to ensure that we have hit every possible data value with a random address. 
+  for (int j=0; j<256; j++)
+  {
+
+    //Load a random address into 
+    long sentAddress=random(65535);
+    loadHLData[0]=lowByte(sentAddress);
+    loadHLData[1]=highByte(sentAddress);
+    helper_ld_XY_nn('H', 'L', loadHLData);
+
+    data[1]=j;
+
+    writeSingleInstruction(data, 1, 1, 0, addr);
+    
+    receivedAddr=addr[1];
+
+    helper_ld_X_Y('A', 'D');
+
+    helper_ld_ptr_nn_a(data, addr);
+
+
+    if (data[2] != j || sentAddress != receivedAddr) {
+      error=true;
+    }
+    
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
+
+}
+bool LD_E_PTR_HL() {
+    //Mnemonic:  LD E,(HL)
+  //Assembled command: 0x5E
+  //Expected behavior: A value is loaded into the memory address in the HL Register
+  //Test methodology: Load Register HL with each possible address, load a random value into the memory address (HL).  Load Register HL with a random address, load each possible value into that memory address.
+  //Success criteria: Verify that the returned data & address matches the loaded data & address.
+
+  //Initialize some variables
+  bool error = false;
+
+  char targetMnemonic[]="LD E,(HL)";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+  byte data[] = {inst.opCode, 0x00, 0x00};
+  byte loadHLData[]={0x00, 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
+  uint16_t receivedAddr=0x00;
+
+
+  //Test enough times to ensure that we have hit every possible address value with random data. 
+  for (uint16_t i = 0; i < 65535; i++) {
+
+    //Load the target address into the HL Register
+    loadHLData[0]=lowByte(i);
+    loadHLData[1]=highByte(i);
+    helper_ld_XY_nn('H', 'L', loadHLData);
+
+    //Generate random data
+    long sentData=random(255);
+    data[1]=lowByte(sentData);
+
+    //Load that data into the B register
+    writeSingleInstruction(data, 1, 1, 0, addr);
+    receivedAddr=addr[1];
+
+    helper_ld_X_Y('A', 'E');
+    
+    helper_ld_ptr_nn_a(data, addr);
+
+
+    if (data[2] != lowByte(sentData) || receivedAddr != i) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((i % 1000) == 0) {
+      Serial.print(F("."));
+    }
+    
+  }
+  
+  //Test enough times to ensure that we have hit every possible data value with a random address. 
+  for (int j=0; j<256; j++)
+  {
+
+    //Load a random address into 
+    long sentAddress=random(65535);
+    loadHLData[0]=lowByte(sentAddress);
+    loadHLData[1]=highByte(sentAddress);
+    helper_ld_XY_nn('H', 'L', loadHLData);
+
+    data[1]=j;
+
+    writeSingleInstruction(data, 1, 1, 0, addr);
+    
+    receivedAddr=addr[1];
+
+    helper_ld_X_Y('A', 'E');
+
+    helper_ld_ptr_nn_a(data, addr);
+
+
+    if (data[2] != j || sentAddress != receivedAddr) {
+      error=true;
+    }
+    
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
+}
+bool LD_H_PTR_HL() {
+    //Mnemonic:  LD H,(HL)
+  //Assembled command: 0x66
+  //Expected behavior: A value is loaded into the memory address in the HL Register
+  //Test methodology: Load Register HL with each possible address, load a random value into the memory address (HL).  Load Register HL with a random address, load each possible value into that memory address.
+  //Success criteria: Verify that the returned data & address matches the loaded data & address.
+
+  //Initialize some variables
+  bool error = false;
+
+  char targetMnemonic[]="LD H,(HL)";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+  byte data[] = {inst.opCode, 0x00, 0x00};
+  byte loadHLData[]={0x00, 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
+  uint16_t receivedAddr=0x00;
+
+
+  //Test enough times to ensure that we have hit every possible address value with random data. 
+  for (uint16_t i = 0; i < 65535; i++) {
+
+    //Load the target address into the HL Register
+    loadHLData[0]=lowByte(i);
+    loadHLData[1]=highByte(i);
+    helper_ld_XY_nn('H', 'L', loadHLData);
+
+    //Generate random data
+    long sentData=random(255);
+    data[1]=lowByte(sentData);
+
+    //Load that data into the B register
+    writeSingleInstruction(data, 1, 1, 0, addr);
+    receivedAddr=addr[1];
+
+    helper_ld_X_Y('A', 'H');
+    
+    helper_ld_ptr_nn_a(data, addr);
+
+
+    if (data[2] != lowByte(sentData) || receivedAddr != i) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((i % 1000) == 0) {
+      Serial.print(F("."));
+    }
+    
+  }
+  
+  //Test enough times to ensure that we have hit every possible data value with a random address. 
+  for (int j=0; j<256; j++)
+  {
+
+    //Load a random address into 
+    long sentAddress=random(65535);
+    loadHLData[0]=lowByte(sentAddress);
+    loadHLData[1]=highByte(sentAddress);
+    helper_ld_XY_nn('H', 'L', loadHLData);
+
+    data[1]=j;
+
+    writeSingleInstruction(data, 1, 1, 0, addr);
+    
+    receivedAddr=addr[1];
+
+    helper_ld_X_Y('A', 'H');
+
+    helper_ld_ptr_nn_a(data, addr);
+
+
+    if (data[2] != j || sentAddress != receivedAddr) {
+      error=true;
+    }
+    
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
+}
+bool LD_L_PTR_HL() {
+  //Mnemonic:  LD L,(HL)
+  //Assembled command: 0x6E
+  //Expected behavior: A value is loaded into the memory address in the HL Register
+  //Test methodology: Load Register HL with each possible address, load a random value into the memory address (HL).  Load Register HL with a random address, load each possible value into that memory address.
+  //Success criteria: Verify that the returned data & address matches the loaded data & address.
+
+  //Initialize some variables
+  bool error = false;
+
+  char targetMnemonic[]="LD L,(HL)";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+  byte data[] = {inst.opCode, 0x00, 0x00};
+  byte loadHLData[]={0x00, 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
+  uint16_t receivedAddr=0x00;
+
+
+  //Test enough times to ensure that we have hit every possible address value with random data. 
+  for (uint16_t i = 0; i < 65535; i++) {
+
+    //Load the target address into the HL Register
+    loadHLData[0]=lowByte(i);
+    loadHLData[1]=highByte(i);
+    helper_ld_XY_nn('H', 'L', loadHLData);
+
+    //Generate random data
+    long sentData=random(255);
+    data[1]=lowByte(sentData);
+
+    //Load that data into the B register
+    writeSingleInstruction(data, 1, 1, 0, addr);
+    receivedAddr=addr[1];
+
+    helper_ld_X_Y('A', 'L');
+    
+    helper_ld_ptr_nn_a(data, addr);
+
+
+    if (data[2] != lowByte(sentData) || receivedAddr != i) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((i % 1000) == 0) {
+      Serial.print(F("."));
+    }
+    
+  }
+  
+  //Test enough times to ensure that we have hit every possible data value with a random address. 
+  for (int j=0; j<256; j++)
+  {
+
+    //Load a random address into 
+    long sentAddress=random(65535);
+    loadHLData[0]=lowByte(sentAddress);
+    loadHLData[1]=highByte(sentAddress);
+    helper_ld_XY_nn('H', 'L', loadHLData);
+
+    data[1]=j;
+
+    writeSingleInstruction(data, 1, 1, 0, addr);
+    
+    receivedAddr=addr[1];
+
+    helper_ld_X_Y('A', 'L');
+
+    helper_ld_ptr_nn_a(data, addr);
+
+
+    if (data[2] != j || sentAddress != receivedAddr) {
+      error=true;
+    }
+    
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
+}
+bool LD_PTR_HL_A() {
+  //Mnemonic:  LD (HL),A
+  //Assembled command: 0x77
+  //Expected behavior: A value is loaded into the memory address in the HL Register
+  //Test methodology: Load Register HL with each possible address, load a random value into Register A.  Store the value in register A to the memory location in HL.  Load Register HL with a random address, load each possible value into that memory address via register A.
+  //Success criteria: Verify that the returned data & address matches the loaded data & address.
+
+  //Initialize some variables
+  bool error = false;
+
+  char targetMnemonic[]="LD (HL),A";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+  byte data[] = {inst.opCode, 0x00, 0x00, 0x00};
+  byte loadHLData[]={0x00, 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
+  uint16_t receivedAddr=0x00;
+
+
+  //Test enough times to ensure that we have hit every possible address value with random data. 
+  for (uint16_t i = 0; i < 65535; i++) {
+
+    //Load the target address into the HL Register
+    loadHLData[0]=lowByte(i);
+    loadHLData[1]=highByte(i);
+    helper_ld_XY_nn('H', 'L', loadHLData);
+
+    //Generate random data
+    long sentData=random(255);
+    
+
+    helper_ld_X_n('A', lowByte(sentData));
+
+    //Load that data into the A register
+    writeSingleInstruction(data, 1, 0, 1, addr);
+
+    receivedAddr=addr[1];
+
+    if (data[1] != lowByte(sentData) || receivedAddr != i) {
+      error=true;
+      Serial.print(F("Expected data: "));
+      Serial.print(lowByte(sentData),HEX);
+      Serial.print(F(" got: "));
+      Serial.print(data[1],HEX);
+      Serial.print(F(" Expected address: "));
+      Serial.print(i, HEX);
+      Serial.print(F(" got: "));
+      Serial.println(receivedAddr,HEX);
+    } 
+
+
+    //Display progress
+    if ((i % 1000) == 0) {
+      Serial.print(F("."));
+    }
+    
+  }
+  
+  //Test enough times to ensure that we have hit every possible data value with a random address. 
+  for (int j=0; j<256; j++)
+  {
+
+    //Load a random address into 
+    long sentAddress=random(65535);
+    loadHLData[0]=lowByte(sentAddress);
+    loadHLData[1]=highByte(sentAddress);
+    helper_ld_XY_nn('H', 'L', loadHLData);
+
+
+    helper_ld_X_n('A', j);
+    writeSingleInstruction(data, 1, 0, 1, addr);
+    receivedAddr=addr[1];    
+
+
+
+    if (data[1] != j || sentAddress != receivedAddr) {
       error=true;
       Serial.print(F("Expected data: "));
       Serial.print(lowByte(j),HEX);
       Serial.print(F(" got: "));
-      Serial.println(data[2],HEX);
+      Serial.print(data[1],HEX);
+      Serial.print(F(" Expected address: "));
+      Serial.print(sentAddress, HEX);
+      Serial.print(F(" got: "));
+      Serial.println(receivedAddr,HEX);
+    } 
+    
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
+
+}
+bool LD_PTR_HL_B() {
+  //Mnemonic:  LD (HL),B
+  //Assembled command: 0x70
+  //Expected behavior: A value is loaded into the memory address in the HL Register
+  //Test methodology: Load Register HL with each possible address, load a random value into Register B.  Store the value in register B to the memory location in HL.  Load Register HL with a random address, load each possible value into that memory address via register B.
+  //Success criteria: Verify that the returned data & address matches the loaded data & address.
+
+  //Initialize some variables
+  bool error = false;
+
+  char targetMnemonic[]="LD (HL),B";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+  byte data[] = {inst.opCode, 0x00, 0x00, 0x00};
+  byte loadHLData[]={0x00, 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
+  uint16_t receivedAddr=0x00;
+
+
+  //Test enough times to ensure that we have hit every possible address value with random data. 
+  for (uint16_t i = 0; i < 65535; i++) {
+
+    //Load the target address into the HL Register
+    loadHLData[0]=lowByte(i);
+    loadHLData[1]=highByte(i);
+    helper_ld_XY_nn('H', 'L', loadHLData);
+
+    //Generate random data
+    long sentData=random(255);
+    
+
+    helper_ld_X_n('B', lowByte(sentData));
+
+    //Load that data into the B register
+    writeSingleInstruction(data, 1, 0, 1, addr);
+
+    receivedAddr=addr[1];
+
+    if (data[1] != lowByte(sentData) || receivedAddr != i) {
+      error=true;
+    } 
+
+    //Display progress
+    if ((i % 1000) == 0) {
+      Serial.print(F("."));
+    }
+    
+  }
+  
+  //Test enough times to ensure that we have hit every possible data value with a random address. 
+  for (int j=0; j<256; j++)
+  {
+
+    //Load a random address into 
+    long sentAddress=random(65535);
+    loadHLData[0]=lowByte(sentAddress);
+    loadHLData[1]=highByte(sentAddress);
+    helper_ld_XY_nn('H', 'L', loadHLData);
+
+
+    helper_ld_X_n('B', j);
+    writeSingleInstruction(data, 1, 0, 1, addr);
+    receivedAddr=addr[1];    
+
+
+
+    if (data[1] != j || sentAddress != receivedAddr) {
+      error=true;
+    } 
+    
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
+
+}
+bool LD_PTR_HL_C() {
+  //Mnemonic:  LD (HL),C
+  //Assembled command: 0x71
+  //Expected behavior: A value is loaded into the memory address in the HL Register
+  //Test methodology: Load Register HL with each possible address, load a random value into Register C.  Store the value in register C to the memory location in HL.  Load Register HL with a random address, load each possible value into that memory address via register C.
+  //Success criteria: Verify that the returned data & address matches the loaded data & address.
+
+  //Initialize some variables
+  bool error = false;
+
+  char targetMnemonic[]="LD (HL),C";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+  byte data[] = {inst.opCode, 0x00, 0x00, 0x00};
+  byte loadHLData[]={0x00, 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
+  uint16_t receivedAddr=0x00;
+
+
+  //Test enough times to ensure that we have hit every possible address value with random data. 
+  for (uint16_t i = 0; i < 65535; i++) {
+
+    //Load the target address into the HL Register
+    loadHLData[0]=lowByte(i);
+    loadHLData[1]=highByte(i);
+    helper_ld_XY_nn('H', 'L', loadHLData);
+
+    //Generate random data
+    long sentData=random(255);
+    
+
+    helper_ld_X_n('C', lowByte(sentData));
+
+    //Load that data into the C register
+    writeSingleInstruction(data, 1, 0, 1, addr);
+
+    receivedAddr=addr[1];
+
+    if (data[1] != lowByte(sentData) || receivedAddr != i) {
+      error=true;
+    } 
+
+    //Display progress
+    if ((i % 1000) == 0) {
+      Serial.print(F("."));
+    }
+    
+  }
+  
+  //Test enough times to ensure that we have hit every possible data value with a random address. 
+  for (int j=0; j<256; j++)
+  {
+
+    //Load a random address into 
+    long sentAddress=random(65535);
+    loadHLData[0]=lowByte(sentAddress);
+    loadHLData[1]=highByte(sentAddress);
+    helper_ld_XY_nn('H', 'L', loadHLData);
+
+
+    helper_ld_X_n('C', j);
+    writeSingleInstruction(data, 1, 0, 1, addr);
+    receivedAddr=addr[1];    
+
+
+
+    if (data[1] != j || sentAddress != receivedAddr) {
+      error=true;
+    } 
+    
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
+
+}
+bool LD_PTR_HL_D() {
+  //Mnemonic:  LD (HL),D
+  //Assembled command: 0x72
+  //Expected behavior: A value is loaded into the memory address in the HL Register
+  //Test methodology: Load Register HL with each possible address, load a random value into Register D.  Store the value in register D to the memory location in HL.  Load Register HL with a random address, load each possible value into that memory address via register D.
+  //Success criteria: Verify that the returned data & address matches the loaded data & address.
+
+  //Initialize some variables
+  bool error = false;
+
+  char targetMnemonic[]="LD (HL),D";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+  byte data[] = {inst.opCode, 0x00, 0x00, 0x00};
+  byte loadHLData[]={0x00, 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
+  uint16_t receivedAddr=0x00;
+
+
+  //Test enough times to ensure that we have hit every possible address value with random data. 
+  for (uint16_t i = 0; i < 65535; i++) {
+
+    //Load the target address into the HL Register
+    loadHLData[0]=lowByte(i);
+    loadHLData[1]=highByte(i);
+    helper_ld_XY_nn('H', 'L', loadHLData);
+
+    //Generate random data
+    long sentData=random(255);
+    
+
+    helper_ld_X_n('D', lowByte(sentData));
+
+    //Load that data into the D register
+    writeSingleInstruction(data, 1, 0, 1, addr);
+
+    receivedAddr=addr[1];
+
+    if (data[1] != lowByte(sentData) || receivedAddr != i) {
+      error=true;
+    } 
+
+    //Display progress
+    if ((i % 1000) == 0) {
+      Serial.print(F("."));
+    }
+    
+  }
+  
+  //Test enough times to ensure that we have hit every possible data value with a random address. 
+  for (int j=0; j<256; j++)
+  {
+
+    //Load a random address into 
+    long sentAddress=random(65535);
+    loadHLData[0]=lowByte(sentAddress);
+    loadHLData[1]=highByte(sentAddress);
+    helper_ld_XY_nn('H', 'L', loadHLData);
+
+
+    helper_ld_X_n('D', j);
+    writeSingleInstruction(data, 1, 0, 1, addr);
+    receivedAddr=addr[1];    
+
+
+
+    if (data[1] != j || sentAddress != receivedAddr) {
+      error=true;
+    } 
+    
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
+
+}
+bool LD_PTR_HL_E() {
+  //Mnemonic:  LD (HL),E
+  //Assembled command: 0x73
+  //Expected behavior: A value is loaded into the memory address in the HL Register
+  //Test methodology: Load Register HL with each possible address, load a random value into Register E.  Store the value in register E to the memory location in HL.  Load Register HL with a random address, load each possible value into that memory address via register E.
+  //Success criteria: Verify that the returned data & address matches the loaded data & address.
+
+  //Initialize some variables
+  bool error = false;
+
+  char targetMnemonic[]="LD (HL),E";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+  byte data[] = {inst.opCode, 0x00, 0x00, 0x00};
+  byte loadHLData[]={0x00, 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
+  uint16_t receivedAddr=0x00;
+
+
+  //Test enough times to ensure that we have hit every possible address value with random data. 
+  for (uint16_t i = 0; i < 65535; i++) {
+
+    //Load the target address into the HL Register
+    loadHLData[0]=lowByte(i);
+    loadHLData[1]=highByte(i);
+    helper_ld_XY_nn('H', 'L', loadHLData);
+
+    //Generate random data
+    long sentData=random(255);
+    
+
+    helper_ld_X_n('E', lowByte(sentData));
+
+    //Load that data into the E register
+    writeSingleInstruction(data, 1, 0, 1, addr);
+
+    receivedAddr=addr[1];
+
+    if (data[1] != lowByte(sentData) || receivedAddr != i) {
+      error=true;
+
+    } 
+
+    //Display progress
+    if ((i % 1000) == 0) {
+      Serial.print(F("."));
+    }
+    
+  }
+  
+  //Test enough times to ensure that we have hit every possible data value with a random address. 
+  for (int j=0; j<256; j++)
+  {
+
+    //Load a random address into 
+    long sentAddress=random(65535);
+    loadHLData[0]=lowByte(sentAddress);
+    loadHLData[1]=highByte(sentAddress);
+    helper_ld_XY_nn('H', 'L', loadHLData);
+
+
+    helper_ld_X_n('E', j);
+    writeSingleInstruction(data, 1, 0, 1, addr);
+    receivedAddr=addr[1];    
+
+
+
+    if (data[1] != j || sentAddress != receivedAddr) {
+      error=true;
+    } 
+    
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
+
+}
+bool LD_PTR_HL_H() {
+  //Mnemonic:  LD (HL),H
+  //Assembled command: 0x74
+  //Expected behavior: A high byte value in the HL register into the memory address in the HL Register
+  //Test methodology: Load Register HL with each possible address, store the value in register H to the memory location in HL. 
+  //Success criteria: Verify that the returned data & address matches the loaded data & address.
+
+  //Initialize some variables
+  bool error = false;
+
+  char targetMnemonic[]="LD (HL),H";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+  byte data[] = {inst.opCode, 0x00, 0x00, 0x00};
+  byte loadHLData[]={0x00, 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
+  uint16_t receivedAddr=0x00;
+
+
+  //Test enough times to ensure that we have hit every possible address value
+  for (uint16_t i = 0; i < 65535; i++) {
+
+    //Load the target address into the HL Register
+    loadHLData[0]=lowByte(i);
+    loadHLData[1]=highByte(i);
+    helper_ld_XY_nn('H', 'L', loadHLData);
+
+    data[1]=highByte(i);
+
+    //Load that data into the H register
+    writeSingleInstruction(data, 1, 0, 1, addr);
+
+    receivedAddr=addr[1];
+
+    if (data[1] != highByte(i) || receivedAddr != i) {
+      error=true;
+    } 
+
+    //Display progress
+    if ((i % 1000) == 0) {
+      Serial.print(F("."));
+    }
+    
+  }
+  
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
+
+}
+bool LD_PTR_HL_L() {
+  //Mnemonic:  LD (HL),L
+  //Assembled command: 0x75
+  //Expected behavior: A low byte value in the HL register into the memory address in the HL Register
+  //Test methodology: Load Register HL with each possible address, store the value in register L to the memory location in HL. 
+  //Success criteria: Verify that the returned data & address matches the loaded data & address.
+
+  //Initialize some variables
+  bool error = false;
+
+  char targetMnemonic[]="LD (HL),L";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+  byte data[] = {inst.opCode, 0x00, 0x00, 0x00};
+  byte loadHLData[]={0x00, 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
+  uint16_t receivedAddr=0x00;
+
+
+  //Test enough times to ensure that we have hit every possible address value
+  for (uint16_t i = 0; i < 65535; i++) {
+
+    //Load the target address into the HL Register
+    loadHLData[0]=lowByte(i);
+    loadHLData[1]=highByte(i);
+    helper_ld_XY_nn('H', 'L', loadHLData);
+
+    data[1]=lowByte(i);
+
+    //Load that data into the L register
+    writeSingleInstruction(data, 1, 0, 1, addr);
+
+    receivedAddr=addr[1];
+
+    if (data[1] != lowByte(i) || receivedAddr != i) {
+      error=true;
+    } 
+
+    //Display progress
+    if ((i % 1000) == 0) {
+      Serial.print(F("."));
+    }
+    
+  }
+  
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
+
+}
+bool LD_A_PTR_BC() {
+  //Mnemonic:  LD A,(BC)
+  //Assembled command: 0x0A
+  //Expected behavior: A value is loaded into the memory address in the HL Register
+  //Test methodology: Load Register HL with each possible address, load a random value into the memory address (HL).  Load Register HL with a random address, load each possible value into that memory address.
+  //Success criteria: Verify that the returned data & address matches the loaded data & address.
+
+  //Initialize some variables
+  bool error = false;
+
+  char targetMnemonic[]="LD A,(BC)";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+  byte data[] = {inst.opCode, 0x00, 0x00};
+  byte loadBCData[]={0x00, 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
+  uint16_t receivedAddr=0x00;
+
+
+  //Test enough times to ensure that we have hit every possible address value with random data. 
+  for (uint16_t i = 0; i < 65535; i++) {
+
+    //Load the target address into the HL Register
+    loadBCData[0]=lowByte(i);
+    loadBCData[1]=highByte(i);
+    helper_ld_XY_nn('B', 'C', loadBCData);
+
+    //Generate random data
+    long sentData=random(255);
+    data[1]=lowByte(sentData);
+
+    //Load that data into the A register
+    writeSingleInstruction(data, 1, 1, 0, addr);
+
+    receivedAddr=addr[1];
+
+    helper_ld_ptr_nn_a(data, addr);
+
+
+    if (data[2] != lowByte(sentData) || receivedAddr != i) {
+      error=true;
+      Serial.print(F("Expected data: "));
+      Serial.print(lowByte(sentData),HEX);
+      Serial.print(F(" got: "));
+      Serial.print(data[2],HEX);
+      Serial.print(F(" Expected address: "));
+      Serial.print(i, HEX);
+      Serial.print(F(" got: "));
+      Serial.println(receivedAddr,HEX);
+    } 
+    
+    //Display progress
+    if ((i % 1000) == 0) {
+      Serial.print(F("."));
+    }
+    
+  }
+  
+  //Test enough times to ensure that we have hit every possible data value with a random address. 
+  for (int j=0; j<256; j++)
+  {
+
+    //Load a random address into 
+    long sentAddress=random(65535);
+    loadBCData[0]=lowByte(sentAddress);
+    loadBCData[1]=highByte(sentAddress);
+    helper_ld_XY_nn('B', 'C', loadBCData);
+
+    data[1]=j;
+
+    writeSingleInstruction(data, 1, 1, 0, addr);
+    receivedAddr=addr[1];    
+    helper_ld_ptr_nn_a(data, addr);
+
+
+    if (data[2] != j || sentAddress != receivedAddr) {
+      error=true;
+      Serial.print(F("Expected data: "));
+      Serial.print(lowByte(j),HEX);
+      Serial.print(F(" got: "));
+      Serial.print(data[2],HEX);
+      Serial.print(F(" Expected address: "));
+      Serial.print(sentAddress, HEX);
+      Serial.print(F(" got: "));
+      Serial.println(receivedAddr,HEX);
     } 
     
   }
@@ -3118,74 +4165,818 @@ bool LD_A_PTR_HL() {
     Serial.println(F("Pass"));
   }
 }
-bool LD_B_PTR_HL() {}
-bool LD_C_PTR_HL() {}
-bool LD_D_PTR_HL() {}
-bool LD_E_PTR_HL() {}
-bool LD_H_PTR_HL() {}
-bool LD_L_PTR_HL() {}
-bool LD_PTR_HL_A() {}
-bool LD_PTR_HL_B() {}
-bool LD_PTR_HL_C() {}
-bool LD_PTR_HL_D() {}
-bool LD_PTR_HL_E() {}
-bool LD_PTR_HL_H() {}
-bool LD_PTR_HL_L() {}
-bool LD_A_PTR_BC() {}
-bool LD_A_PTR_DE() {}
-bool LD_A_PTR_NN() {}
-bool LD_PTR_NN_A() {}
-bool LD_PTR_BC_A() {}
-bool LD_PTR_DE_A() {}
-bool LD_A_I() {}
-bool LD_A_R() {}
-bool LD_I_A() {}
-bool LD_R_A() {}
-bool LD_PTR_IX_PLUS_D_N() {}
-bool LD_PTR_IY_PLUS_D_N() {}
-bool LD_A_PTR_IX_PLUS_D() {}
-bool LD_B_PTR_IX_PLUS_D() {}
-bool LD_C_PTR_IX_PLUS_D() {}
-bool LD_D_PTR_IX_PLUS_D() {}
-bool LD_E_PTR_IX_PLUS_D() {}
-bool LD_H_PTR_IX_PLUS_D() {}
-bool LD_L_PTR_IX_PLUS_D() {}
-bool LD_A_PTR_IY_PLUS_D() {}
-bool LD_B_PTR_IY_PLUS_D() {}
-bool LD_C_PTR_IY_PLUS_D() {}
-bool LD_D_PTR_IY_PLUS_D() {}
-bool LD_E_PTR_IY_PLUS_D() {}
-bool LD_H_PTR_IY_PLUS_D() {}
-bool LD_L_PTR_IY_PLUS_D() {}
-bool LD_PTR_IX_PLUS_D_A() {}
-bool LD_PTR_IX_PLUS_D_B() {}
-bool LD_PTR_IX_PLUS_D_C() {}
-bool LD_PTR_IX_PLUS_D_D() {}
-bool LD_PTR_IX_PLUS_D_E() {}
-bool LD_PTR_IX_PLUS_D_H() {}
-bool LD_PTR_IX_PLUS_D_L() {}
-bool LD_PTR_IY_PLUS_D_A() {}
-bool LD_PTR_IY_PLUS_D_B() {}
-bool LD_PTR_IY_PLUS_D_C() {}
-bool LD_PTR_IY_PLUS_D_D() {}
-bool LD_PTR_IY_PLUS_D_E() {}
-bool LD_PTR_IY_PLUS_D_H() {}
-bool LD_PTR_IY_PLUS_D_L() {}
-bool LD_BC_NN() {}
-bool LD_DE_NN() {}
-bool LD_HL_NN() {
-  //Mnemonic:  LD HL,nn
-  //Assembled command: 0x21
-  //Expected behavior: A value is loaded into Register HL
-  //Test methodology: Load all possible 16 bit values into Register HL, retrieve the value of Register HL to verify.  NOTE: This tests `LD (nn),HL` for a single address as well.
+bool LD_A_PTR_DE() {
+  //Mnemonic:  LD A,(DE)
+  //Assembled command: 0x1A
+  //Expected behavior: A value is loaded into the memory address in the HL Register
+  //Test methodology: Load Register HL with each possible address, load a random value into the memory address (HL).  Load Register HL with a random address, load each possible value into that memory address.
+  //Success criteria: Verify that the returned data & address matches the loaded data & address.
+
+  //Initialize some variables
+  bool error = false;
+
+  char targetMnemonic[]="LD A,(DE)";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+  byte data[] = {inst.opCode, 0x00, 0x00};
+  byte loadDEData[]={0x00, 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
+  uint16_t receivedAddr=0x00;
+
+
+  //Test enough times to ensure that we have hit every possible address value with random data. 
+  for (uint16_t i = 0; i < 65535; i++) {
+
+    //Load the target address into the HL Register
+    loadDEData[0]=lowByte(i);
+    loadDEData[1]=highByte(i);
+    helper_ld_XY_nn('D', 'E', loadDEData);
+
+    //Generate random data
+    long sentData=random(255);
+    data[1]=lowByte(sentData);
+
+    //Load that data into the A register
+    writeSingleInstruction(data, 1, 1, 0, addr);
+
+    receivedAddr=addr[1];
+
+    helper_ld_ptr_nn_a(data, addr);
+
+
+    if (data[2] != lowByte(sentData) || receivedAddr != i) {
+      error=true;
+      Serial.print(F("Expected data: "));
+      Serial.print(lowByte(sentData),HEX);
+      Serial.print(F(" got: "));
+      Serial.print(data[2],HEX);
+      Serial.print(F(" Expected address: "));
+      Serial.print(i, HEX);
+      Serial.print(F(" got: "));
+      Serial.println(receivedAddr,HEX);
+    } 
+    
+    //Display progress
+    if ((i % 1000) == 0) {
+      Serial.print(F("."));
+    }
+    
+  }
+  
+  //Test enough times to ensure that we have hit every possible data value with a random address. 
+  for (int j=0; j<256; j++)
+  {
+
+    //Load a random address into 
+    long sentAddress=random(65535);
+    loadDEData[0]=lowByte(sentAddress);
+    loadDEData[1]=highByte(sentAddress);
+    helper_ld_XY_nn('D', 'E', loadDEData);
+
+    data[1]=j;
+
+    writeSingleInstruction(data, 1, 1, 0, addr);
+    receivedAddr=addr[1];    
+    helper_ld_ptr_nn_a(data, addr);
+
+
+    if (data[2] != j || sentAddress != receivedAddr) {
+      error=true;
+      Serial.print(F("Expected data: "));
+      Serial.print(lowByte(j),HEX);
+      Serial.print(F(" got: "));
+      Serial.print(data[2],HEX);
+      Serial.print(F(" Expected address: "));
+      Serial.print(sentAddress, HEX);
+      Serial.print(F(" got: "));
+      Serial.println(receivedAddr,HEX);
+    } 
+    
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
+}
+bool LD_A_PTR_NN() {
+  //Mnemonic:  LD A,(nn)
+  //Assembled command: 0x3A
+  //Expected behavior: The value in memory address nn is written to Register A
+  //Test methodology: Load a random 8 bit value into Register A via a pointer to address nn, write the value of Register A to address nn verify.
+  //Success criteria: Verify that the returned data matches the loaded data.
+
+  //Initialize some variables
+  bool error = false;
+  byte data[] = {0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
+  byte sentData=0x00;
+
+  char targetMnemonic[]="LD A,(nn)";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+
+  //Test enough times to ensure that we have hit every possible data value
+  for (unsigned int i = 0; i < 65535; i++) {
+
+    sentData=lowByte(random(255));
+    
+    data[0]=inst.opCode;
+    data[1]=lowByte(i);
+    data[2]=highByte(i);
+    data[3]=sentData;
+    writeSingleInstruction(data, 1, 3, 0, addr);
+
+    //Read the data in the A register   
+    for (int j=0; j<4; j++) {
+      data[j]=0x0;
+    }
+    data[0]=lowByte(i);
+    data[1]=highByte(i);
+    helper_ld_ptr_nn_a(data, addr);
+  
+    /*for (int j=0; j<4; j++){
+      Serial.println(addr[j],HEX);
+    }*/
+    //Test if the Data Bus reads the expected value
+    if (data[2] != sentData || addr[3] != i) {
+      error = true;
+      Serial.print(F("Expected data: "));
+      Serial.print(sentData, HEX);
+      Serial.print(F(" got: "));
+      Serial.print(data[2], HEX);
+      Serial.print(F(" Expected address: "));
+      Serial.print(i, HEX);
+      Serial.print(F(" got: "));
+      Serial.println(addr[3],HEX);
+    }
+
+    //Display progress
+    if ((i % 1000) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
+}
+bool LD_PTR_NN_A() {
+  //Mnemonic:  LD (nn),A
+  //Assembled command: 0x32
+  //Expected behavior: The value in Register A is written to memory address nn
+  //Test methodology: Load a random 8 bit value into Register A, write the value of Register A to address nn verify.  NOTE: This tests `LD A,n` for a random value as well.
+  //Success criteria: Verify that the returned data matches the loaded data.
+
+  //Initialize some variables
+  bool error = false;
+  byte data[] = {0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
+  byte sentData=0x00;
+
+
+  //Test enough times to ensure that we have hit every possible data value
+  for (unsigned int i = 0; i < 65535; i++) {
+
+    sentData=lowByte(random(255));
+    
+    //Send the LD A,n command
+    helper_ld_X_n('A', sentData);
+
+    //Read the data in the A register   
+    for (int j=0; j<4; j++) {
+      data[j]=0x0;
+    }
+    data[0]=lowByte(i);
+    data[1]=highByte(i);
+    helper_ld_ptr_nn_a(data, addr);
+  
+    /*for (int j=0; j<4; j++){
+      Serial.println(addr[j],HEX);
+    }*/
+    //Test if the Data Bus reads the expected value
+    if (data[2] != sentData || addr[3] != i) {
+      error = true;
+      Serial.print(F("Expected data: "));
+      Serial.print(sentData, HEX);
+      Serial.print(F(" got: "));
+      Serial.print(data[2], HEX);
+      Serial.print(F(" Expected address: "));
+      Serial.print(i, HEX);
+      Serial.print(F(" got: "));
+      Serial.println(addr[3],HEX);
+    }
+
+    //Display progress
+    if ((i % 1000) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
+}
+bool LD_PTR_BC_A() {
+  //Mnemonic:  LD (BC),A
+  //Assembled command: 0x02
+  //Expected behavior: The value in Register A is written to memory address stored in Register BC
+  //Test methodology: Load a random 8 bit value into Register A, write the value of Register A to address in Register BC verify.
+  //Success criteria: Verify that the returned data matches the loaded data.
+
+  //Initialize some variables
+  char targetMnemonic[]="LD (BC),A";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+
+  bool error = false;
+  byte data[] = {0x00, 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
+  byte sentData=0x00;
+
+
+  //Test enough times to ensure that we have hit every possible data value
+  for (unsigned int i = 0; i < 65535; i++) {
+
+    sentData=lowByte(random(255));
+    
+    //Send the LD A,n command
+    helper_ld_X_n('A', sentData);
+
+
+    for (int j=0; j<4; j++) {
+      data[j]=0x0;
+    }
+
+    //Write the address to the BC register
+    data[0]=lowByte(i);
+    data[1]=highByte(i);
+    helper_ld_XY_nn('B', 'C', data);
+
+    data[0]=inst.opCode;
+    //Write the data in the A register to the memory address in the BC register
+    writeSingleInstruction(data, 1, 0, 1, addr);
+
+
+    //Test if the Data Bus reads the expected value
+    if (data[1] != sentData || addr[1] != i) {
+      error = true;
+      Serial.print(F("Expected data: "));
+      Serial.print(sentData, HEX);
+      Serial.print(F(" got: "));
+      Serial.print(data[1], HEX);
+      Serial.print(F(" Expected address: "));
+      Serial.print(i, HEX);
+      Serial.print(F(" got: "));
+      Serial.println(addr[1],HEX);
+    }
+
+    //Display progress
+    if ((i % 1000) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
+}
+bool LD_PTR_DE_A() {
+  //Mnemonic:  LD (DE),A
+  //Assembled command: 0x12
+  //Expected behavior: The value in Register A is written to memory address stored in Register DE
+  //Test methodology: Load a random 8 bit value into Register A, write the value of Register A to address in Register DE verify.
+  //Success criteria: Verify that the returned data matches the loaded data.
+
+  //Initialize some variables
+  char targetMnemonic[]="LD (DE),A";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+
+  bool error = false;
+  byte data[] = {0x00, 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
+  byte sentData=0x00;
+
+
+  //Test enough times to ensure that we have hit every possible data value
+  for (unsigned int i = 0; i < 65535; i++) {
+
+    sentData=lowByte(random(255));
+    
+    //Send the LD A,n command
+    helper_ld_X_n('A', sentData);
+
+
+    for (int j=0; j<4; j++) {
+      data[j]=0x0;
+    }
+
+    //Write the address to the DE register
+    data[0]=lowByte(i);
+    data[1]=highByte(i);
+    helper_ld_XY_nn('D', 'E', data);
+
+    data[0]=inst.opCode;
+    //Write the data in the A register to the memory address in the DE register
+    writeSingleInstruction(data, 1, 0, 1, addr);
+
+
+    //Test if the Data Bus reads the expected value
+    if (data[1] != sentData || addr[1] != i) {
+      error = true;
+      Serial.print(F("Expected data: "));
+      Serial.print(sentData, HEX);
+      Serial.print(F(" got: "));
+      Serial.print(data[1], HEX);
+      Serial.print(F(" Expected address: "));
+      Serial.print(i, HEX);
+      Serial.print(F(" got: "));
+      Serial.println(addr[1],HEX);
+    }
+
+    //Display progress
+    if ((i % 1000) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
+}
+bool LD_A_I() {
+  //Mnemonic:  LD A,I
+  //Assembled command: 0xED57
+  //Expected behavior: The value in Register I is written to register A
+  //Test methodology: Load a value into Register I via Register A, clear register A, load the value in Register I back into Register A.  Note: This relies on the LD I,A instruction
+  //Success criteria: The value in register A matches the sent data
+
+  
+
+  //Initialize some variables
+  char targetMnemonic[]="LD A,I";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+
+  char targetMnemonic2[]="LD I,A";
+  int instIndex2=findInstructionIndexByMnemonic(targetMnemonic2);
+  instructionDefinitionType inst2;
+  memcpy_P(&inst2, &InstructionDefinitions[instIndex2], sizeof(inst2));
+
+  bool error = false;
+  byte data[] = {0x00, 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
+  byte sentData=0x00;
+
+  for (int i=0; i<256; i++){
+    
+    //Load the data pattern into the A Register
+    sentData=i;
+    helper_ld_X_n('A',sentData);
+
+    //Execute the LD I,A instruction to put that info into the I registier
+    data[0]=highByte(inst2.opCode);
+    data[1]=lowByte(inst2.opCode);
+
+    writeSingleInstruction(data,2,0,0,addr);
+
+    //Clear out the A register
+    helper_ld_X_n('A',0x00);
+
+    //Load the contents of the I Register back into the A Register
+    data[0]=highByte(inst.opCode);
+    data[1]=lowByte(inst.opCode);
+
+    writeSingleInstruction(data,2,0,0,addr);
+
+    //Read the contents of the A Register
+    for (int j=0; j<4;j++){
+      data[j]=0x00;
+    }
+    helper_ld_ptr_nn_a(data, addr);
+
+    if (data[2] != sentData){
+      error=true;
+    }
+    //Display progress
+    if ((i % 8) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
+
+
+}
+bool LD_A_R() {
+  //Mnemonic:  LD A,R
+  //Assembled command: 0xED5F
+  //Expected behavior: The value in Register R is written to register A
+  //Test methodology: Load a value into Register R via Register A, clear register A, load the value in Register RI back into Register A.  Note: This relies on the LD R,A instruction
+  //Success criteria: The value in register A matches the sent data
+
+  
+
+  //Initialize some variables
+  char targetMnemonic[]="LD A,R";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+
+  char targetMnemonic2[]="LD R,A";
+  int instIndex2=findInstructionIndexByMnemonic(targetMnemonic2);
+  instructionDefinitionType inst2;
+  memcpy_P(&inst2, &InstructionDefinitions[instIndex2], sizeof(inst2));
+
+  bool error = false;
+  byte data[] = {0x00, 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
+  byte sentData=0x00;
+
+  for (int i=0; i<256; i++){
+    
+    //Load the data pattern into the A Register
+    sentData=i;
+    helper_ld_X_n('A',sentData);
+
+    //Execute the LD I,A instruction to put that info into the I registier
+    data[0]=highByte(inst2.opCode);
+    data[1]=lowByte(inst2.opCode);
+
+    writeSingleInstruction(data,2,0,0,addr);
+
+    //Clear out the A register
+    helper_ld_X_n('A',0x00);
+
+    //Load the contents of the I Register back into the A Register
+    data[0]=highByte(inst.opCode);
+    data[1]=lowByte(inst.opCode);
+
+    writeSingleInstruction(data,2,0,0,addr);
+
+    //Read the contents of the A Register
+    for (int j=0; j<4;j++){
+      data[j]=0x00;
+    }
+    helper_ld_ptr_nn_a(data, addr);
+
+    //Handle the bit rollovers
+    if (sentData>=0x7D && sentData <=0x7F){
+      data[2]+=0x80;
+    }
+    if (sentData>=0xFD && sentData<=0xFF){
+      sentData-=0x80;
+    }
+
+    //There are 3 clock cycles between the address set and the address retrieval, we expect the retrieved address to be three higher than what was sent.
+    if (data[2] != sentData+3){
+      error=true;
+    }
+    //Display progress
+    if ((i % 8) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
+
+
+}
+bool LD_I_A() {
+  //Mnemonic:  LD I,A
+  //Assembled command: 0xED47
+  //Expected behavior: The value in Register A is written to register I
+  //Test methodology: Load a value into the A register, then load the I register from the A register, Record the high byte of the refresh address, this should be the value of Register I
+  //Success criteria: The value in register A matches the high byte of the refresh address
+
+  //Initialize some variables
+  char targetMnemonic[]="LD I,A";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+
+  bool error = false;
+  byte data[] = {0x00, 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
+  byte sentData=0x00;
+  int prevVal=0;
+  //Note that since testing this instruction involves working with the system during the refresh cycle, the `writeSingleInstruction` function cannot be used.  This instruction requires two M1 cycles.
+
+  data[0]=highByte(inst.opCode);
+  data[1]=lowByte(inst.opCode);
+
+  for (int j=0; j<256; j++){
+    sentData=j;
+    helper_ld_X_n('A',sentData);
+
+    for (int i=0; i<3; i++){
+      //We always have to wait for the second half of a T cycle to deactivate Wait
+      while (digitalReadFast(CLK)) {
+        delayMicroseconds(period/2);
+      }
+      digitalWriteFast(WAIT, HIGH);
+
+      //Wait for the next M1 cycle to start
+      while (digitalReadFast(RD) || digitalReadFast(MREQ) || digitalReadFast(M1) || !digitalReadFast(RFSH)) {
+        delayMicroseconds(1);
+      }
+
+      //Tell the CPU to wait while data is being written
+      digitalWriteFast(WAIT, LOW);
+
+      //Set the Data lines
+      writeData(data[i]);
+
+      //Tell the CPU that the data is valid
+      while (digitalReadFast(CLK)) {
+        delayMicroseconds(1);
+      }
+      digitalWriteFast(WAIT, HIGH);
+
+      //If the clock is set to the 32MHz setting, the readAddressBus function takes longer than the refresh cycle.  There is no way to pause the refresh cycle, so we need to slow the clock
+      if (prescaler==1){
+        TCCR4B &= ~eraser;
+        prescaler = 2;
+        TCCR4B |= prescaler;
+        prevVal=1;
+      }
+
+      //Wait for the refresh cycle to start
+      while (digitalReadFast(RFSH)) {
+        delayMicroseconds(1);
+      }
+
+      //Capture the address
+      addr[i]=readAddressBus(0);
+
+      //If we slowed the clock down, speed it back up
+      if (prevVal == 1){
+        TCCR4B &= ~eraser;
+        prescaler = 1;
+        TCCR4B |= prescaler;
+        prevVal=0;
+      }
+
+      //Carry on with the normal M1 Cycle routine
+      while (!digitalReadFast(RFSH)) {
+        delayMicroseconds(1);
+      }
+
+      //Tell the CPU to wait while we process everything
+      digitalWriteFast(WAIT, LOW);
+    }
+
+    if (highByte(addr[2]) != sentData){
+      error=true;
+    }
+    //Display progress
+    if ((j % 8) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
+}
+bool LD_R_A() {
+  //Mnemonic:  LD R,A
+  //Assembled command: 0xED4F
+  //Expected behavior: The value in Register A is written to register R
+  //Test methodology: Load a value into the A register, then load the R register from the A register, Record the low byte of the refresh address, this should be the value of Register R
+  //Success criteria: The value in register A matches the low byte of the refresh address
+
+  //Initialize some variables
+  char targetMnemonic[]="LD R,A";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+
+  bool error = false;
+  byte data[] = {0x00, 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
+  byte sentData=0x00;
+  int prevVal=0;
+  //Note that since testing this instruction involves working with the system during the refresh cycle, the `writeSingleInstruction` function cannot be used.  This instruction requires two M1 cycles.
+
+  data[0]=highByte(inst.opCode);
+  data[1]=lowByte(inst.opCode);
+
+  for (int j=0; j<256; j++){
+    sentData=j;
+    helper_ld_X_n('A',sentData);
+
+    for (int i=0; i<3; i++){
+      //We always have to wait for the second half of a T cycle to deactivate Wait
+      while (digitalReadFast(CLK)) {
+        delayMicroseconds(period/2);
+      }
+      digitalWriteFast(WAIT, HIGH);
+
+      //Wait for the next M1 cycle to start
+      while (digitalReadFast(RD) || digitalReadFast(MREQ) || digitalReadFast(M1) || !digitalReadFast(RFSH)) {
+        delayMicroseconds(1);
+      }
+
+      //Tell the CPU to wait while data is being written
+      digitalWriteFast(WAIT, LOW);
+
+      //Set the Data lines
+      writeData(data[i]);
+
+      //Tell the CPU that the data is valid
+      while (digitalReadFast(CLK)) {
+        delayMicroseconds(1);
+      }
+      digitalWriteFast(WAIT, HIGH);
+
+      //If the clock is set to the 32MHz setting, the readAddressBus function takes longer than the refresh cycle.  There is no way to pause the refresh cycle, so we need to slow the clock
+      if (prescaler==1){
+        TCCR4B &= ~eraser;
+        prescaler = 2;
+        TCCR4B |= prescaler;
+        prevVal=1;
+      }
+
+      //Wait for the refresh cycle to start
+      while (digitalReadFast(RFSH)) {
+        delayMicroseconds(1);
+      }
+
+      //Capture the address
+      addr[i]=readAddressBus(0);
+
+      //If we slowed the clock down, speed it back up
+      if (prevVal == 1){
+        TCCR4B &= ~eraser;
+        prescaler = 1;
+        TCCR4B |= prescaler;
+        prevVal=0;
+      }
+
+      //Carry on with the normal M1 Cycle routine
+      while (!digitalReadFast(RFSH)) {
+        delayMicroseconds(1);
+      }
+
+      //Tell the CPU to wait while we process everything
+      digitalWriteFast(WAIT, LOW);
+    }
+
+    if (lowByte(addr[2]) != sentData){
+      error=true;
+    }
+     Serial.print(F("Expected: "));
+      Serial.print(sentData,HEX);
+      Serial.print(F(" got: "));
+      Serial.println(lowByte(addr[2]),HEX);
+    //Display progress
+    if ((j % 8) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
+}
+bool LD_PTR_IX_PLUS_D_N() {
+  Serial.println(F("...Test not written"));
+}
+bool LD_PTR_IY_PLUS_D_N() {
+  Serial.println(F("...Test not written"));
+}
+bool LD_A_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool LD_B_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool LD_C_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool LD_D_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool LD_E_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool LD_H_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool LD_L_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool LD_A_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool LD_B_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool LD_C_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool LD_D_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool LD_E_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool LD_H_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool LD_L_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool LD_PTR_IX_PLUS_D_A() {
+  Serial.println(F("...Test not written"));
+}
+bool LD_PTR_IX_PLUS_D_B() {
+  Serial.println(F("...Test not written"));
+}
+bool LD_PTR_IX_PLUS_D_C() {
+  Serial.println(F("...Test not written"));
+}
+bool LD_PTR_IX_PLUS_D_D() {
+  Serial.println(F("...Test not written"));
+}
+bool LD_PTR_IX_PLUS_D_E() {
+  Serial.println(F("...Test not written"));
+}
+bool LD_PTR_IX_PLUS_D_H() {
+  Serial.println(F("...Test not written"));
+}
+bool LD_PTR_IX_PLUS_D_L() {
+  Serial.println(F("...Test not written"));
+}
+bool LD_PTR_IY_PLUS_D_A() {
+  Serial.println(F("...Test not written"));
+}
+bool LD_PTR_IY_PLUS_D_B() {
+  Serial.println(F("...Test not written"));
+}
+bool LD_PTR_IY_PLUS_D_C() {
+  Serial.println(F("...Test not written"));
+}
+bool LD_PTR_IY_PLUS_D_D() {
+  Serial.println(F("...Test not written"));
+}
+bool LD_PTR_IY_PLUS_D_E() {
+  Serial.println(F("...Test not written"));
+}
+bool LD_PTR_IY_PLUS_D_H() {
+  Serial.println(F("...Test not written"));
+}
+bool LD_PTR_IY_PLUS_D_L() {
+  Serial.println(F("...Test not written"));
+}
+bool LD_BC_NN() {
+  //Mnemonic:  LD BC,nn
+  //Assembled command: 0x01
+  //Expected behavior: A value is loaded into Register BC
+  //Test methodology: Load all possible 16 bit values into Register BC, retrieve the value of Register BC to verify.  NOTE: This tests `LD (nn),BC` for a single address as well.
   //Success criteria: Verify that the returned data matches the loaded data.
 
   //Initialize some variables
   bool error = false;
   byte data[] = {0x00, 0x00, 0x00, 0x00};
-  char buffer[24];
 
-  Serial.print(F("Testing LD HL,nn"));
 
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 65535; i++) {
@@ -3193,13 +4984,13 @@ bool LD_HL_NN() {
     data[0]=lowByte(i);
     data[1]=highByte(i);
     //Send the LD A,n command
-    helper_ld_XY_nn('H', 'L', data);
+    helper_ld_XY_nn('B', 'C', data);
 
     //Read the data in the HL register   
     for (int j=0; j<4; j++) {
       data[j]=0x0;
     }
-    helper_ld_ptr_nn_hl(data);
+    helper_ld_ptr_nn_XY('B', 'C', data);
 
    
     //Test if the Data Bus reads the expected value
@@ -3228,521 +5019,1807 @@ bool LD_HL_NN() {
     Serial.println(F("Pass"));
   }
 }
-bool LD_SP_NN() {}
-bool LD_IX_NN() {}
-bool LD_IY_NN() {}
-bool LD_BC_PTR_NN() {}
-bool LD_DE_PTR_NN() {}
-bool LD_HL_PTR_NN() {}
-bool LD_SP_PTR_NN() {}
-bool LD_IX_PTR_NN() {}
-bool LD_IY_PTR_NN() {}
-bool LD_PTR_NN_BC() {}
-bool LD_PTR_NN_DE() {}
-bool LD_PTR_NN_HL() {}
-bool LD_PTR_NN_SP() {}
-bool LD_PTR_NN_IX() {}
-bool LD_PTR_NN_IY() {}
-bool LD_SP_HL() {}
-bool LD_SP_IX() {}
-bool LD_SP_IY() {}
-bool POP_AF() {}
-bool POP_BC() {}
-bool POP_DE() {}
-bool POP_HL() {}
-bool POP_IX() {}
-bool POP_IY() {}
-bool PUSH_AF() {}
-bool PUSH_BC() {}
-bool PUSH_DE() {}
-bool PUSH_HL() {}
-bool PUSH_IX() {}
-bool PUSH_IY() {}
-bool EX_AF_AF_PRIME() {}
-bool EXX() {}
-bool EX_DE_HL() {}
-bool EX_PTR_SP_HL() {}
-bool EX_PTR_SP_IX() {}
-bool EX_PTR_SP_IY() {}
-bool LDI() {}
-bool LDIR() {}
-bool LDD() {}
-bool LDDR() {}
-bool CPI() {}
-bool CPIR() {}
-bool CPD() {}
-bool CPDR() {}
-bool ADD_A_A() {}
-bool ADD_A_B() {}
-bool ADD_A_C() {}
-bool ADD_A_D() {}
-bool ADD_A_E() {}
-bool ADD_A_H() {}
-bool ADD_A_L() {}
-bool ADD_A_PTR_HL() {}
-bool ADD_A_PTR_IX_PLUS_D() {}
-bool ADD_A_PTR_IY_PLUS_D() {}
-bool ADD_A_N() {}
-bool ADC_A_A() {}
-bool ADC_A_B() {}
-bool ADC_A_C() {}
-bool ADC_A_D() {}
-bool ADC_A_E() {}
-bool ADC_A_H() {}
-bool ADC_A_L() {}
-bool ADC_A_PTR_HL() {}
-bool ADC_A_PTR_IX_PLUS_D() {}
-bool ADC_A_PTR_IY_PLUS_D() {}
-bool ADC_A_N() {}
-bool SUB_A_A() {}
-bool SUB_A_B() {}
-bool SUB_A_C() {}
-bool SUB_A_D() {}
-bool SUB_A_E() {}
-bool SUB_A_H() {}
-bool SUB_A_L() {}
-bool SUB_A_PTR_HL() {}
-bool SUB_A_PTR_IX_PLUS_D() {}
-bool SUB_A_PTR_IY_PLUS_D() {}
-bool SUB_A_N() {}
-bool SBC_A_A() {}
-bool SBC_A_B() {}
-bool SBC_A_C() {}
-bool SBC_A_D() {}
-bool SBC_A_E() {}
-bool SBC_A_H() {}
-bool SBC_A_L() {}
-bool SBC_A_PTR_HL() {}
-bool SBC_A_PTR_IX_PLUS_D() {}
-bool SBC_A_PTR_IY_PLUS_D() {}
-bool SBC_A_N() {}
-bool AND_A() {}
-bool AND_B() {}
-bool AND_C() {}
-bool AND_D() {}
-bool AND_E() {}
-bool AND_H() {}
-bool AND_L() {}
-bool AND_PTR_HL() {}
-bool AND_PTR_IX_PLUS_D() {}
-bool AND_PTR_IY_PLUS_D() {}
-bool AND_N() {}
-bool XOR_A() {}
-bool XOR_B() {}
-bool XOR_C() {}
-bool XOR_D() {}
-bool XOR_E() {}
-bool XOR_H() {}
-bool XOR_L() {}
-bool XOR_PTR_HL() {}
-bool XOR_PTR_IX_PLUS_D() {}
-bool XOR_PTR_IY_PLUS_D() {}
-bool XOR_N() {}
-bool OR_A() {}
-bool OR_B() {}
-bool OR_C() {}
-bool OR_D() {}
-bool OR_E() {}
-bool OR_H() {}
-bool OR_L() {}
-bool OR_PTR_HL() {}
-bool OR_PTR_IX_PLUS_D() {}
-bool OR_PTR_IY_PLUS_D() {}
-bool OR_N() {}
-bool CP_A() {}
-bool CP_B() {}
-bool CP_C() {}
-bool CP_D() {}
-bool CP_E() {}
-bool CP_H() {}
-bool CP_L() {}
-bool CP_PTR_HL() {}
-bool CP_PTR_IX_PLUS_D() {}
-bool CP_PTR_IY_PLUS_D() {}
-bool CP_N() {}
-bool INC_A() {}
-bool INC_B() {}
-bool INC_C() {}
-bool INC_D() {}
-bool INC_E() {}
-bool INC_H() {}
-bool INC_L() {}
-bool INC_PTR_HL() {}
-bool INC_PTR_IX_PLUS_D() {}
-bool INC_PTR_IY_PLUS_D() {}
-bool DEC_A() {}
-bool DEC_B() {}
-bool DEC_C() {}
-bool DEC_D() {}
-bool DEC_E() {}
-bool DEC_H() {}
-bool DEC_L() {}
-bool DEC_PTR_HL() {}
-bool DEC_PTR_IX_PLUS_D() {}
-bool DEC_PTR_IY_PLUS_D() {}
-bool DAA() {}
-bool CPL() {}
-bool NEG() {}
-bool CCF() {}
-bool SCF() {}
-bool ADD_HL_BC() {}
-bool ADD_HL_DE() {}
-bool ADD_HL_HL() {}
-bool ADD_HL_SP() {}
-bool ADD_IX_BC() {}
-bool ADD_IX_DE() {}
-bool ADD_IX_SP() {}
-bool ADD_IX_IX() {}
-bool ADD_IY_BC() {}
-bool ADD_IY_DE() {}
-bool ADD_IY_SP() {}
-bool ADD_IY_IY() {}
-bool ADC_HL_BC() {}
-bool ADC_HL_DE() {}
-bool ADC_HL_HL() {}
-bool ADC_HL_SP() {}
-bool SBC_HL_BC() {}
-bool SBC_HL_DE() {}
-bool SBC_HL_HL() {}
-bool SBC_HL_SP() {}
-bool INC_BC() {}
-bool INC_DE() {}
-bool INC_HL() {}
-bool INC_SP() {}
-bool INC_IX() {}
-bool INC_IY() {}
-bool DEC_BC() {}
-bool DEC_DE() {}
-bool DEC_HL() {}
-bool DEC_SP() {}
-bool DEC_IX() {}
-bool DEC_IY() {}
-bool RLC_A() {}
-bool RLC_B() {}
-bool RLC_C() {}
-bool RLC_D() {}
-bool RLC_E() {}
-bool RLC_H() {}
-bool RLC_L() {}
-bool RLC_PTR_HL() {}
-bool RLC_PTR_IX_PLUS_D() {}
-bool RLC_PTR_IY_PLUS_D() {}
-bool RRC_A() {}
-bool RRC_B() {}
-bool RRC_C() {}
-bool RRC_D() {}
-bool RRC_E() {}
-bool RRC_H() {}
-bool RRC_L() {}
-bool RRC_PTR_HL() {}
-bool RRC_PTR_IX_PLUS_D() {}
-bool RRC_PTR_IY_PLUS_D() {}
-bool RL_A() {}
-bool RL_B() {}
-bool RL_C() {}
-bool RL_D() {}
-bool RL_E() {}
-bool RL_H() {}
-bool RL_L() {}
-bool RL_PTR_HL() {}
-bool RL_PTR_IX_PLUS_D() {}
-bool RL_PTR_IY_PLUS_D() {}
-bool RR_A() {}
-bool RR_B() {}
-bool RR_C() {}
-bool RR_D() {}
-bool RR_E() {}
-bool RR_H() {}
-bool RR_L() {}
-bool RR_PTR_HL() {}
-bool RR_PTR_IX_PLUS_D() {}
-bool RR_PTR_IY_PLUS_D() {}
-bool SLA_A() {}
-bool SLA_B() {}
-bool SLA_C() {}
-bool SLA_D() {}
-bool SLA_E() {}
-bool SLA_H() {}
-bool SLA_L() {}
-bool SLA_PTR_HL() {}
-bool SLA_PTR_IX_PLUS_D() {}
-bool SLA_PTR_IY_PLUS_D() {}
-bool SRA_A() {}
-bool SRA_B() {}
-bool SRA_C() {}
-bool SRA_D() {}
-bool SRA_E() {}
-bool SRA_H() {}
-bool SRA_L() {}
-bool SRA_PTR_HL() {}
-bool SRA_PTR_IX_PLUS_D() {}
-bool SRA_PTR_IY_PLUS_D() {}
-bool SLL_A() {}
-bool SLL_B() {}
-bool SLL_C() {}
-bool SLL_D() {}
-bool SLL_E() {}
-bool SLL_H() {}
-bool SLL_L() {}
-bool SLL_PTR_HL() {}
-bool SLL_PTR_IX_PLUS_D() {}
-bool SLL_PTR_IY_PLUS_D() {}
-bool SRL_A() {}
-bool SRL_B() {}
-bool SRL_C() {}
-bool SRL_D() {}
-bool SRL_E() {}
-bool SRL_H() {}
-bool SRL_L() {}
-bool SRL_PTR_HL() {}
-bool SRL_PTR_IX_PLUS_D() {}
-bool SRL_PTR_IY_PLUS_D() {}
-bool RLD() {}
-bool RRD() {}
-bool RLCA() {}
-bool RRCA() {}
-bool RLA() {}
-bool RRA() {}
-bool BIT_0_A() {}
-bool BIT_0_B() {}
-bool BIT_0_C() {}
-bool BIT_0_D() {}
-bool BIT_0_E() {}
-bool BIT_0_H() {}
-bool BIT_0_L() {}
-bool BIT_0_PTR_HL() {}
-bool BIT_0_PTR_IX_PLUS_D() {}
-bool BIT_0_PTR_IY_PLUS_D() {}
-bool BIT_1_A() {}
-bool BIT_1_B() {}
-bool BIT_1_C() {}
-bool BIT_1_D() {}
-bool BIT_1_E() {}
-bool BIT_1_H() {}
-bool BIT_1_L() {}
-bool BIT_1_PTR_HL() {}
-bool BIT_1_PTR_IX_PLUS_D() {}
-bool BIT_1_PTR_IY_PLUS_D() {}
-bool BIT_2_A() {}
-bool BIT_2_B() {}
-bool BIT_2_C() {}
-bool BIT_2_D() {}
-bool BIT_2_E() {}
-bool BIT_2_H() {}
-bool BIT_2_L() {}
-bool BIT_2_PTR_HL() {}
-bool BIT_2_PTR_IX_PLUS_D() {}
-bool BIT_2_PTR_IY_PLUS_D() {}
-bool BIT_3_A() {}
-bool BIT_3_B() {}
-bool BIT_3_C() {}
-bool BIT_3_D() {}
-bool BIT_3_E() {}
-bool BIT_3_H() {}
-bool BIT_3_L() {}
-bool BIT_3_PTR_HL() {}
-bool BIT_3_PTR_IX_PLUS_D() {}
-bool BIT_3_PTR_IY_PLUS_D() {}
-bool BIT_4_A() {}
-bool BIT_4_B() {}
-bool BIT_4_C() {}
-bool BIT_4_D() {}
-bool BIT_4_E() {}
-bool BIT_4_H() {}
-bool BIT_4_L() {}
-bool BIT_4_PTR_HL() {}
-bool BIT_4_PTR_IX_PLUS_D() {}
-bool BIT_4_PTR_IY_PLUS_D() {}
-bool BIT_5_A() {}
-bool BIT_5_B() {}
-bool BIT_5_C() {}
-bool BIT_5_D() {}
-bool BIT_5_E() {}
-bool BIT_5_H() {}
-bool BIT_5_L() {}
-bool BIT_5_PTR_HL() {}
-bool BIT_5_PTR_IX_PLUS_D() {}
-bool BIT_5_PTR_IY_PLUS_D() {}
-bool BIT_6_A() {}
-bool BIT_6_B() {}
-bool BIT_6_C() {}
-bool BIT_6_D() {}
-bool BIT_6_E() {}
-bool BIT_6_H() {}
-bool BIT_6_L() {}
-bool BIT_6_PTR_HL() {}
-bool BIT_6_PTR_IX_PLUS_D() {}
-bool BIT_6_PTR_IY_PLUS_D() {}
-bool BIT_7_A() {}
-bool BIT_7_B() {}
-bool BIT_7_C() {}
-bool BIT_7_D() {}
-bool BIT_7_E() {}
-bool BIT_7_H() {}
-bool BIT_7_L() {}
-bool BIT_7_PTR_HL() {}
-bool BIT_7_PTR_IX_PLUS_D() {}
-bool BIT_7_PTR_IY_PLUS_D() {}
-bool RES_0_A() {}
-bool RES_0_B() {}
-bool RES_0_C() {}
-bool RES_0_D() {}
-bool RES_0_E() {}
-bool RES_0_H() {}
-bool RES_0_L() {}
-bool RES_0_PTR_HL() {}
-bool RES_0_PTR_IX_PLUS_D() {}
-bool RES_0_PTR_IY_PLUS_D() {}
-bool RES_1_A() {}
-bool RES_1_B() {}
-bool RES_1_C() {}
-bool RES_1_D() {}
-bool RES_1_E() {}
-bool RES_1_H() {}
-bool RES_1_L() {}
-bool RES_1_PTR_HL() {}
-bool RES_1_PTR_IX_PLUS_D() {}
-bool RES_1_PTR_IY_PLUS_D() {}
-bool RES_2_A() {}
-bool RES_2_B() {}
-bool RES_2_C() {}
-bool RES_2_D() {}
-bool RES_2_E() {}
-bool RES_2_H() {}
-bool RES_2_L() {}
-bool RES_2_PTR_HL() {}
-bool RES_2_PTR_IX_PLUS_D() {}
-bool RES_2_PTR_IY_PLUS_D() {}
-bool RES_3_A() {}
-bool RES_3_B() {}
-bool RES_3_C() {}
-bool RES_3_D() {}
-bool RES_3_E() {}
-bool RES_3_H() {}
-bool RES_3_L() {}
-bool RES_3_PTR_HL() {}
-bool RES_3_PTR_IX_PLUS_D() {}
-bool RES_3_PTR_IY_PLUS_D() {}
-bool RES_4_A() {}
-bool RES_4_B() {}
-bool RES_4_C() {}
-bool RES_4_D() {}
-bool RES_4_E() {}
-bool RES_4_H() {}
-bool RES_4_L() {}
-bool RES_4_PTR_HL() {}
-bool RES_4_PTR_IX_PLUS_D() {}
-bool RES_4_PTR_IY_PLUS_D() {}
-bool RES_5_A() {}
-bool RES_5_B() {}
-bool RES_5_C() {}
-bool RES_5_D() {}
-bool RES_5_E() {}
-bool RES_5_H() {}
-bool RES_5_L() {}
-bool RES_5_PTR_HL() {}
-bool RES_5_PTR_IX_PLUS_D() {}
-bool RES_5_PTR_IY_PLUS_D() {}
-bool RES_6_A() {}
-bool RES_6_B() {}
-bool RES_6_C() {}
-bool RES_6_D() {}
-bool RES_6_E() {}
-bool RES_6_H() {}
-bool RES_6_L() {}
-bool RES_6_PTR_HL() {}
-bool RES_6_PTR_IX_PLUS_D() {}
-bool RES_6_PTR_IY_PLUS_D() {}
-bool RES_7_A() {}
-bool RES_7_B() {}
-bool RES_7_C() {}
-bool RES_7_D() {}
-bool RES_7_E() {}
-bool RES_7_H() {}
-bool RES_7_L() {}
-bool RES_7_PTR_HL() {}
-bool RES_7_PTR_IX_PLUS_D() {}
-bool RES_7_PTR_IY_PLUS_D() {}
-bool SET_0_A() {}
-bool SET_0_B() {}
-bool SET_0_C() {}
-bool SET_0_D() {}
-bool SET_0_E() {}
-bool SET_0_H() {}
-bool SET_0_L() {}
-bool SET_0_PTR_HL() {}
-bool SET_0_PTR_IX_PLUS_D() {}
-bool SET_0_PTR_IY_PLUS_D() {}
-bool SET_1_A() {}
-bool SET_1_B() {}
-bool SET_1_C() {}
-bool SET_1_D() {}
-bool SET_1_E() {}
-bool SET_1_H() {}
-bool SET_1_L() {}
-bool SET_1_PTR_HL() {}
-bool SET_1_PTR_IX_PLUS_D() {}
-bool SET_1_PTR_IY_PLUS_D() {}
-bool SET_2_A() {}
-bool SET_2_B() {}
-bool SET_2_C() {}
-bool SET_2_D() {}
-bool SET_2_E() {}
-bool SET_2_H() {}
-bool SET_2_L() {}
-bool SET_2_PTR_HL() {}
-bool SET_2_PTR_IX_PLUS_D() {}
-bool SET_2_PTR_IY_PLUS_D() {}
-bool SET_3_A() {}
-bool SET_3_B() {}
-bool SET_3_C() {}
-bool SET_3_D() {}
-bool SET_3_E() {}
-bool SET_3_H() {}
-bool SET_3_L() {}
-bool SET_3_PTR_HL() {}
-bool SET_3_PTR_IX_PLUS_D() {}
-bool SET_3_PTR_IY_PLUS_D() {}
-bool SET_4_A() {}
-bool SET_4_B() {}
-bool SET_4_C() {}
-bool SET_4_D() {}
-bool SET_4_E() {}
-bool SET_4_H() {}
-bool SET_4_L() {}
-bool SET_4_PTR_HL() {}
-bool SET_4_PTR_IX_PLUS_D() {}
-bool SET_4_PTR_IY_PLUS_D() {}
-bool SET_5_A() {}
-bool SET_5_B() {}
-bool SET_5_C() {}
-bool SET_5_D() {}
-bool SET_5_E() {}
-bool SET_5_H() {}
-bool SET_5_L() {}
-bool SET_5_PTR_HL() {}
-bool SET_5_PTR_IX_PLUS_D() {}
-bool SET_5_PTR_IY_PLUS_D() {}
-bool SET_6_A() {}
-bool SET_6_B() {}
-bool SET_6_C() {}
-bool SET_6_D() {}
-bool SET_6_E() {}
-bool SET_6_H() {}
-bool SET_6_L() {}
-bool SET_6_PTR_HL() {}
-bool SET_6_PTR_IX_PLUS_D() {}
-bool SET_6_PTR_IY_PLUS_D() {}
-bool SET_7_A() {}
-bool SET_7_B() {}
-bool SET_7_C() {}
-bool SET_7_D() {}
-bool SET_7_E() {}
-bool SET_7_H() {}
-bool SET_7_L() {}
-bool SET_7_PTR_HL() {}
-bool SET_7_PTR_IX_PLUS_D() {}
-bool SET_7_PTR_IY_PLUS_D() {}
+bool LD_DE_NN() {
+  //Mnemonic:  LD DE,nn
+  //Assembled command: 0x11
+  //Expected behavior: A value is loaded into Register DE
+  //Test methodology: Load all possible 16 bit values into Register DE, retrieve the value of Register DE to verify.  NOTE: This tests `LD (nn),DE` for a single address as well.
+  //Success criteria: Verify that the returned data matches the loaded data.
+
+  //Initialize some variables
+  bool error = false;
+  byte data[] = {0x00, 0x00, 0x00, 0x00};
+
+
+  //Test enough times to ensure that we have hit every possible data value
+  for (unsigned int i = 0; i < 65535; i++) {
+
+    data[0]=lowByte(i);
+    data[1]=highByte(i);
+    //Send the LD A,n command
+    helper_ld_XY_nn('D', 'E', data);
+
+    //Read the data in the HL register   
+    for (int j=0; j<4; j++) {
+      data[j]=0x0;
+    }
+    helper_ld_ptr_nn_XY('D', 'E', data);
+
+   
+    //Test if the Data Bus reads the expected value
+    if (data[2] != lowByte(i) || data[3] != highByte(i)) {
+      error = true;
+      Serial.print(F("Expected Low Byte: "));
+      Serial.print(lowByte(i));
+      Serial.print(F(" got "));
+      Serial.print(data[2]);
+      Serial.print(F(" Expected High Byte: "));
+      Serial.print(highByte(i));
+      Serial.print(F(" got "));
+      Serial.println(data[3]);
+    }
+
+    //Display progress
+    if ((i % 1000) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
+}
+bool LD_HL_NN() {
+  //Mnemonic:  LD HL,nn
+  //Assembled command: 0x21
+  //Expected behavior: A value is loaded into Register HL
+  //Test methodology: Load all possible 16 bit values into Register HL, retrieve the value of Register HL to verify.  NOTE: This tests `LD (nn),HL` for a single address as well.
+  //Success criteria: Verify that the returned data matches the loaded data.
+
+  //Initialize some variables
+  bool error = false;
+  byte data[] = {0x00, 0x00, 0x00, 0x00};
+
+
+  //Test enough times to ensure that we have hit every possible data value
+  for (unsigned int i = 0; i < 65535; i++) {
+
+    data[0]=lowByte(i);
+    data[1]=highByte(i);
+    //Send the LD A,n command
+    helper_ld_XY_nn('H', 'L', data);
+
+    //Read the data in the HL register   
+    for (int j=0; j<4; j++) {
+      data[j]=0x0;
+    }
+    helper_ld_ptr_nn_XY('H', 'L', data);
+
+   
+    //Test if the Data Bus reads the expected value
+    if (data[2] != lowByte(i) || data[3] != highByte(i)) {
+      error = true;
+      Serial.print(F("Expected Low Byte: "));
+      Serial.print(lowByte(i));
+      Serial.print(F(" got "));
+      Serial.print(data[2]);
+      Serial.print(F(" Expected High Byte: "));
+      Serial.print(highByte(i));
+      Serial.print(F(" got "));
+      Serial.println(data[3]);
+    }
+
+    //Display progress
+    if ((i % 1000) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
+}
+bool LD_SP_NN() {
+  //Mnemonic:  LD SP,nn
+  //Assembled command: 0x31
+  //Expected behavior: A value is loaded into Register SP
+  //Test methodology: Load all possible 16 bit values into Register SP, retrieve the value of Register SP to verify.  NOTE: This tests `LD (nn),SP` for a single address as well.
+  //Success criteria: Verify that the returned data matches the loaded data.
+
+  //Initialize some variables
+  bool error = false;
+  byte data[] = {0x00, 0x00, 0x00, 0x00};
+
+
+  //Test enough times to ensure that we have hit every possible data value
+  for (unsigned int i = 0; i < 65535; i++) {
+
+    data[0]=lowByte(i);
+    data[1]=highByte(i);
+    //Send the LD A,n command
+    helper_ld_XY_nn('S', 'P', data);
+
+    //Read the data in the HL register   
+    for (int j=0; j<4; j++) {
+      data[j]=0x0;
+    }
+    helper_ld_ptr_nn_XY('S', 'P', data);
+
+   
+    //Test if the Data Bus reads the expected value
+    if (data[2] != lowByte(i) || data[3] != highByte(i)) {
+      error = true;
+      Serial.print(F("Expected Low Byte: "));
+      Serial.print(lowByte(i));
+      Serial.print(F(" got "));
+      Serial.print(data[2]);
+      Serial.print(F(" Expected High Byte: "));
+      Serial.print(highByte(i));
+      Serial.print(F(" got "));
+      Serial.println(data[3]);
+    }
+
+    //Display progress
+    if ((i % 1000) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
+}
+bool LD_IX_NN() {
+  //Mnemonic:  LD IX,nn
+  //Assembled command: 0xDD21
+  //Expected behavior: A value is loaded into Register IX
+  //Test methodology: Load all possible 16 bit values into Register IX, retrieve the value of Register IX to verify.  NOTE: This tests `LD (nn),IX` for a single address as well.
+  //Success criteria: Verify that the returned data matches the loaded data.
+
+  //Initialize some variables
+  bool error = false;
+  byte data[] = {0x00, 0x00, 0x00, 0x00};
+
+
+  //Test enough times to ensure that we have hit every possible data value
+  for (unsigned int i = 0; i < 65535; i++) {
+
+    data[0]=lowByte(i);
+    data[1]=highByte(i);
+    //Send the LD A,n command
+    helper_ld_XY_nn('I', 'X', data);
+
+    //Read the data in the HL register   
+    for (int j=0; j<4; j++) {
+      data[j]=0x0;
+    }
+    helper_ld_ptr_nn_XY('I', 'X', data);
+
+   
+    //Test if the Data Bus reads the expected value
+    if (data[2] != lowByte(i) || data[3] != highByte(i)) {
+      error = true;
+      Serial.print(F("Expected Low Byte: "));
+      Serial.print(lowByte(i),HEX);
+      Serial.print(F(" got "));
+      Serial.print(data[2],HEX);
+      Serial.print(F(" Expected High Byte: "));
+      Serial.print(highByte(i),HEX);
+      Serial.print(F(" got "));
+      Serial.println(data[3],HEX);
+    }
+
+    //Display progress
+    if ((i % 1000) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
+}
+bool LD_IY_NN() {
+  //Mnemonic:  LD IY,nn
+  //Assembled command: 0xDD21
+  //Expected behavior: A value is loaded into Register IY
+  //Test methodology: Load all possible 16 bit values into Register IY, retrieve the value of Register IY to verify.  NOTE: This tests `LD (nn),IY` for a single address as well.
+  //Success criteria: Verify that the returned data matches the loaded data.
+
+  //Initialize some variables
+  bool error = false;
+  byte data[] = {0x00, 0x00, 0x00, 0x00};
+
+
+  //Test enough times to ensure that we have hit every possible data value
+  for (unsigned int i = 0; i < 65535; i++) {
+
+    data[0]=lowByte(i);
+    data[1]=highByte(i);
+    //Send the LD A,n command
+    helper_ld_XY_nn('I', 'Y', data);
+
+    //Read the data in the HL register   
+    for (int j=0; j<4; j++) {
+      data[j]=0x0;
+    }
+    helper_ld_ptr_nn_XY('I', 'Y', data);
+
+   
+    //Test if the Data Bus reads the expected value
+    if (data[2] != lowByte(i) || data[3] != highByte(i)) {
+      error = true;
+      Serial.print(F("Expected Low Byte: "));
+      Serial.print(lowByte(i));
+      Serial.print(F(" got "));
+      Serial.print(data[2]);
+      Serial.print(F(" Expected High Byte: "));
+      Serial.print(highByte(i));
+      Serial.print(F(" got "));
+      Serial.println(data[3]);
+    }
+
+    //Display progress
+    if ((i % 1000) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
+}
+bool LD_BC_PTR_NN() {
+  Serial.println(F("...Test not written"));
+}
+bool LD_DE_PTR_NN() {
+  Serial.println(F("...Test not written"));
+}
+bool LD_HL_PTR_NN() {
+  Serial.println(F("...Test not written"));
+}
+bool LD_SP_PTR_NN() {
+  Serial.println(F("...Test not written"));
+}
+bool LD_IX_PTR_NN() {
+  Serial.println(F("...Test not written"));
+}
+bool LD_IY_PTR_NN() {
+  Serial.println(F("...Test not written"));
+}
+bool LD_PTR_NN_BC() {
+  Serial.println(F("...Test not written"));
+}
+bool LD_PTR_NN_DE() {
+  Serial.println(F("...Test not written"));
+}
+bool LD_PTR_NN_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool LD_PTR_NN_SP() {
+  Serial.println(F("...Test not written"));
+}
+bool LD_PTR_NN_IX() {
+  Serial.println(F("...Test not written"));
+}
+bool LD_PTR_NN_IY() {
+  Serial.println(F("...Test not written"));
+}
+bool LD_SP_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool LD_SP_IX() {
+  Serial.println(F("...Test not written"));
+}
+bool LD_SP_IY() {
+  Serial.println(F("...Test not written"));
+}
+bool POP_AF() {
+  Serial.println(F("...Test not written"));
+}
+bool POP_BC() {
+  Serial.println(F("...Test not written"));
+}
+bool POP_DE() {
+  Serial.println(F("...Test not written"));
+}
+bool POP_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool POP_IX() {
+  Serial.println(F("...Test not written"));
+}
+bool POP_IY() {
+  Serial.println(F("...Test not written"));
+}
+bool PUSH_AF() {
+  Serial.println(F("...Test not written"));
+}
+bool PUSH_BC() {
+  Serial.println(F("...Test not written"));
+}
+bool PUSH_DE() {
+  Serial.println(F("...Test not written"));
+}
+bool PUSH_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool PUSH_IX() {
+  Serial.println(F("...Test not written"));
+}
+bool PUSH_IY() {
+  Serial.println(F("...Test not written"));
+}
+bool EX_AF_AF_PRIME() {
+  Serial.println(F("...Test not written"));
+}
+bool EXX() {
+  Serial.println(F("...Test not written"));
+}
+bool EX_DE_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool EX_PTR_SP_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool EX_PTR_SP_IX() {
+  Serial.println(F("...Test not written"));
+}
+bool EX_PTR_SP_IY() {
+  Serial.println(F("...Test not written"));
+}
+bool LDI() {
+  Serial.println(F("...Test not written"));
+}
+bool LDIR() {
+  Serial.println(F("...Test not written"));
+}
+bool LDD() {
+  Serial.println(F("...Test not written"));
+}
+bool LDDR() {
+  Serial.println(F("...Test not written"));
+}
+bool CPI() {
+  Serial.println(F("...Test not written"));
+}
+bool CPIR() {
+  Serial.println(F("...Test not written"));
+}
+bool CPD() {
+  Serial.println(F("...Test not written"));
+}
+bool CPDR() {
+  Serial.println(F("...Test not written"));
+}
+bool ADD_A_A() {
+  Serial.println(F("...Test not written"));
+}
+bool ADD_A_B() {
+  Serial.println(F("...Test not written"));
+}
+bool ADD_A_C() {
+  Serial.println(F("...Test not written"));
+}
+bool ADD_A_D() {
+  Serial.println(F("...Test not written"));
+}
+bool ADD_A_E() {
+  Serial.println(F("...Test not written"));
+}
+bool ADD_A_H() {
+  Serial.println(F("...Test not written"));
+}
+bool ADD_A_L() {
+  Serial.println(F("...Test not written"));
+}
+bool ADD_A_PTR_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool ADD_A_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool ADD_A_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool ADD_A_N() {
+  Serial.println(F("...Test not written"));
+}
+bool ADC_A_A() {
+  Serial.println(F("...Test not written"));
+}
+bool ADC_A_B() {
+  Serial.println(F("...Test not written"));
+}
+bool ADC_A_C() {
+  Serial.println(F("...Test not written"));
+}
+bool ADC_A_D() {
+  Serial.println(F("...Test not written"));
+}
+bool ADC_A_E() {
+  Serial.println(F("...Test not written"));
+}
+bool ADC_A_H() {
+  Serial.println(F("...Test not written"));
+}
+bool ADC_A_L() {
+  Serial.println(F("...Test not written"));
+}
+bool ADC_A_PTR_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool ADC_A_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool ADC_A_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool ADC_A_N() {
+  Serial.println(F("...Test not written"));
+}
+bool SUB_A_A() {
+  Serial.println(F("...Test not written"));
+}
+bool SUB_A_B() {
+  Serial.println(F("...Test not written"));
+}
+bool SUB_A_C() {
+  Serial.println(F("...Test not written"));
+}
+bool SUB_A_D() {
+  Serial.println(F("...Test not written"));
+}
+bool SUB_A_E() {
+  Serial.println(F("...Test not written"));
+}
+bool SUB_A_H() {
+  Serial.println(F("...Test not written"));
+}
+bool SUB_A_L() {
+  Serial.println(F("...Test not written"));
+}
+bool SUB_A_PTR_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool SUB_A_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool SUB_A_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool SUB_A_N() {
+  Serial.println(F("...Test not written"));
+}
+bool SBC_A_A() {
+  Serial.println(F("...Test not written"));
+}
+bool SBC_A_B() {
+  Serial.println(F("...Test not written"));
+}
+bool SBC_A_C() {
+  Serial.println(F("...Test not written"));
+}
+bool SBC_A_D() {
+  Serial.println(F("...Test not written"));
+}
+bool SBC_A_E() {
+  Serial.println(F("...Test not written"));
+}
+bool SBC_A_H() {
+  Serial.println(F("...Test not written"));
+}
+bool SBC_A_L() {
+  Serial.println(F("...Test not written"));
+}
+bool SBC_A_PTR_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool SBC_A_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool SBC_A_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool SBC_A_N() {
+  Serial.println(F("...Test not written"));
+}
+bool AND_A() {
+  Serial.println(F("...Test not written"));
+}
+bool AND_B() {
+  Serial.println(F("...Test not written"));
+}
+bool AND_C() {
+  Serial.println(F("...Test not written"));
+}
+bool AND_D() {
+  Serial.println(F("...Test not written"));
+}
+bool AND_E() {
+  Serial.println(F("...Test not written"));
+}
+bool AND_H() {
+  Serial.println(F("...Test not written"));
+}
+bool AND_L() {
+  Serial.println(F("...Test not written"));
+}
+bool AND_PTR_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool AND_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool AND_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool AND_N() {
+  Serial.println(F("...Test not written"));
+}
+bool XOR_A() {
+  Serial.println(F("...Test not written"));
+}
+bool XOR_B() {
+  Serial.println(F("...Test not written"));
+}
+bool XOR_C() {
+  Serial.println(F("...Test not written"));
+}
+bool XOR_D() {
+  Serial.println(F("...Test not written"));
+}
+bool XOR_E() {
+  Serial.println(F("...Test not written"));
+}
+bool XOR_H() {
+  Serial.println(F("...Test not written"));
+}
+bool XOR_L() {
+  Serial.println(F("...Test not written"));
+}
+bool XOR_PTR_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool XOR_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool XOR_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool XOR_N() {
+  Serial.println(F("...Test not written"));
+}
+bool OR_A() {
+  Serial.println(F("...Test not written"));
+}
+bool OR_B() {
+  Serial.println(F("...Test not written"));
+}
+bool OR_C() {
+  Serial.println(F("...Test not written"));
+}
+bool OR_D() {
+  Serial.println(F("...Test not written"));
+}
+bool OR_E() {
+  Serial.println(F("...Test not written"));
+}
+bool OR_H() {
+  Serial.println(F("...Test not written"));
+}
+bool OR_L() {
+  Serial.println(F("...Test not written"));
+}
+bool OR_PTR_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool OR_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool OR_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool OR_N() {
+  Serial.println(F("...Test not written"));
+}
+bool CP_A() {
+  Serial.println(F("...Test not written"));
+}
+bool CP_B() {
+  Serial.println(F("...Test not written"));
+}
+bool CP_C() {
+  Serial.println(F("...Test not written"));
+}
+bool CP_D() {
+  Serial.println(F("...Test not written"));
+}
+bool CP_E() {
+  Serial.println(F("...Test not written"));
+}
+bool CP_H() {
+  Serial.println(F("...Test not written"));
+}
+bool CP_L() {
+  Serial.println(F("...Test not written"));
+}
+bool CP_PTR_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool CP_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool CP_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool CP_N() {
+  Serial.println(F("...Test not written"));
+}
+bool INC_A() {
+  Serial.println(F("...Test not written"));
+}
+bool INC_B() {
+  Serial.println(F("...Test not written"));
+}
+bool INC_C() {
+  Serial.println(F("...Test not written"));
+}
+bool INC_D() {
+  Serial.println(F("...Test not written"));
+}
+bool INC_E() {
+  Serial.println(F("...Test not written"));
+}
+bool INC_H() {
+  Serial.println(F("...Test not written"));
+}
+bool INC_L() {
+  Serial.println(F("...Test not written"));
+}
+bool INC_PTR_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool INC_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool INC_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool DEC_A() {
+  Serial.println(F("...Test not written"));
+}
+bool DEC_B() {
+  Serial.println(F("...Test not written"));
+}
+bool DEC_C() {
+  Serial.println(F("...Test not written"));
+}
+bool DEC_D() {
+  Serial.println(F("...Test not written"));
+}
+bool DEC_E() {
+  Serial.println(F("...Test not written"));
+}
+bool DEC_H() {
+  Serial.println(F("...Test not written"));
+}
+bool DEC_L() {
+  Serial.println(F("...Test not written"));
+}
+bool DEC_PTR_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool DEC_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool DEC_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool DAA() {
+  Serial.println(F("...Test not written"));
+}
+bool CPL() {
+  Serial.println(F("...Test not written"));
+}
+bool NEG() {
+  Serial.println(F("...Test not written"));
+}
+bool CCF() {
+  Serial.println(F("...Test not written"));
+}
+bool SCF() {
+  Serial.println(F("...Test not written"));
+}
+bool ADD_HL_BC() {
+  Serial.println(F("...Test not written"));
+}
+bool ADD_HL_DE() {
+  Serial.println(F("...Test not written"));
+}
+bool ADD_HL_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool ADD_HL_SP() {
+  Serial.println(F("...Test not written"));
+}
+bool ADD_IX_BC() {
+  Serial.println(F("...Test not written"));
+}
+bool ADD_IX_DE() {
+  Serial.println(F("...Test not written"));
+}
+bool ADD_IX_SP() {
+  Serial.println(F("...Test not written"));
+}
+bool ADD_IX_IX() {
+  Serial.println(F("...Test not written"));
+}
+bool ADD_IY_BC() {
+  Serial.println(F("...Test not written"));
+}
+bool ADD_IY_DE() {
+  Serial.println(F("...Test not written"));
+}
+bool ADD_IY_SP() {
+  Serial.println(F("...Test not written"));
+}
+bool ADD_IY_IY() {
+  Serial.println(F("...Test not written"));
+}
+bool ADC_HL_BC() {
+  Serial.println(F("...Test not written"));
+}
+bool ADC_HL_DE() {
+  Serial.println(F("...Test not written"));
+}
+bool ADC_HL_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool ADC_HL_SP() {
+  Serial.println(F("...Test not written"));
+}
+bool SBC_HL_BC() {
+  Serial.println(F("...Test not written"));
+}
+bool SBC_HL_DE() {
+  Serial.println(F("...Test not written"));
+}
+bool SBC_HL_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool SBC_HL_SP() {
+  Serial.println(F("...Test not written"));
+}
+bool INC_BC() {
+  Serial.println(F("...Test not written"));
+}
+bool INC_DE() {
+  Serial.println(F("...Test not written"));
+}
+bool INC_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool INC_SP() {
+  Serial.println(F("...Test not written"));
+}
+bool INC_IX() {
+  Serial.println(F("...Test not written"));
+}
+bool INC_IY() {
+  Serial.println(F("...Test not written"));
+}
+bool DEC_BC() {
+  Serial.println(F("...Test not written"));
+}
+bool DEC_DE() {
+  Serial.println(F("...Test not written"));
+}
+bool DEC_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool DEC_SP() {
+  Serial.println(F("...Test not written"));
+}
+bool DEC_IX() {
+  Serial.println(F("...Test not written"));
+}
+bool DEC_IY() {
+  Serial.println(F("...Test not written"));
+}
+bool RLC_A() {
+  Serial.println(F("...Test not written"));
+}
+bool RLC_B() {
+  Serial.println(F("...Test not written"));
+}
+bool RLC_C() {
+  Serial.println(F("...Test not written"));
+}
+bool RLC_D() {
+  Serial.println(F("...Test not written"));
+}
+bool RLC_E() {
+  Serial.println(F("...Test not written"));
+}
+bool RLC_H() {
+  Serial.println(F("...Test not written"));
+}
+bool RLC_L() {
+  Serial.println(F("...Test not written"));
+}
+bool RLC_PTR_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool RLC_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool RLC_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool RRC_A() {
+  Serial.println(F("...Test not written"));
+}
+bool RRC_B() {
+  Serial.println(F("...Test not written"));
+}
+bool RRC_C() {
+  Serial.println(F("...Test not written"));
+}
+bool RRC_D() {
+  Serial.println(F("...Test not written"));
+}
+bool RRC_E() {
+  Serial.println(F("...Test not written"));
+}
+bool RRC_H() {
+  Serial.println(F("...Test not written"));
+}
+bool RRC_L() {
+  Serial.println(F("...Test not written"));
+}
+bool RRC_PTR_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool RRC_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool RRC_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool RL_A() {
+  Serial.println(F("...Test not written"));
+}
+bool RL_B() {
+  Serial.println(F("...Test not written"));
+}
+bool RL_C() {
+  Serial.println(F("...Test not written"));
+}
+bool RL_D() {
+  Serial.println(F("...Test not written"));
+}
+bool RL_E() {
+  Serial.println(F("...Test not written"));
+}
+bool RL_H() {
+  Serial.println(F("...Test not written"));
+}
+bool RL_L() {
+  Serial.println(F("...Test not written"));
+}
+bool RL_PTR_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool RL_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool RL_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool RR_A() {
+  Serial.println(F("...Test not written"));
+}
+bool RR_B() {
+  Serial.println(F("...Test not written"));
+}
+bool RR_C() {
+  Serial.println(F("...Test not written"));
+}
+bool RR_D() {
+  Serial.println(F("...Test not written"));
+}
+bool RR_E() {
+  Serial.println(F("...Test not written"));
+}
+bool RR_H() {
+  Serial.println(F("...Test not written"));
+}
+bool RR_L() {
+  Serial.println(F("...Test not written"));
+}
+bool RR_PTR_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool RR_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool RR_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool SLA_A() {
+  Serial.println(F("...Test not written"));
+}
+bool SLA_B() {
+  Serial.println(F("...Test not written"));
+}
+bool SLA_C() {
+  Serial.println(F("...Test not written"));
+}
+bool SLA_D() {
+  Serial.println(F("...Test not written"));
+}
+bool SLA_E() {
+  Serial.println(F("...Test not written"));
+}
+bool SLA_H() {
+  Serial.println(F("...Test not written"));
+}
+bool SLA_L() {
+  Serial.println(F("...Test not written"));
+}
+bool SLA_PTR_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool SLA_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool SLA_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool SRA_A() {
+  Serial.println(F("...Test not written"));
+}
+bool SRA_B() {
+  Serial.println(F("...Test not written"));
+}
+bool SRA_C() {
+  Serial.println(F("...Test not written"));
+}
+bool SRA_D() {
+  Serial.println(F("...Test not written"));
+}
+bool SRA_E() {
+  Serial.println(F("...Test not written"));
+}
+bool SRA_H() {
+  Serial.println(F("...Test not written"));
+}
+bool SRA_L() {
+  Serial.println(F("...Test not written"));
+}
+bool SRA_PTR_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool SRA_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool SRA_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool SLL_A() {
+  Serial.println(F("...Test not written"));
+}
+bool SLL_B() {
+  Serial.println(F("...Test not written"));
+}
+bool SLL_C() {
+  Serial.println(F("...Test not written"));
+}
+bool SLL_D() {
+  Serial.println(F("...Test not written"));
+}
+bool SLL_E() {
+  Serial.println(F("...Test not written"));
+}
+bool SLL_H() {
+  Serial.println(F("...Test not written"));
+}
+bool SLL_L() {
+  Serial.println(F("...Test not written"));
+}
+bool SLL_PTR_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool SLL_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool SLL_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool SRL_A() {
+  Serial.println(F("...Test not written"));
+}
+bool SRL_B() {
+  Serial.println(F("...Test not written"));
+}
+bool SRL_C() {
+  Serial.println(F("...Test not written"));
+}
+bool SRL_D() {
+  Serial.println(F("...Test not written"));
+}
+bool SRL_E() {
+  Serial.println(F("...Test not written"));
+}
+bool SRL_H() {
+  Serial.println(F("...Test not written"));
+}
+bool SRL_L() {
+  Serial.println(F("...Test not written"));
+}
+bool SRL_PTR_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool SRL_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool SRL_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool RLD() {
+  Serial.println(F("...Test not written"));
+}
+bool RRD() {
+  Serial.println(F("...Test not written"));
+}
+bool RLCA() {
+  Serial.println(F("...Test not written"));
+}
+bool RRCA() {
+  Serial.println(F("...Test not written"));
+}
+bool RLA() {
+  Serial.println(F("...Test not written"));
+}
+bool RRA() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_0_A() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_0_B() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_0_C() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_0_D() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_0_E() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_0_H() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_0_L() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_0_PTR_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_0_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_0_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_1_A() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_1_B() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_1_C() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_1_D() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_1_E() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_1_H() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_1_L() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_1_PTR_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_1_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_1_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_2_A() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_2_B() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_2_C() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_2_D() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_2_E() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_2_H() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_2_L() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_2_PTR_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_2_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_2_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_3_A() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_3_B() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_3_C() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_3_D() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_3_E() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_3_H() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_3_L() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_3_PTR_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_3_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_3_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_4_A() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_4_B() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_4_C() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_4_D() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_4_E() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_4_H() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_4_L() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_4_PTR_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_4_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_4_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_5_A() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_5_B() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_5_C() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_5_D() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_5_E() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_5_H() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_5_L() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_5_PTR_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_5_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_5_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_6_A() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_6_B() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_6_C() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_6_D() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_6_E() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_6_H() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_6_L() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_6_PTR_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_6_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_6_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_7_A() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_7_B() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_7_C() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_7_D() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_7_E() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_7_H() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_7_L() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_7_PTR_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_7_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool BIT_7_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_0_A() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_0_B() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_0_C() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_0_D() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_0_E() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_0_H() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_0_L() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_0_PTR_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_0_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_0_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_1_A() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_1_B() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_1_C() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_1_D() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_1_E() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_1_H() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_1_L() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_1_PTR_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_1_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_1_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_2_A() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_2_B() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_2_C() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_2_D() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_2_E() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_2_H() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_2_L() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_2_PTR_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_2_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_2_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_3_A() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_3_B() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_3_C() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_3_D() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_3_E() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_3_H() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_3_L() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_3_PTR_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_3_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_3_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_4_A() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_4_B() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_4_C() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_4_D() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_4_E() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_4_H() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_4_L() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_4_PTR_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_4_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_4_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_5_A() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_5_B() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_5_C() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_5_D() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_5_E() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_5_H() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_5_L() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_5_PTR_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_5_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_5_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_6_A() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_6_B() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_6_C() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_6_D() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_6_E() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_6_H() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_6_L() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_6_PTR_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_6_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_6_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_7_A() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_7_B() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_7_C() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_7_D() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_7_E() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_7_H() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_7_L() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_7_PTR_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_7_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool RES_7_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_0_A() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_0_B() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_0_C() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_0_D() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_0_E() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_0_H() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_0_L() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_0_PTR_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_0_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_0_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_1_A() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_1_B() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_1_C() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_1_D() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_1_E() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_1_H() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_1_L() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_1_PTR_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_1_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_1_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_2_A() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_2_B() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_2_C() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_2_D() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_2_E() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_2_H() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_2_L() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_2_PTR_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_2_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_2_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_3_A() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_3_B() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_3_C() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_3_D() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_3_E() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_3_H() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_3_L() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_3_PTR_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_3_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_3_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_4_A() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_4_B() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_4_C() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_4_D() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_4_E() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_4_H() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_4_L() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_4_PTR_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_4_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_4_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_5_A() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_5_B() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_5_C() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_5_D() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_5_E() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_5_H() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_5_L() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_5_PTR_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_5_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_5_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_6_A() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_6_B() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_6_C() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_6_D() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_6_E() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_6_H() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_6_L() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_6_PTR_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_6_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_6_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_7_A() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_7_B() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_7_C() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_7_D() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_7_E() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_7_H() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_7_L() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_7_PTR_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_7_PTR_IX_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
+bool SET_7_PTR_IY_PLUS_D() {
+  Serial.println(F("...Test not written"));
+}
 bool JP_NN() {
   //Mnemonic:  JP nn
   //Assembled command: 0xC3 n n
@@ -3758,15 +6835,11 @@ bool JP_NN() {
   uint16_t addr[]={0x00, 0x00, 0x00};
   char targetMnemonic[]="JP nn";
   int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
-  char buffer[24];
 
   //Get the instruction information
   instructionDefinitionType inst;
   memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
 
-  strcpy_P(buffer, inst.mnemonic);
-  Serial.print(F("Testing "));
-  Serial.print(buffer);
   
   byte data[] = {inst.opCode, lowByte(targetAddr), highByte(targetAddr) };
 
@@ -3803,78 +6876,228 @@ bool JP_NN() {
   }
 
 }
-bool JP_C_NN() {}
-bool JP_NC_NN() {}
-bool JP_Z_NN() {}
-bool JP_NZ_NN() {}
-bool JP_PE_NN() {}
-bool JP_PO_NN() {}
-bool JP_M_NN() {}
-bool JP_P_NN() {}
-bool JR_E() {}
-bool JR_C_E() {}
-bool JR_NC_E() {}
-bool JR_Z_E() {}
-bool JR_NZ_E() {}
-bool JP_PTR_HL() {}
-bool JP_PTR_IX() {}
-bool JP_PTR_IY() {}
-bool CALL_NN() {}
-bool CALL_C_NN() {}
-bool CALL_NC_NN() {}
-bool CALL_Z_NN() {}
-bool CALL_NZ_NN() {}
-bool CALL_PE_NN() {}
-bool CALL_PO_NN() {}
-bool CALL_M_NN() {}
-bool CALL_P_NN() {}
-bool DJNZ_E() {}
-bool RET() {}
-bool RET_C() {}
-bool RET_NC() {}
-bool RET_Z() {}
-bool RET_NZ() {}
-bool RET_PE() {}
-bool RET_PO() {}
-bool RET_M() {}
-bool RET_P() {}
-bool RET_I() {}
-bool RET_N() {}
-bool RST_0() {}
-bool RST_8() {}
-bool RST_16() {}
-bool RST_24() {}
-bool RST_32() {}
-bool RST_40() {}
-bool RST_48() {}
-bool RST_56() {}
-bool IN_A_PTR_N() {}
-bool IN_A_PTR_C() {}
-bool IN_B_PTR_C() {}
-bool IN_C_PTR_C() {}
-bool IN_D_PTR_C() {}
-bool IN_E_PTR_C() {}
-bool IN_H_PTR_C() {}
-bool IN_L_PTR_C() {}
-bool INI() {}
-bool INIR() {}
-bool IND() {}
-bool INDR() {}
-bool OUT_PTR_N_A() {}
-bool OUT_PTR_C_A() {}
-bool OUT_PTR_C_B() {}
-bool OUT_PTR_C_C() {}
-bool OUT_PTR_C_D() {}
-bool OUT_PTR_C_E() {}
-bool OUT_PTR_C_H() {}
-bool OUT_PTR_C_L() {}
-bool OUTI() {}
-bool OUTIR() {}
-bool OUTD() {}
-bool OUTDR() {}
-bool HALT_() {}
-bool DI() {}
-bool EI() {}
-bool IM0() {}
-bool IM1() {}
-bool IM2() {}
+bool JP_C_NN() {
+  Serial.println(F("...Test not written"));
+}
+bool JP_NC_NN() {
+  Serial.println(F("...Test not written"));
+}
+bool JP_Z_NN() {
+  Serial.println(F("...Test not written"));
+}
+bool JP_NZ_NN() {
+  Serial.println(F("...Test not written"));
+}
+bool JP_PE_NN() {
+  Serial.println(F("...Test not written"));
+}
+bool JP_PO_NN() {
+  Serial.println(F("...Test not written"));
+}
+bool JP_M_NN() {
+  Serial.println(F("...Test not written"));
+}
+bool JP_P_NN() {
+  Serial.println(F("...Test not written"));
+}
+bool JR_E() {
+  Serial.println(F("...Test not written"));
+}
+bool JR_C_E() {
+  Serial.println(F("...Test not written"));
+}
+bool JR_NC_E() {
+  Serial.println(F("...Test not written"));
+}
+bool JR_Z_E() {
+  Serial.println(F("...Test not written"));
+}
+bool JR_NZ_E() {
+  Serial.println(F("...Test not written"));
+}
+bool JP_PTR_HL() {
+  Serial.println(F("...Test not written"));
+}
+bool JP_PTR_IX() {
+  Serial.println(F("...Test not written"));
+}
+bool JP_PTR_IY() {
+  Serial.println(F("...Test not written"));
+}
+bool CALL_NN() {
+  Serial.println(F("...Test not written"));
+}
+bool CALL_C_NN() {
+  Serial.println(F("...Test not written"));
+}
+bool CALL_NC_NN() {
+  Serial.println(F("...Test not written"));
+}
+bool CALL_Z_NN() {
+  Serial.println(F("...Test not written"));
+}
+bool CALL_NZ_NN() {
+  Serial.println(F("...Test not written"));
+}
+bool CALL_PE_NN() {
+  Serial.println(F("...Test not written"));
+}
+bool CALL_PO_NN() {
+  Serial.println(F("...Test not written"));
+}
+bool CALL_M_NN() {
+  Serial.println(F("...Test not written"));
+}
+bool CALL_P_NN() {
+  Serial.println(F("...Test not written"));
+}
+bool DJNZ_E() {
+  Serial.println(F("...Test not written"));
+}
+bool RET() {
+  Serial.println(F("...Test not written"));
+}
+bool RET_C() {
+  Serial.println(F("...Test not written"));
+}
+bool RET_NC() {
+  Serial.println(F("...Test not written"));
+}
+bool RET_Z() {
+  Serial.println(F("...Test not written"));
+}
+bool RET_NZ() {
+  Serial.println(F("...Test not written"));
+}
+bool RET_PE() {
+  Serial.println(F("...Test not written"));
+}
+bool RET_PO() {
+  Serial.println(F("...Test not written"));
+}
+bool RET_M() {
+  Serial.println(F("...Test not written"));
+}
+bool RET_P() {
+  Serial.println(F("...Test not written"));
+}
+bool RET_I() {
+  Serial.println(F("...Test not written"));
+}
+bool RET_N() {
+  Serial.println(F("...Test not written"));
+}
+bool RST_0() {
+  Serial.println(F("...Test not written"));
+}
+bool RST_8() {
+  Serial.println(F("...Test not written"));
+}
+bool RST_16() {
+  Serial.println(F("...Test not written"));
+}
+bool RST_24() {
+  Serial.println(F("...Test not written"));
+}
+bool RST_32() {
+  Serial.println(F("...Test not written"));
+}
+bool RST_40() {
+  Serial.println(F("...Test not written"));
+}
+bool RST_48() {
+  Serial.println(F("...Test not written"));
+}
+bool RST_56() {
+  Serial.println(F("...Test not written"));
+}
+bool IN_A_PTR_N() {
+  Serial.println(F("...Test not written"));
+}
+bool IN_A_PTR_C() {
+  Serial.println(F("...Test not written"));
+}
+bool IN_B_PTR_C() {
+  Serial.println(F("...Test not written"));
+}
+bool IN_C_PTR_C() {
+  Serial.println(F("...Test not written"));
+}
+bool IN_D_PTR_C() {
+  Serial.println(F("...Test not written"));
+}
+bool IN_E_PTR_C() {
+  Serial.println(F("...Test not written"));
+}
+bool IN_H_PTR_C() {
+  Serial.println(F("...Test not written"));
+}
+bool IN_L_PTR_C() {
+  Serial.println(F("...Test not written"));
+}
+bool INI() {
+  Serial.println(F("...Test not written"));
+}
+bool INIR() {
+  Serial.println(F("...Test not written"));
+}
+bool IND() {
+  Serial.println(F("...Test not written"));
+}
+bool INDR() {
+  Serial.println(F("...Test not written"));
+}
+bool OUT_PTR_N_A() {
+  Serial.println(F("...Test not written"));
+}
+bool OUT_PTR_C_A() {
+  Serial.println(F("...Test not written"));
+}
+bool OUT_PTR_C_B() {
+  Serial.println(F("...Test not written"));
+}
+bool OUT_PTR_C_C() {
+  Serial.println(F("...Test not written"));
+}
+bool OUT_PTR_C_D() {
+  Serial.println(F("...Test not written"));
+}
+bool OUT_PTR_C_E() {
+  Serial.println(F("...Test not written"));
+}
+bool OUT_PTR_C_H() {
+  Serial.println(F("...Test not written"));
+}
+bool OUT_PTR_C_L() {
+  Serial.println(F("...Test not written"));
+}
+bool OUTI() {
+  Serial.println(F("...Test not written"));
+}
+bool OUTIR() {
+  Serial.println(F("...Test not written"));
+}
+bool OUTD() {
+  Serial.println(F("...Test not written"));
+}
+bool OUTDR() {
+  Serial.println(F("...Test not written"));
+}
+bool HALT_() {
+  Serial.println(F("...Test not written"));
+}
+bool DI() {
+  Serial.println(F("...Test not written"));
+}
+bool EI() {
+  Serial.println(F("...Test not written"));
+}
+bool IM0() {
+  Serial.println(F("...Test not written"));
+}
+bool IM1() {
+  Serial.println(F("...Test not written"));
+}
+bool IM2() {
+  Serial.println(F("...Test not written"));
+}
