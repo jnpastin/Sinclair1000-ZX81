@@ -134,21 +134,21 @@
     const char group_rotates_shifts[] PROGMEM = "Rotates & Shifts";
 
     const char* const InstructionGroupNames[] PROGMEM = {
-      group_16bit_arithmetic,
-      group_16bit_load,
-      group_8bit_arithmetic_logic,
       group_8bit_load,
-      group_bit_manipulation,
-      group_block_search,
-      group_block_transfer,
+      group_16bit_load,
       group_exchanges,
+      group_block_transfer,
+      group_block_search,
+      group_8bit_arithmetic_logic,
       group_general_purpose_af_operations,
-      group_input,
+      group_16bit_arithmetic,
+      group_rotates_shifts,
+      group_bit_manipulation,
       group_jump_call_return,
-      group_miscellaneous_cpu_control,
-      group_output,
       group_restart,
-      group_rotates_shifts
+      group_input,
+      group_output,
+      group_miscellaneous_cpu_control
     };
   //
 
@@ -2316,6 +2316,7 @@
 
   uint16_t readAddressBus(int delayTime);
   void writeData(byte data);
+  uint16_t readDataBus(int delayTime);
   void writeSingleInstruction(byte* data, int numM1Cycles, int numReadCycles, int numWriteCycles, uint16_t* writtenAddress);
 
 

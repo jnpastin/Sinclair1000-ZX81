@@ -34,19 +34,12 @@ void helper_ld_XY_nn(char targetRegister, char targetRegister2, byte* data)
     localData[2]=data[0];
     localData[3]=data[1];
     numM1Cycles=2;
-//    Serial.println(F("Two Byte opCode"));
   } else {
     localData[0]=inst.opCode;
     localData[1]=data[0];
     localData[2]=data[1];
     numM1Cycles=1;
-//    Serial.println(F("One Byte opCode"));
   }
-  /*Serial.println(targetMnemonic);
-  Serial.println(inst.opCode,HEX);
-  for (int i=0; i<4; i++){
-    Serial.println (localData[i],HEX);
-  }*/
 
   uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
   writeSingleInstruction(localData, numM1Cycles, 2, 0, addr);

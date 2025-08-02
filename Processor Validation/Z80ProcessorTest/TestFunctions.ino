@@ -4877,94 +4877,3215 @@ bool LD_R_A() {
   }
 }
 bool LD_PTR_IX_PLUS_D_N() {
-  Serial.println(F("...Test not written"));
+  //Mnemonic:  LD (IX+d),n
+  //Assembled command: 0xDD36
+  //Expected behavior: A value is loaded into the memory address in the IX Register offset by d
+  //Test methodology: Load Register IX with a random value, load a random value into the memory address (IX+d), where d is every possible value in an 8 bit signed integer.  Load Register IX with a random address, load each possible value into that memory address, offset by a random value d
+  //Success criteria: Verify that the returned data & address matches the loaded data & address.
+
+  //Initialize some variables
+  bool error = false;
+
+  char targetMnemonic[]="LD (IX+d),n";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+  byte data[] = {highByte(inst.opCode), lowByte(inst.opCode), 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+
+
+  //Test enough times to ensure that we have hit every possible address value with random data
+  for (uint16_t i = 0; i < 256; i++) {
+
+    int8_t d=i;
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'X', baseAddressBytes);
+
+    long sentData=random(255);
+    data[3]=lowByte(sentData);
+    data[2]=d;
+
+    //Load the data in the target address into the nn memory address
+    writeSingleInstruction(data, 2, 2, 1, addr);
+
+    if (data[4] != lowByte(sentData) || addr[4] != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((i % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+  
+  //Test enough times to ensure that we have hit every possible data value with a random address
+  for (int j=0; j<256; j++)
+  {
+
+    int8_t d=random(255);
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD HL,nn command
+    helper_ld_XY_nn('I', 'X', baseAddressBytes);
+
+    long sentData=j;
+    data[3]=lowByte(sentData);
+    data[2]=d;
+
+    //Load the data in the target address into the nn memory address
+    writeSingleInstruction(data, 2, 2, 1, addr);
+
+    if (data[4] != lowByte(sentData) || addr[4] != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((j % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
 }
 bool LD_PTR_IY_PLUS_D_N() {
-  Serial.println(F("...Test not written"));
+  //Mnemonic:  LD (IY+d),n
+  //Assembled command: 0xFD36
+  //Expected behavior: A value is loaded into the memory address in the IY Register offset by d
+  //Test methodology: Load Register IY with a random value, load a random value into the memory address (IY+d), where d is every possible value in an 8 bit signed integer.  Load Register IY with a random address, load each possible value into that memory address, offset by a random value d
+  //Success criteria: Verify that the returned data & address matches the loaded data & address.
+
+  //Initialize some variables
+  bool error = false;
+
+  char targetMnemonic[]="LD (IY+d),n";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+  byte data[] = {highByte(inst.opCode), lowByte(inst.opCode), 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+
+
+  //Test enough times to ensure that we have hit every possible address value with random data
+  for (uint16_t i = 0; i < 256; i++) {
+
+    int8_t d=i;
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'Y', baseAddressBytes);
+
+    long sentData=random(255);
+    data[3]=lowByte(sentData);
+    data[2]=d;
+
+    //Load the data in the target address into the nn memory address
+    writeSingleInstruction(data, 2, 2, 1, addr);
+
+
+    if (data[4] != lowByte(sentData) || addr[4] != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((i % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+  
+  //Test enough times to ensure that we have hit every possible data value with a random address
+  for (int j=0; j<256; j++)
+  {
+
+    int8_t d=random(255);
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'Y', baseAddressBytes);
+
+    long sentData=j;
+    data[3]=lowByte(sentData);
+    data[2]=d;
+
+    //Load the data in the target address into the nn memory address
+    writeSingleInstruction(data, 2, 2, 1, addr);
+
+    if (data[4] != lowByte(sentData) || addr[4] != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((j % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
 }
 bool LD_A_PTR_IX_PLUS_D() {
-  Serial.println(F("...Test not written"));
+  //Mnemonic:  LD A,(IX+d)
+  //Assembled command: 0xDD7E
+  //Expected behavior: A value in the memory address in the IX Register offset by d is loaded into the A register
+  //Test methodology: Load Register IX with a random value, load a random value into the memory address (IX+d), where d is every possible value in an 8 bit signed integer, load A register with the value.  Load Register IX with a random address, load each possible value into that memory address, offset by a random value d, load that value into the A register.
+  //Success criteria: Verify that the returned data & address matches the loaded data & address.
+
+  //Initialize some variables
+  bool error = false;
+
+  char targetMnemonic[]="LD A,(IX+d)";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+  byte data[] = {highByte(inst.opCode), lowByte(inst.opCode), 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  byte rcvdData=0x00;
+  uint16_t rcvdAddr=0x00;
+
+
+  //Test enough times to ensure that we have hit every possible address value with random data
+  for (uint16_t i = 0; i < 256; i++) {
+
+    int8_t d=i;
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'X', baseAddressBytes);
+
+    long sentData=random(255);
+    data[3]=lowByte(sentData);
+    data[2]=d;
+    data[1]=lowByte(inst.opCode);
+    data[0]=highByte(inst.opCode);
+
+    //Load the data in the target address into the A Register
+    writeSingleInstruction(data, 2, 2, 0, addr);
+
+    //The address that was "read" comes back here
+    rcvdAddr=addr[3];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    //Write the contents of the A register to memory
+    helper_ld_ptr_nn_a(data, addr);
+
+    //This is where we get the data back
+    rcvdData=data[2];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    if (rcvdData != lowByte(sentData) || rcvdAddr != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((i % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+  
+  //Test enough times to ensure that we have hit every possible data value with a random address
+  for (int j=0; j<256; j++)
+  {
+
+    int8_t d=random(255);
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'X', baseAddressBytes);
+
+    long sentData=j;
+    data[3]=lowByte(sentData);
+    data[2]=d;
+    data[1]=lowByte(inst.opCode);
+    data[0]=highByte(inst.opCode);
+
+    //Load the data in the target address into the A Register
+    writeSingleInstruction(data, 2, 2, 0, addr);
+
+    //The address that was "read" comes back here
+    rcvdAddr=addr[3];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    //Write the contents of the A register to memory
+    helper_ld_ptr_nn_a(data, addr);
+
+    //This is where we get the data back
+    rcvdData=data[2];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    if (rcvdData != lowByte(sentData) || rcvdAddr != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((j % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
 }
 bool LD_B_PTR_IX_PLUS_D() {
-  Serial.println(F("...Test not written"));
+  //Mnemonic:  LD B,(IX+d)
+  //Assembled command: 0xDD46
+  //Expected behavior: A value in the memory address in the IX Register offset by d is loaded into the A register
+  //Test methodology: Load Register IX with a random value, load a random value into the memory address (IX+d), where d is every possible value in an 8 bit signed integer, load A register with the value.  Load Register IX with a random address, load each possible value into that memory address, offset by a random value d, load that value into the A register.
+  //Success criteria: Verify that the returned data & address matches the loaded data & address.
+
+  //Initialize some variables
+  bool error = false;
+
+  char targetMnemonic[]="LD B,(IX+d)";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+  byte data[] = {highByte(inst.opCode), lowByte(inst.opCode), 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  byte rcvdData=0x00;
+  uint16_t rcvdAddr=0x00;
+
+
+  //Test enough times to ensure that we have hit every possible address value with random data
+  for (uint16_t i = 0; i < 256; i++) {
+
+    int8_t d=i;
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'X', baseAddressBytes);
+
+    long sentData=random(255);
+    data[3]=lowByte(sentData);
+    data[2]=d;
+    data[1]=lowByte(inst.opCode);
+    data[0]=highByte(inst.opCode);
+
+    //Load the data in the target address into the B Register
+    writeSingleInstruction(data, 2, 2, 0, addr);
+
+    //The address that was "read" comes back here
+    rcvdAddr=addr[3];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    //Transfer the contents of the B register to the A register
+    helper_ld_X_Y('A', 'B');
+
+    //Write the contents of the A register to memory
+    helper_ld_ptr_nn_a(data, addr);
+
+    //This is where we get the data back
+    rcvdData=data[2];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    if (rcvdData != lowByte(sentData) || rcvdAddr != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((i % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+  
+  //Test enough times to ensure that we have hit every possible data value with a random address
+  for (int j=0; j<256; j++)
+  {
+
+    int8_t d=random(255);
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'X', baseAddressBytes);
+
+    long sentData=j;
+    data[3]=lowByte(sentData);
+    data[2]=d;
+    data[1]=lowByte(inst.opCode);
+    data[0]=highByte(inst.opCode);
+
+    //Load the data in the target address into the B Register
+    writeSingleInstruction(data, 2, 2, 0, addr);
+
+    //The address that was "read" comes back here
+    rcvdAddr=addr[3];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    //Transfer the contents of the B register to the A register
+    helper_ld_X_Y('A', 'B');
+
+    //Write the contents of the A register to memory
+    helper_ld_ptr_nn_a(data, addr);
+
+    //This is where we get the data back
+    rcvdData=data[2];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    if (rcvdData != lowByte(sentData) || rcvdAddr != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((j % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
 }
 bool LD_C_PTR_IX_PLUS_D() {
-  Serial.println(F("...Test not written"));
+  //Mnemonic:  LD C,(IX+d)
+  //Assembled command: 0xDD4E
+  //Expected behavior: A value in the memory address in the IX Register offset by d is loaded into the C register
+  //Test methodology: Load Register IX with a random value, load a random value into the memory address (IX+d), where d is every possible value in an 8 bit signed integer, load C register with the value.  Load Register IX with a random address, load each possible value into that memory address, offset by a random value d, load that value into the C register.
+  //Success criteria: Verify that the returned data & address matches the loaded data & address.
+
+  //Initialize some variables
+  bool error = false;
+
+  char targetMnemonic[]="LD C,(IX+d)";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+  byte data[] = {highByte(inst.opCode), lowByte(inst.opCode), 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  byte rcvdData=0x00;
+  uint16_t rcvdAddr=0x00;
+
+
+  //Test enough times to ensure that we have hit every possible address value with random data
+  for (uint16_t i = 0; i < 256; i++) {
+
+    int8_t d=i;
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'X', baseAddressBytes);
+
+    long sentData=random(255);
+    data[3]=lowByte(sentData);
+    data[2]=d;
+    data[1]=lowByte(inst.opCode);
+    data[0]=highByte(inst.opCode);
+
+    //Load the data in the target address into the C Register
+    writeSingleInstruction(data, 2, 2, 0, addr);
+
+    //The address that was "read" comes back here
+    rcvdAddr=addr[3];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    //Transfer the contents of the C register to the A register
+    helper_ld_X_Y('A', 'C');
+
+    //Write the contents of the A register to memory
+    helper_ld_ptr_nn_a(data, addr);
+
+    //This is where we get the data back
+    rcvdData=data[2];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    if (rcvdData != lowByte(sentData) || rcvdAddr != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((i % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+  
+  //Test enough times to ensure that we have hit every possible data value with a random address
+  for (int j=0; j<256; j++)
+  {
+
+    int8_t d=random(255);
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'X', baseAddressBytes);
+
+    long sentData=j;
+    data[3]=lowByte(sentData);
+    data[2]=d;
+    data[1]=lowByte(inst.opCode);
+    data[0]=highByte(inst.opCode);
+
+    //Load the data in the target address into the C Register
+    writeSingleInstruction(data, 2, 2, 0, addr);
+
+    //The address that was "read" comes back here
+    rcvdAddr=addr[3];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    //Transfer the contents of the C register to the A register
+    helper_ld_X_Y('A', 'C');
+
+    //Write the contents of the A register to memory
+    helper_ld_ptr_nn_a(data, addr);
+
+    //This is where we get the data back
+    rcvdData=data[2];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    if (rcvdData != lowByte(sentData) || rcvdAddr != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((j % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
 }
 bool LD_D_PTR_IX_PLUS_D() {
-  Serial.println(F("...Test not written"));
+  //Mnemonic:  LD D,(IX+d)
+  //Assembled command: 0xDD56
+  //Expected behavior: A value in the memory address in the IX Register offset by d is loaded into the C register
+  //Test methodology: Load Register IX with a random value, load a random value into the memory address (IX+d), where d is every possible value in an 8 bit signed integer, load D register with the value.  Load Register IX with a random address, load each possible value into that memory address, offset by a random value d, load that value into the D register.
+  //Success criteria: Verify that the returned data & address matches the loaded data & address.
+
+  //Initialize some variables
+  bool error = false;
+
+  char targetMnemonic[]="LD D,(IX+d)";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+  byte data[] = {highByte(inst.opCode), lowByte(inst.opCode), 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  byte rcvdData=0x00;
+  uint16_t rcvdAddr=0x00;
+
+
+  //Test enough times to ensure that we have hit every possible address value with random data
+  for (uint16_t i = 0; i < 256; i++) {
+
+    int8_t d=i;
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'X', baseAddressBytes);
+
+    long sentData=random(255);
+    data[3]=lowByte(sentData);
+    data[2]=d;
+    data[1]=lowByte(inst.opCode);
+    data[0]=highByte(inst.opCode);
+
+    //Load the data in the target address into the D Register
+    writeSingleInstruction(data, 2, 2, 0, addr);
+
+    //The address that was "read" comes back here
+    rcvdAddr=addr[3];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    //Transfer the contents of the D register to the A register
+    helper_ld_X_Y('A', 'D');
+
+    //Write the contents of the A register to memory
+    helper_ld_ptr_nn_a(data, addr);
+
+    //This is where we get the data back
+    rcvdData=data[2];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    if (rcvdData != lowByte(sentData) || rcvdAddr != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((i % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+  
+  //Test enough times to ensure that we have hit every possible data value with a random address
+  for (int j=0; j<256; j++)
+  {
+
+    int8_t d=random(255);
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'X', baseAddressBytes);
+
+    long sentData=j;
+    data[3]=lowByte(sentData);
+    data[2]=d;
+    data[1]=lowByte(inst.opCode);
+    data[0]=highByte(inst.opCode);
+
+    //Load the data in the target address into the D Register
+    writeSingleInstruction(data, 2, 2, 0, addr);
+
+    //The address that was "read" comes back here
+    rcvdAddr=addr[3];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    //Transfer the contents of the D register to the A register
+    helper_ld_X_Y('A', 'D');
+
+    //Write the contents of the A register to memory
+    helper_ld_ptr_nn_a(data, addr);
+
+    //This is where we get the data back
+    rcvdData=data[2];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    if (rcvdData != lowByte(sentData) || rcvdAddr != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((j % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
 }
 bool LD_E_PTR_IX_PLUS_D() {
-  Serial.println(F("...Test not written"));
+  //Mnemonic:  LD E,(IX+d)
+  //Assembled command: 0xDD5E
+  //Expected behavior: A value in the memory address in the IX Register offset by d is loaded into the E register
+  //Test methodology: Load Register IX with a random value, load a random value into the memory address (IX+d), where d is every possible value in an 8 bit signed integer, load E register with the value.  Load Register IX with a random address, load each possible value into that memory address, offset by a random value d, load that value into the E register.
+  //Success criteria: Verify that the returned data & address matches the loaded data & address.
+
+  //Initialize some variables
+  bool error = false;
+
+  char targetMnemonic[]="LD E,(IX+d)";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+  byte data[] = {highByte(inst.opCode), lowByte(inst.opCode), 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  byte rcvdData=0x00;
+  uint16_t rcvdAddr=0x00;
+
+
+  //Test enough times to ensure that we have hit every possible address value with random data
+  for (uint16_t i = 0; i < 256; i++) {
+
+    int8_t d=i;
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'X', baseAddressBytes);
+
+    long sentData=random(255);
+    data[3]=lowByte(sentData);
+    data[2]=d;
+    data[1]=lowByte(inst.opCode);
+    data[0]=highByte(inst.opCode);
+
+    //Load the data in the target address into the E Register
+    writeSingleInstruction(data, 2, 2, 0, addr);
+
+    //The address that was "read" comes back here
+    rcvdAddr=addr[3];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    //Transfer the contents of the E register to the A register
+    helper_ld_X_Y('A', 'E');
+
+    //Write the contents of the A register to memory
+    helper_ld_ptr_nn_a(data, addr);
+
+    //This is where we get the data back
+    rcvdData=data[2];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    if (rcvdData != lowByte(sentData) || rcvdAddr != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((i % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+  
+  //Test enough times to ensure that we have hit every possible data value with a random address
+  for (int j=0; j<256; j++)
+  {
+
+    int8_t d=random(255);
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'X', baseAddressBytes);
+
+    long sentData=j;
+    data[3]=lowByte(sentData);
+    data[2]=d;
+    data[1]=lowByte(inst.opCode);
+    data[0]=highByte(inst.opCode);
+
+    //Load the data in the target address into the E Register
+    writeSingleInstruction(data, 2, 2, 0, addr);
+
+    //The address that was "read" comes back here
+    rcvdAddr=addr[3];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    //Transfer the contents of the E register to the A register
+    helper_ld_X_Y('A', 'E');
+
+    //Write the contents of the A register to memory
+    helper_ld_ptr_nn_a(data, addr);
+
+    //This is where we get the data back
+    rcvdData=data[2];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    if (rcvdData != lowByte(sentData) || rcvdAddr != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((j % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
 }
 bool LD_H_PTR_IX_PLUS_D() {
-  Serial.println(F("...Test not written"));
+  //Mnemonic:  LD H,(IX+d)
+  //Assembled command: 0xDD66
+  //Expected behavior: A value in the memory address in the IX Register offset by d is loaded into the H register
+  //Test methodology: Load Register IX with a random value, load a random value into the memory address (IX+d), where d is every possible value in an 8 bit signed integer, load H register with the value.  Load Register IX with a random address, load each possible value into that memory address, offset by a random value d, load that value into the H register.
+  //Success criteria: Verify that the returned data & address matches the loaded data & address.
+
+  //Initialize some variables
+  bool error = false;
+
+  char targetMnemonic[]="LD H,(IX+d)";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+  byte data[] = {highByte(inst.opCode), lowByte(inst.opCode), 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  byte rcvdData=0x00;
+  uint16_t rcvdAddr=0x00;
+
+
+  //Test enough times to ensure that we have hit every possible address value with random data
+  for (uint16_t i = 0; i < 256; i++) {
+
+    int8_t d=i;
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'X', baseAddressBytes);
+
+    long sentData=random(255);
+    data[3]=lowByte(sentData);
+    data[2]=d;
+    data[1]=lowByte(inst.opCode);
+    data[0]=highByte(inst.opCode);
+
+    //Load the data in the target address into the H Register
+    writeSingleInstruction(data, 2, 2, 0, addr);
+
+    //The address that was "read" comes back here
+    rcvdAddr=addr[3];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    //Transfer the contents of the H register to the A register
+    helper_ld_X_Y('A', 'H');
+
+    //Write the contents of the A register to memory
+    helper_ld_ptr_nn_a(data, addr);
+
+    //This is where we get the data back
+    rcvdData=data[2];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    if (rcvdData != lowByte(sentData) || rcvdAddr != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((i % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+  
+  //Test enough times to ensure that we have hit every possible data value with a random address
+  for (int j=0; j<256; j++)
+  {
+
+    int8_t d=random(255);
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'X', baseAddressBytes);
+
+    long sentData=j;
+    data[3]=lowByte(sentData);
+    data[2]=d;
+    data[1]=lowByte(inst.opCode);
+    data[0]=highByte(inst.opCode);
+
+    //Load the data in the target address into the H Register
+    writeSingleInstruction(data, 2, 2, 0, addr);
+
+    //The address that was "read" comes back here
+    rcvdAddr=addr[3];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    //Transfer the contents of the H register to the A register
+    helper_ld_X_Y('A', 'H');
+
+    //Write the contents of the A register to memory
+    helper_ld_ptr_nn_a(data, addr);
+
+    //This is where we get the data back
+    rcvdData=data[2];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    if (rcvdData != lowByte(sentData) || rcvdAddr != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((j % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
 }
 bool LD_L_PTR_IX_PLUS_D() {
-  Serial.println(F("...Test not written"));
+  //Mnemonic:  LD L,(IX+d)
+  //Assembled command: 0xDD6E
+  //Expected behavior: A value in the memory address in the IX Register offset by d is loaded into the L register
+  //Test methodology: Load Register IX with a random value, load a random value into the memory address (IX+d), where d is every possible value in an 8 bit signed integer, load L register with the value.  Load Register IX with a random address, load each possible value into that memory address, offset by a random value d, load that value into the L register.
+  //Success criteria: Verify that the returned data & address matches the loaded data & address.
+
+  //Initialize some variables
+  bool error = false;
+
+  char targetMnemonic[]="LD L,(IX+d)";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+  byte data[] = {highByte(inst.opCode), lowByte(inst.opCode), 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  byte rcvdData=0x00;
+  uint16_t rcvdAddr=0x00;
+
+
+  //Test enough times to ensure that we have hit every possible address value with random data
+  for (uint16_t i = 0; i < 256; i++) {
+
+    int8_t d=i;
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'X', baseAddressBytes);
+
+    long sentData=random(255);
+    data[3]=lowByte(sentData);
+    data[2]=d;
+    data[1]=lowByte(inst.opCode);
+    data[0]=highByte(inst.opCode);
+
+    //Load the data in the target address into the L Register
+    writeSingleInstruction(data, 2, 2, 0, addr);
+
+    //The address that was "read" comes back here
+    rcvdAddr=addr[3];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    //Transfer the contents of the L register to the A register
+    helper_ld_X_Y('A', 'L');
+
+    //Write the contents of the A register to memory
+    helper_ld_ptr_nn_a(data, addr);
+
+    //This is where we get the data back
+    rcvdData=data[2];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    if (rcvdData != lowByte(sentData) || rcvdAddr != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((i % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+  
+  //Test enough times to ensure that we have hit every possible data value with a random address
+  for (int j=0; j<256; j++)
+  {
+
+    int8_t d=random(255);
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'X', baseAddressBytes);
+
+    long sentData=j;
+    data[3]=lowByte(sentData);
+    data[2]=d;
+    data[1]=lowByte(inst.opCode);
+    data[0]=highByte(inst.opCode);
+
+    //Load the data in the target address into the L Register
+    writeSingleInstruction(data, 2, 2, 0, addr);
+
+    //The address that was "read" comes back here
+    rcvdAddr=addr[3];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    //Transfer the contents of the L register to the A register
+    helper_ld_X_Y('A', 'L');
+
+    //Write the contents of the A register to memory
+    helper_ld_ptr_nn_a(data, addr);
+
+    //This is where we get the data back
+    rcvdData=data[2];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    if (rcvdData != lowByte(sentData) || rcvdAddr != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((j % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
 }
 bool LD_A_PTR_IY_PLUS_D() {
-  Serial.println(F("...Test not written"));
+  //Mnemonic:  LD A,(IY+d)
+  //Assembled command: 0xFF7E
+  //Expected behavior: A value in the memory address in the IY Register offset by d is loaded into the A register
+  //Test methodology: Load Register IY with a random value, load a random value into the memory address (IY+d), where d is every possible value in an 8 bit signed integer, load A register with the value.  Load Register IY with a random address, load each possible value into that memory address, offset by a random value d, load that value into the A register.
+  //Success criteria: Verify that the returned data & address matches the loaded data & address.
+
+  //Initialize some variables
+  bool error = false;
+
+  char targetMnemonic[]="LD A,(IY+d)";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+  byte data[] = {highByte(inst.opCode), lowByte(inst.opCode), 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  byte rcvdData=0x00;
+  uint16_t rcvdAddr=0x00;
+
+
+  //Test enough times to ensure that we have hit every possible address value with random data
+  for (uint16_t i = 0; i < 256; i++) {
+
+    int8_t d=i;
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'Y', baseAddressBytes);
+
+    long sentData=random(255);
+    data[3]=lowByte(sentData);
+    data[2]=d;
+    data[1]=lowByte(inst.opCode);
+    data[0]=highByte(inst.opCode);
+
+    //Load the data in the target address into the A Register
+    writeSingleInstruction(data, 2, 2, 0, addr);
+
+    //The address that was "read" comes back here
+    rcvdAddr=addr[3];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    //Write the contents of the A register to memory
+    helper_ld_ptr_nn_a(data, addr);
+
+    //This is where we get the data back
+    rcvdData=data[2];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    if (rcvdData != lowByte(sentData) || rcvdAddr != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((i % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+  
+  //Test enough times to ensure that we have hit every possible data value with a random address
+  for (int j=0; j<256; j++)
+  {
+
+    int8_t d=random(255);
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'Y', baseAddressBytes);
+
+    long sentData=j;
+    data[3]=lowByte(sentData);
+    data[2]=d;
+    data[1]=lowByte(inst.opCode);
+    data[0]=highByte(inst.opCode);
+
+    //Load the data in the target address into the A Register
+    writeSingleInstruction(data, 2, 2, 0, addr);
+
+    //The address that was "read" comes back here
+    rcvdAddr=addr[3];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    //Write the contents of the A register to memory
+    helper_ld_ptr_nn_a(data, addr);
+
+    //This is where we get the data back
+    rcvdData=data[2];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    if (rcvdData != lowByte(sentData) || rcvdAddr != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((j % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
 }
 bool LD_B_PTR_IY_PLUS_D() {
-  Serial.println(F("...Test not written"));
+  //Mnemonic:  LD B,(IY+d)
+  //Assembled command: 0xFF46
+  //Expected behavior: A value in the memory address in the IY Register offset by d is loaded into the A register
+  //Test methodology: Load Register IY with a random value, load a random value into the memory address (IY+d), where d is every possible value in an 8 bit signed integer, load A register with the value.  Load Register IY with a random address, load each possible value into that memory address, offset by a random value d, load that value into the A register.
+  //Success criteria: Verify that the returned data & address matches the loaded data & address.
+
+  //Initialize some variables
+  bool error = false;
+
+  char targetMnemonic[]="LD B,(IY+d)";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+  byte data[] = {highByte(inst.opCode), lowByte(inst.opCode), 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  byte rcvdData=0x00;
+  uint16_t rcvdAddr=0x00;
+
+
+  //Test enough times to ensure that we have hit every possible address value with random data
+  for (uint16_t i = 0; i < 256; i++) {
+
+    int8_t d=i;
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'Y', baseAddressBytes);
+
+    long sentData=random(255);
+    data[3]=lowByte(sentData);
+    data[2]=d;
+    data[1]=lowByte(inst.opCode);
+    data[0]=highByte(inst.opCode);
+
+    //Load the data in the target address into the B Register
+    writeSingleInstruction(data, 2, 2, 0, addr);
+
+    //The address that was "read" comes back here
+    rcvdAddr=addr[3];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    //Transfer the contents of the B register to the A register
+    helper_ld_X_Y('A', 'B');
+
+    //Write the contents of the A register to memory
+    helper_ld_ptr_nn_a(data, addr);
+
+    //This is where we get the data back
+    rcvdData=data[2];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    if (rcvdData != lowByte(sentData) || rcvdAddr != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((i % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+  
+  //Test enough times to ensure that we have hit every possible data value with a random address
+  for (int j=0; j<256; j++)
+  {
+
+    int8_t d=random(255);
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'Y', baseAddressBytes);
+
+    long sentData=j;
+    data[3]=lowByte(sentData);
+    data[2]=d;
+    data[1]=lowByte(inst.opCode);
+    data[0]=highByte(inst.opCode);
+
+    //Load the data in the target address into the B Register
+    writeSingleInstruction(data, 2, 2, 0, addr);
+
+    //The address that was "read" comes back here
+    rcvdAddr=addr[3];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    //Transfer the contents of the B register to the A register
+    helper_ld_X_Y('A', 'B');
+
+    //Write the contents of the A register to memory
+    helper_ld_ptr_nn_a(data, addr);
+
+    //This is where we get the data back
+    rcvdData=data[2];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    if (rcvdData != lowByte(sentData) || rcvdAddr != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((j % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
 }
 bool LD_C_PTR_IY_PLUS_D() {
-  Serial.println(F("...Test not written"));
+  //Mnemonic:  LD C,(IY+d)
+  //Assembled command: 0xFF4E
+  //Expected behavior: A value in the memory address in the IY Register offset by d is loaded into the C register
+  //Test methodology: Load Register IY with a random value, load a random value into the memory address (IY+d), where d is every possible value in an 8 bit signed integer, load C register with the value.  Load Register IY with a random address, load each possible value into that memory address, offset by a random value d, load that value into the C register.
+  //Success criteria: Verify that the returned data & address matches the loaded data & address.
+
+  //Initialize some variables
+  bool error = false;
+
+  char targetMnemonic[]="LD C,(IY+d)";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+  byte data[] = {highByte(inst.opCode), lowByte(inst.opCode), 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  byte rcvdData=0x00;
+  uint16_t rcvdAddr=0x00;
+
+
+  //Test enough times to ensure that we have hit every possible address value with random data
+  for (uint16_t i = 0; i < 256; i++) {
+
+    int8_t d=i;
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'Y', baseAddressBytes);
+
+    long sentData=random(255);
+    data[3]=lowByte(sentData);
+    data[2]=d;
+    data[1]=lowByte(inst.opCode);
+    data[0]=highByte(inst.opCode);
+
+    //Load the data in the target address into the C Register
+    writeSingleInstruction(data, 2, 2, 0, addr);
+
+    //The address that was "read" comes back here
+    rcvdAddr=addr[3];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    //Transfer the contents of the C register to the A register
+    helper_ld_X_Y('A', 'C');
+
+    //Write the contents of the A register to memory
+    helper_ld_ptr_nn_a(data, addr);
+
+    //This is where we get the data back
+    rcvdData=data[2];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    if (rcvdData != lowByte(sentData) || rcvdAddr != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((i % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+  
+  //Test enough times to ensure that we have hit every possible data value with a random address
+  for (int j=0; j<256; j++)
+  {
+
+    int8_t d=random(255);
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'Y', baseAddressBytes);
+
+    long sentData=j;
+    data[3]=lowByte(sentData);
+    data[2]=d;
+    data[1]=lowByte(inst.opCode);
+    data[0]=highByte(inst.opCode);
+
+    //Load the data in the target address into the C Register
+    writeSingleInstruction(data, 2, 2, 0, addr);
+
+    //The address that was "read" comes back here
+    rcvdAddr=addr[3];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    //Transfer the contents of the C register to the A register
+    helper_ld_X_Y('A', 'C');
+
+    //Write the contents of the A register to memory
+    helper_ld_ptr_nn_a(data, addr);
+
+    //This is where we get the data back
+    rcvdData=data[2];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    if (rcvdData != lowByte(sentData) || rcvdAddr != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((j % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
 }
 bool LD_D_PTR_IY_PLUS_D() {
-  Serial.println(F("...Test not written"));
+  //Mnemonic:  LD D,(IY+d)
+  //Assembled command: 0xFF56
+  //Expected behavior: A value in the memory address in the IY Register offset by d is loaded into the C register
+  //Test methodology: Load Register IY with a random value, load a random value into the memory address (IY+d), where d is every possible value in an 8 bit signed integer, load D register with the value.  Load Register IY with a random address, load each possible value into that memory address, offset by a random value d, load that value into the D register.
+  //Success criteria: Verify that the returned data & address matches the loaded data & address.
+
+  //Initialize some variables
+  bool error = false;
+
+  char targetMnemonic[]="LD D,(IY+d)";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+  byte data[] = {highByte(inst.opCode), lowByte(inst.opCode), 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  byte rcvdData=0x00;
+  uint16_t rcvdAddr=0x00;
+
+
+  //Test enough times to ensure that we have hit every possible address value with random data
+  for (uint16_t i = 0; i < 256; i++) {
+
+    int8_t d=i;
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'Y', baseAddressBytes);
+
+    long sentData=random(255);
+    data[3]=lowByte(sentData);
+    data[2]=d;
+    data[1]=lowByte(inst.opCode);
+    data[0]=highByte(inst.opCode);
+
+    //Load the data in the target address into the D Register
+    writeSingleInstruction(data, 2, 2, 0, addr);
+
+    //The address that was "read" comes back here
+    rcvdAddr=addr[3];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    //Transfer the contents of the D register to the A register
+    helper_ld_X_Y('A', 'D');
+
+    //Write the contents of the A register to memory
+    helper_ld_ptr_nn_a(data, addr);
+
+    //This is where we get the data back
+    rcvdData=data[2];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    if (rcvdData != lowByte(sentData) || rcvdAddr != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((i % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+  
+  //Test enough times to ensure that we have hit every possible data value with a random address
+  for (int j=0; j<256; j++)
+  {
+
+    int8_t d=random(255);
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'Y', baseAddressBytes);
+
+    long sentData=j;
+    data[3]=lowByte(sentData);
+    data[2]=d;
+    data[1]=lowByte(inst.opCode);
+    data[0]=highByte(inst.opCode);
+
+    //Load the data in the target address into the D Register
+    writeSingleInstruction(data, 2, 2, 0, addr);
+
+    //The address that was "read" comes back here
+    rcvdAddr=addr[3];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    //Transfer the contents of the D register to the A register
+    helper_ld_X_Y('A', 'D');
+
+    //Write the contents of the A register to memory
+    helper_ld_ptr_nn_a(data, addr);
+
+    //This is where we get the data back
+    rcvdData=data[2];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    if (rcvdData != lowByte(sentData) || rcvdAddr != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((j % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
 }
 bool LD_E_PTR_IY_PLUS_D() {
-  Serial.println(F("...Test not written"));
+  //Mnemonic:  LD E,(IY+d)
+  //Assembled command: 0xFF5E
+  //Expected behavior: A value in the memory address in the IY Register offset by d is loaded into the E register
+  //Test methodology: Load Register IY with a random value, load a random value into the memory address (IY+d), where d is every possible value in an 8 bit signed integer, load E register with the value.  Load Register IY with a random address, load each possible value into that memory address, offset by a random value d, load that value into the E register.
+  //Success criteria: Verify that the returned data & address matches the loaded data & address.
+
+  //Initialize some variables
+  bool error = false;
+
+  char targetMnemonic[]="LD E,(IY+d)";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+  byte data[] = {highByte(inst.opCode), lowByte(inst.opCode), 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  byte rcvdData=0x00;
+  uint16_t rcvdAddr=0x00;
+
+
+  //Test enough times to ensure that we have hit every possible address value with random data
+  for (uint16_t i = 0; i < 256; i++) {
+
+    int8_t d=i;
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'Y', baseAddressBytes);
+
+    long sentData=random(255);
+    data[3]=lowByte(sentData);
+    data[2]=d;
+    data[1]=lowByte(inst.opCode);
+    data[0]=highByte(inst.opCode);
+
+    //Load the data in the target address into the E Register
+    writeSingleInstruction(data, 2, 2, 0, addr);
+
+    //The address that was "read" comes back here
+    rcvdAddr=addr[3];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    //Transfer the contents of the E register to the A register
+    helper_ld_X_Y('A', 'E');
+
+    //Write the contents of the A register to memory
+    helper_ld_ptr_nn_a(data, addr);
+
+    //This is where we get the data back
+    rcvdData=data[2];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    if (rcvdData != lowByte(sentData) || rcvdAddr != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((i % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+  
+  //Test enough times to ensure that we have hit every possible data value with a random address
+  for (int j=0; j<256; j++)
+  {
+
+    int8_t d=random(255);
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'Y', baseAddressBytes);
+
+    long sentData=j;
+    data[3]=lowByte(sentData);
+    data[2]=d;
+    data[1]=lowByte(inst.opCode);
+    data[0]=highByte(inst.opCode);
+
+    //Load the data in the target address into the E Register
+    writeSingleInstruction(data, 2, 2, 0, addr);
+
+    //The address that was "read" comes back here
+    rcvdAddr=addr[3];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    //Transfer the contents of the E register to the A register
+    helper_ld_X_Y('A', 'E');
+
+    //Write the contents of the A register to memory
+    helper_ld_ptr_nn_a(data, addr);
+
+    //This is where we get the data back
+    rcvdData=data[2];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    if (rcvdData != lowByte(sentData) || rcvdAddr != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((j % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
 }
 bool LD_H_PTR_IY_PLUS_D() {
-  Serial.println(F("...Test not written"));
+  //Mnemonic:  LD H,(IY+d)
+  //Assembled command: 0xFF66
+  //Expected behavior: A value in the memory address in the IY Register offset by d is loaded into the H register
+  //Test methodology: Load Register IY with a random value, load a random value into the memory address (IY+d), where d is every possible value in an 8 bit signed integer, load H register with the value.  Load Register IY with a random address, load each possible value into that memory address, offset by a random value d, load that value into the H register.
+  //Success criteria: Verify that the returned data & address matches the loaded data & address.
+
+  //Initialize some variables
+  bool error = false;
+
+  char targetMnemonic[]="LD H,(IY+d)";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+  byte data[] = {highByte(inst.opCode), lowByte(inst.opCode), 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  byte rcvdData=0x00;
+  uint16_t rcvdAddr=0x00;
+
+
+  //Test enough times to ensure that we have hit every possible address value with random data
+  for (uint16_t i = 0; i < 256; i++) {
+
+    int8_t d=i;
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'Y', baseAddressBytes);
+
+    long sentData=random(255);
+    data[3]=lowByte(sentData);
+    data[2]=d;
+    data[1]=lowByte(inst.opCode);
+    data[0]=highByte(inst.opCode);
+
+    //Load the data in the target address into the H Register
+    writeSingleInstruction(data, 2, 2, 0, addr);
+
+    //The address that was "read" comes back here
+    rcvdAddr=addr[3];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    //Transfer the contents of the H register to the A register
+    helper_ld_X_Y('A', 'H');
+
+    //Write the contents of the A register to memory
+    helper_ld_ptr_nn_a(data, addr);
+
+    //This is where we get the data back
+    rcvdData=data[2];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    if (rcvdData != lowByte(sentData) || rcvdAddr != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((i % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+  
+  //Test enough times to ensure that we have hit every possible data value with a random address
+  for (int j=0; j<256; j++)
+  {
+
+    int8_t d=random(255);
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'Y', baseAddressBytes);
+
+    long sentData=j;
+    data[3]=lowByte(sentData);
+    data[2]=d;
+    data[1]=lowByte(inst.opCode);
+    data[0]=highByte(inst.opCode);
+
+    //Load the data in the target address into the H Register
+    writeSingleInstruction(data, 2, 2, 0, addr);
+
+    //The address that was "read" comes back here
+    rcvdAddr=addr[3];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    //Transfer the contents of the H register to the A register
+    helper_ld_X_Y('A', 'H');
+
+    //Write the contents of the A register to memory
+    helper_ld_ptr_nn_a(data, addr);
+
+    //This is where we get the data back
+    rcvdData=data[2];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    if (rcvdData != lowByte(sentData) || rcvdAddr != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((j % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
 }
 bool LD_L_PTR_IY_PLUS_D() {
-  Serial.println(F("...Test not written"));
+  //Mnemonic:  LD L,(IY+d)
+  //Assembled command: 0xFF6E
+  //Expected behavior: A value in the memory address in the IY Register offset by d is loaded into the L register
+  //Test methodology: Load Register IY with a random value, load a random value into the memory address (IY+d), where d is every possible value in an 8 bit signed integer, load L register with the value.  Load Register IY with a random address, load each possible value into that memory address, offset by a random value d, load that value into the L register.
+  //Success criteria: Verify that the returned data & address matches the loaded data & address.
+
+  //Initialize some variables
+  bool error = false;
+
+  char targetMnemonic[]="LD L,(IY+d)";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+  byte data[] = {highByte(inst.opCode), lowByte(inst.opCode), 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  byte rcvdData=0x00;
+  uint16_t rcvdAddr=0x00;
+
+
+  //Test enough times to ensure that we have hit every possible address value with random data
+  for (uint16_t i = 0; i < 256; i++) {
+
+    int8_t d=i;
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'Y', baseAddressBytes);
+
+    long sentData=random(255);
+    data[3]=lowByte(sentData);
+    data[2]=d;
+    data[1]=lowByte(inst.opCode);
+    data[0]=highByte(inst.opCode);
+
+    //Load the data in the target address into the L Register
+    writeSingleInstruction(data, 2, 2, 0, addr);
+
+    //The address that was "read" comes back here
+    rcvdAddr=addr[3];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    //Transfer the contents of the L register to the A register
+    helper_ld_X_Y('A', 'L');
+
+    //Write the contents of the A register to memory
+    helper_ld_ptr_nn_a(data, addr);
+
+    //This is where we get the data back
+    rcvdData=data[2];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    if (rcvdData != lowByte(sentData) || rcvdAddr != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((i % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+  
+  //Test enough times to ensure that we have hit every possible data value with a random address
+  for (int j=0; j<256; j++)
+  {
+
+    int8_t d=random(255);
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'Y', baseAddressBytes);
+
+    long sentData=j;
+    data[3]=lowByte(sentData);
+    data[2]=d;
+    data[1]=lowByte(inst.opCode);
+    data[0]=highByte(inst.opCode);
+
+    //Load the data in the target address into the L Register
+    writeSingleInstruction(data, 2, 2, 0, addr);
+
+    //The address that was "read" comes back here
+    rcvdAddr=addr[3];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    //Transfer the contents of the L register to the A register
+    helper_ld_X_Y('A', 'L');
+
+    //Write the contents of the A register to memory
+    helper_ld_ptr_nn_a(data, addr);
+
+    //This is where we get the data back
+    rcvdData=data[2];
+
+    //Clear the data and address arrays to avoid weird interactions between the two functions
+    for (int j=0; j<5; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    if (rcvdData != lowByte(sentData) || rcvdAddr != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((j % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
 }
 bool LD_PTR_IX_PLUS_D_A() {
-  Serial.println(F("...Test not written"));
+  //Mnemonic:  LD (IX+d),A
+  //Assembled command: 0xDD77
+  //Expected behavior: A value from Register A is loaded into the memory address in the IX Register offset by d
+  //Test methodology: Load Register IX with a random value, load a random value into Register A.  Load the memory address (IX+d), where d is every possible value in an 8 bit signed integer with the value from Register A.  Load Register IX with a random address, load each possible value into register A.  Load that value into the memory address in IX, offset by a random value d
+  //Success criteria: Verify that the returned data & address matches the loaded data & address.
+
+  //Initialize some variables
+  bool error = false;
+
+  char targetMnemonic[]="LD (IX+d),A";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+  byte data[] = {highByte(inst.opCode), lowByte(inst.opCode), 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+
+
+  //Test enough times to ensure that we have hit every possible address value with random data
+  for (uint16_t i = 0; i < 256; i++) {
+
+    int8_t d=i;
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'X', baseAddressBytes);
+
+    long sentData=random(255);
+    helper_ld_X_n('A',lowByte(sentData));
+
+    data[2]=d;
+
+    //Load the data in the A register into the memory address (IX+d)
+    writeSingleInstruction(data, 2, 1, 1, addr);
+
+    if (data[3] != lowByte(sentData) || addr[3] != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((i % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+  
+  //Test enough times to ensure that we have hit every possible data value with a random address
+  for (int j=0; j<256; j++)
+  {
+
+    int8_t d=random(255);
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD HL,nn command
+    helper_ld_XY_nn('I', 'X', baseAddressBytes);
+
+    long sentData=j;
+    helper_ld_X_n('A',lowByte(sentData));
+    data[2]=d;
+
+    //Load the data in Register A into the memory address (IX+d)
+    writeSingleInstruction(data, 2, 1, 1, addr);
+
+    if (data[3] != lowByte(sentData) || addr[3] != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((j % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
 }
 bool LD_PTR_IX_PLUS_D_B() {
-  Serial.println(F("...Test not written"));
+  //Mnemonic:  LD (IX+d),B
+  //Assembled command: 0xDD70
+  //Expected behavior: B value from Register B is loaded into the memory address in the IX Register offset by d
+  //Test methodology: Load Register IX with a random value, load a random value into Register B.  Load the memory address (IX+d), where d is every possible value in an 8 bit signed integer with the value from Register B.  Load Register IX with a random address, load each possible value into register B.  Load that value into the memory address in IX, offset by a random value d
+  //Success criteria: Verify that the returned data & address matches the loaded data & address.
+
+  //Initialize some variables
+  bool error = false;
+
+  char targetMnemonic[]="LD (IX+d),B";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+  byte data[] = {highByte(inst.opCode), lowByte(inst.opCode), 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+
+
+  //Test enough times to ensure that we have hit every possible address value with random data
+  for (uint16_t i = 0; i < 256; i++) {
+
+    int8_t d=i;
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'X', baseAddressBytes);
+
+    long sentData=random(255);
+    helper_ld_X_n('B',lowByte(sentData));
+
+    data[2]=d;
+
+    //Load the data in the B register into the memory address (IX+d)
+    writeSingleInstruction(data, 2, 1, 1, addr);
+
+    if (data[3] != lowByte(sentData) || addr[3] != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((i % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+  
+  //Test enough times to ensure that we have hit every possible data value with a random address
+  for (int j=0; j<256; j++)
+  {
+
+    int8_t d=random(255);
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'X', baseAddressBytes);
+
+    long sentData=j;
+    helper_ld_X_n('B',lowByte(sentData));
+    data[2]=d;
+
+    //Load the data in Register B into the memory address (IX+d)
+    writeSingleInstruction(data, 2, 1, 1, addr);
+
+    if (data[3] != lowByte(sentData) || addr[3] != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((j % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
 }
 bool LD_PTR_IX_PLUS_D_C() {
-  Serial.println(F("...Test not written"));
+  //Mnemonic:  LD (IX+d),C
+  //Assembled command: 0xDD71
+  //Expected behavior: C value from Register C is loaded into the memory address in the IX Register offset by d
+  //Test methodology: Load Register IX with a random value, load a random value into Register C.  Load the memory address (IX+d), where d is every possible value in an 8 bit signed integer with the value from Register C.  Load Register IX with a random address, load each possible value into register C.  Load that value into the memory address in IX, offset by a random value d
+  //Success criteria: Verify that the returned data & address matches the loaded data & address.
+
+  //Initialize some variables
+  bool error = false;
+
+  char targetMnemonic[]="LD (IX+d),C";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+  byte data[] = {highByte(inst.opCode), lowByte(inst.opCode), 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+
+
+  //Test enough times to ensure that we have hit every possible address value with random data
+  for (uint16_t i = 0; i < 256; i++) {
+
+    int8_t d=i;
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'X', baseAddressBytes);
+
+    long sentData=random(255);
+    helper_ld_X_n('C',lowByte(sentData));
+
+    data[2]=d;
+
+    //Load the data in the C register into the memory address (IX+d)
+    writeSingleInstruction(data, 2, 1, 1, addr);
+
+    if (data[3] != lowByte(sentData) || addr[3] != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((i % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+  
+  //Test enough times to ensure that we have hit every possible data value with a random address
+  for (int j=0; j<256; j++)
+  {
+
+    int8_t d=random(255);
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'X', baseAddressBytes);
+
+    long sentData=j;
+    helper_ld_X_n('C',lowByte(sentData));
+    data[2]=d;
+
+    //Load the data in Register C into the memory address (IX+d)
+    writeSingleInstruction(data, 2, 1, 1, addr);
+
+    if (data[3] != lowByte(sentData) || addr[3] != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((j % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
 }
 bool LD_PTR_IX_PLUS_D_D() {
-  Serial.println(F("...Test not written"));
+  //Mnemonic:  LD (IX+d),D
+  //Assembled command: 0xDD72
+  //Expected behavior: D value from Register D is loaded into the memory address in the IX Register offset by d
+  //Test methodology: Load Register IX with a random value, load a random value into Register D.  Load the memory address (IX+d), where d is every possible value in an 8 bit signed integer with the value from Register D.  Load Register IX with a random address, load each possible value into register D.  Load that value into the memory address in IX, offset by a random value d
+  //Success criteria: Verify that the returned data & address matches the loaded data & address.
+
+  //Initialize some variables
+  bool error = false;
+
+  char targetMnemonic[]="LD (IX+d),D";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+  byte data[] = {highByte(inst.opCode), lowByte(inst.opCode), 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+
+
+  //Test enough times to ensure that we have hit every possible address value with random data
+  for (uint16_t i = 0; i < 256; i++) {
+
+    int8_t d=i;
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'X', baseAddressBytes);
+
+    long sentData=random(255);
+    helper_ld_X_n('D',lowByte(sentData));
+
+    data[2]=d;
+
+    //Load the data in the D register into the memory address (IX+d)
+    writeSingleInstruction(data, 2, 1, 1, addr);
+
+    if (data[3] != lowByte(sentData) || addr[3] != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((i % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+  
+  //Test enough times to ensure that we have hit every possible data value with a random address
+  for (int j=0; j<256; j++)
+  {
+
+    int8_t d=random(255);
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'X', baseAddressBytes);
+
+    long sentData=j;
+    helper_ld_X_n('D',lowByte(sentData));
+    data[2]=d;
+
+    //Load the data in Register D into the memory address (IX+d)
+    writeSingleInstruction(data, 2, 1, 1, addr);
+
+    if (data[3] != lowByte(sentData) || addr[3] != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((j % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
 }
 bool LD_PTR_IX_PLUS_D_E() {
-  Serial.println(F("...Test not written"));
+  //Mnemonic:  LD (IX+d),E
+  //Assembled command: 0xDD73
+  //Expected behavior: E value from Register E is loaded into the memory address in the IX Register offset by d
+  //Test methodology: Load Register IX with a random value, load a random value into Register E.  Load the memory address (IX+d), where d is every possible value in an 8 bit signed integer with the value from Register E.  Load Register IX with a random address, load each possible value into register E.  Load that value into the memory address in IX, offset by a random value d
+  //Success criteria: Verify that the returned data & address matches the loaded data & address.
+
+  //Initialize some variables
+  bool error = false;
+
+  char targetMnemonic[]="LD (IX+d),E";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+  byte data[] = {highByte(inst.opCode), lowByte(inst.opCode), 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+
+
+  //Test enough times to ensure that we have hit every possible address value with random data
+  for (uint16_t i = 0; i < 256; i++) {
+
+    int8_t d=i;
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'X', baseAddressBytes);
+
+    long sentData=random(255);
+    helper_ld_X_n('E',lowByte(sentData));
+
+    data[2]=d;
+
+    //Load the data in the E register into the memory address (IX+d)
+    writeSingleInstruction(data, 2, 1, 1, addr);
+
+    if (data[3] != lowByte(sentData) || addr[3] != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((i % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+  
+  //Test enough times to ensure that we have hit every possible data value with a random address
+  for (int j=0; j<256; j++)
+  {
+
+    int8_t d=random(255);
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'X', baseAddressBytes);
+
+    long sentData=j;
+    helper_ld_X_n('E',lowByte(sentData));
+    data[2]=d;
+
+    //Load the data in Register E into the memory address (IX+d)
+    writeSingleInstruction(data, 2, 1, 1, addr);
+
+    if (data[3] != lowByte(sentData) || addr[3] != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((j % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
 }
 bool LD_PTR_IX_PLUS_D_H() {
-  Serial.println(F("...Test not written"));
+  //Mnemonic:  LD (IX+d),H
+  //Assembled command: 0xDD74
+  //Expected behavior: H value from Register H is loaded into the memory address in the IX Register offset by d
+  //Test methodology: Load Register IX with a random value, load a random value into Register H.  Load the memory address (IX+d), where d is every possible value in an 8 bit signed integer with the value from Register H.  Load Register IX with a random address, load each possible value into register H.  Load that value into the memory address in IX, offset by a random value d
+  //Success criteria: Verify that the returned data & address matches the loaded data & address.
+
+  //Initialize some variables
+  bool error = false;
+
+  char targetMnemonic[]="LD (IX+d),H";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+  byte data[] = {highByte(inst.opCode), lowByte(inst.opCode), 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+
+
+  //Test enough times to ensure that we have hit every possible address value with random data
+  for (uint16_t i = 0; i < 256; i++) {
+
+    int8_t d=i;
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'X', baseAddressBytes);
+
+    long sentData=random(255);
+    helper_ld_X_n('H',lowByte(sentData));
+
+    data[2]=d;
+
+    //Load the data in the H register into the memory address (IX+d)
+    writeSingleInstruction(data, 2, 1, 1, addr);
+
+    if (data[3] != lowByte(sentData) || addr[3] != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((i % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+  
+  //Test enough times to ensure that we have hit every possible data value with a random address
+  for (int j=0; j<256; j++)
+  {
+
+    int8_t d=random(255);
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'X', baseAddressBytes);
+
+    long sentData=j;
+    helper_ld_X_n('H',lowByte(sentData));
+    data[2]=d;
+
+    //Load the data in Register H into the memory address (IX+d)
+    writeSingleInstruction(data, 2, 1, 1, addr);
+
+    if (data[3] != lowByte(sentData) || addr[3] != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((j % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
 }
 bool LD_PTR_IX_PLUS_D_L() {
-  Serial.println(F("...Test not written"));
+  //Mnemonic:  LD (IX+d),L
+  //Assembled command: 0xDD75
+  //Expected behavior: L value from Register L is loaded into the memory address in the IX Register offset by d
+  //Test methodology: Load Register IX with a random value, load a random value into Register L.  Load the memory address (IX+d), where d is every possible value in an 8 bit signed integer with the value from Register L.  Load Register IX with a random address, load each possible value into register L.  Load that value into the memory address in IX, offset by a random value d
+  //Success criteria: Verify that the returned data & address matches the loaded data & address.
+
+  //Initialize some variables
+  bool error = false;
+
+  char targetMnemonic[]="LD (IX+d),L";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+  byte data[] = {highByte(inst.opCode), lowByte(inst.opCode), 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+
+
+  //Test enough times to ensure that we have hit every possible address value with random data
+  for (uint16_t i = 0; i < 256; i++) {
+
+    int8_t d=i;
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'X', baseAddressBytes);
+
+    long sentData=random(255);
+    helper_ld_X_n('L',lowByte(sentData));
+
+    data[2]=d;
+
+    //Load the data in the L register into the memory address (IX+d)
+    writeSingleInstruction(data, 2, 1, 1, addr);
+
+    if (data[3] != lowByte(sentData) || addr[3] != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((i % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+  
+  //Test enough times to ensure that we have hit every possible data value with a random address
+  for (int j=0; j<256; j++)
+  {
+
+    int8_t d=random(255);
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'X', baseAddressBytes);
+
+    long sentData=j;
+    helper_ld_X_n('L',lowByte(sentData));
+    data[2]=d;
+
+    //Load the data in Register L into the memory address (IX+d)
+    writeSingleInstruction(data, 2, 1, 1, addr);
+
+    if (data[3] != lowByte(sentData) || addr[3] != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((j % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
 }
 bool LD_PTR_IY_PLUS_D_A() {
-  Serial.println(F("...Test not written"));
+  //Mnemonic:  LD (IY+d),A
+  //Assembled command: 0xFD77
+  //Expected behavior: A value from Register A is loaded into the memory address in the IY Register offset by d
+  //Test methodology: Load Register IY with a random value, load a random value into Register A.  Load the memory address (IY+d), where d is every possible value in an 8 bit signed integer with the value from Register A.  Load Register IY with a random address, load each possible value into register A.  Load that value into the memory address in IY, offset by a random value d
+  //Success criteria: Verify that the returned data & address matches the loaded data & address.
+
+  //Initialize some variables
+  bool error = false;
+
+  char targetMnemonic[]="LD (IY+d),A";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+  byte data[] = {highByte(inst.opCode), lowByte(inst.opCode), 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+
+
+  //Test enough times to ensure that we have hit every possible address value with random data
+  for (uint16_t i = 0; i < 256; i++) {
+
+    int8_t d=i;
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'Y', baseAddressBytes);
+
+    long sentData=random(255);
+    helper_ld_X_n('A',lowByte(sentData));
+
+    data[2]=d;
+
+    //Load the data in the A register into the memory address (IY+d)
+    writeSingleInstruction(data, 2, 1, 1, addr);
+
+    if (data[3] != lowByte(sentData) || addr[3] != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((i % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+  
+  //Test enough times to ensure that we have hit every possible data value with a random address
+  for (int j=0; j<256; j++)
+  {
+
+    int8_t d=random(255);
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD HL,nn command
+    helper_ld_XY_nn('I', 'Y', baseAddressBytes);
+
+    long sentData=j;
+    helper_ld_X_n('A',lowByte(sentData));
+    data[2]=d;
+
+    //Load the data in Register A into the memory address (IY+d)
+    writeSingleInstruction(data, 2, 1, 1, addr);
+
+    if (data[3] != lowByte(sentData) || addr[3] != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((j % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
 }
 bool LD_PTR_IY_PLUS_D_B() {
-  Serial.println(F("...Test not written"));
+  //Mnemonic:  LD (IY+d),B
+  //Assembled command: 0xFD70
+  //Expected behavior: B value from Register B is loaded into the memory address in the IY Register offset by d
+  //Test methodology: Load Register IY with a random value, load a random value into Register B.  Load the memory address (IY+d), where d is every possible value in an 8 bit signed integer with the value from Register B.  Load Register IY with a random address, load each possible value into register B.  Load that value into the memory address in IY, offset by a random value d
+  //Success criteria: Verify that the returned data & address matches the loaded data & address.
+
+  //Initialize some variables
+  bool error = false;
+
+  char targetMnemonic[]="LD (IY+d),B";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+  byte data[] = {highByte(inst.opCode), lowByte(inst.opCode), 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+
+
+  //Test enough times to ensure that we have hit every possible address value with random data
+  for (uint16_t i = 0; i < 256; i++) {
+
+    int8_t d=i;
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'Y', baseAddressBytes);
+
+    long sentData=random(255);
+    helper_ld_X_n('B',lowByte(sentData));
+
+    data[2]=d;
+
+    //Load the data in the B register into the memory address (IY+d)
+    writeSingleInstruction(data, 2, 1, 1, addr);
+
+    if (data[3] != lowByte(sentData) || addr[3] != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((i % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+  
+  //Test enough times to ensure that we have hit every possible data value with a random address
+  for (int j=0; j<256; j++)
+  {
+
+    int8_t d=random(255);
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'Y', baseAddressBytes);
+
+    long sentData=j;
+    helper_ld_X_n('B',lowByte(sentData));
+    data[2]=d;
+
+    //Load the data in Register B into the memory address (IY+d)
+    writeSingleInstruction(data, 2, 1, 1, addr);
+
+    if (data[3] != lowByte(sentData) || addr[3] != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((j % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
 }
 bool LD_PTR_IY_PLUS_D_C() {
-  Serial.println(F("...Test not written"));
+  //Mnemonic:  LD (IY+d),C
+  //Assembled command: 0xFD71
+  //Expected behavior: C value from Register C is loaded into the memory address in the IY Register offset by d
+  //Test methodology: Load Register IY with a random value, load a random value into Register C.  Load the memory address (IY+d), where d is every possible value in an 8 bit signed integer with the value from Register C.  Load Register IY with a random address, load each possible value into register C.  Load that value into the memory address in IY, offset by a random value d
+  //Success criteria: Verify that the returned data & address matches the loaded data & address.
+
+  //Initialize some variables
+  bool error = false;
+
+  char targetMnemonic[]="LD (IY+d),C";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+  byte data[] = {highByte(inst.opCode), lowByte(inst.opCode), 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+
+
+  //Test enough times to ensure that we have hit every possible address value with random data
+  for (uint16_t i = 0; i < 256; i++) {
+
+    int8_t d=i;
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'Y', baseAddressBytes);
+
+    long sentData=random(255);
+    helper_ld_X_n('C',lowByte(sentData));
+
+    data[2]=d;
+
+    //Load the data in the C register into the memory address (IY+d)
+    writeSingleInstruction(data, 2, 1, 1, addr);
+
+    if (data[3] != lowByte(sentData) || addr[3] != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((i % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+  
+  //Test enough times to ensure that we have hit every possible data value with a random address
+  for (int j=0; j<256; j++)
+  {
+
+    int8_t d=random(255);
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'Y', baseAddressBytes);
+
+    long sentData=j;
+    helper_ld_X_n('C',lowByte(sentData));
+    data[2]=d;
+
+    //Load the data in Register C into the memory address (IY+d)
+    writeSingleInstruction(data, 2, 1, 1, addr);
+
+    if (data[3] != lowByte(sentData) || addr[3] != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((j % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
 }
 bool LD_PTR_IY_PLUS_D_D() {
-  Serial.println(F("...Test not written"));
+  //Mnemonic:  LD (IY+d),D
+  //Assembled command: 0xFD72
+  //Expected behavior: D value from Register D is loaded into the memory address in the IY Register offset by d
+  //Test methodology: Load Register IY with a random value, load a random value into Register D.  Load the memory address (IY+d), where d is every possible value in an 8 bit signed integer with the value from Register D.  Load Register IY with a random address, load each possible value into register D.  Load that value into the memory address in IY, offset by a random value d
+  //Success criteria: Verify that the returned data & address matches the loaded data & address.
+
+  //Initialize some variables
+  bool error = false;
+
+  char targetMnemonic[]="LD (IY+d),D";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+  byte data[] = {highByte(inst.opCode), lowByte(inst.opCode), 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+
+
+  //Test enough times to ensure that we have hit every possible address value with random data
+  for (uint16_t i = 0; i < 256; i++) {
+
+    int8_t d=i;
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'Y', baseAddressBytes);
+
+    long sentData=random(255);
+    helper_ld_X_n('D',lowByte(sentData));
+
+    data[2]=d;
+
+    //Load the data in the D register into the memory address (IY+d)
+    writeSingleInstruction(data, 2, 1, 1, addr);
+
+    if (data[3] != lowByte(sentData) || addr[3] != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((i % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+  
+  //Test enough times to ensure that we have hit every possible data value with a random address
+  for (int j=0; j<256; j++)
+  {
+
+    int8_t d=random(255);
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'Y', baseAddressBytes);
+
+    long sentData=j;
+    helper_ld_X_n('D',lowByte(sentData));
+    data[2]=d;
+
+    //Load the data in Register D into the memory address (IY+d)
+    writeSingleInstruction(data, 2, 1, 1, addr);
+
+    if (data[3] != lowByte(sentData) || addr[3] != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((j % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
 }
 bool LD_PTR_IY_PLUS_D_E() {
-  Serial.println(F("...Test not written"));
+  //Mnemonic:  LD (IY+d),E
+  //Assembled command: 0xFD73
+  //Expected behavior: E value from Register E is loaded into the memory address in the IY Register offset by d
+  //Test methodology: Load Register IY with a random value, load a random value into Register E.  Load the memory address (IY+d), where d is every possible value in an 8 bit signed integer with the value from Register E.  Load Register IY with a random address, load each possible value into register E.  Load that value into the memory address in IY, offset by a random value d
+  //Success criteria: Verify that the returned data & address matches the loaded data & address.
+
+  //Initialize some variables
+  bool error = false;
+
+  char targetMnemonic[]="LD (IY+d),E";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+  byte data[] = {highByte(inst.opCode), lowByte(inst.opCode), 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+
+
+  //Test enough times to ensure that we have hit every possible address value with random data
+  for (uint16_t i = 0; i < 256; i++) {
+
+    int8_t d=i;
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'Y', baseAddressBytes);
+
+    long sentData=random(255);
+    helper_ld_X_n('E',lowByte(sentData));
+
+    data[2]=d;
+
+    //Load the data in the E register into the memory address (IY+d)
+    writeSingleInstruction(data, 2, 1, 1, addr);
+
+    if (data[3] != lowByte(sentData) || addr[3] != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((i % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+  
+  //Test enough times to ensure that we have hit every possible data value with a random address
+  for (int j=0; j<256; j++)
+  {
+
+    int8_t d=random(255);
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'Y', baseAddressBytes);
+
+    long sentData=j;
+    helper_ld_X_n('E',lowByte(sentData));
+    data[2]=d;
+
+    //Load the data in Register E into the memory address (IY+d)
+    writeSingleInstruction(data, 2, 1, 1, addr);
+
+    if (data[3] != lowByte(sentData) || addr[3] != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((j % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
 }
 bool LD_PTR_IY_PLUS_D_H() {
-  Serial.println(F("...Test not written"));
+  //Mnemonic:  LD (IY+d),H
+  //Assembled command: 0xFD74
+  //Expected behavior: H value from Register H is loaded into the memory address in the IY Register offset by d
+  //Test methodology: Load Register IY with a random value, load a random value into Register H.  Load the memory address (IY+d), where d is every possible value in an 8 bit signed integer with the value from Register H.  Load Register IY with a random address, load each possible value into register H.  Load that value into the memory address in IY, offset by a random value d
+  //Success criteria: Verify that the returned data & address matches the loaded data & address.
+
+  //Initialize some variables
+  bool error = false;
+
+  char targetMnemonic[]="LD (IY+d),H";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+  byte data[] = {highByte(inst.opCode), lowByte(inst.opCode), 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+
+
+  //Test enough times to ensure that we have hit every possible address value with random data
+  for (uint16_t i = 0; i < 256; i++) {
+
+    int8_t d=i;
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'Y', baseAddressBytes);
+
+    long sentData=random(255);
+    helper_ld_X_n('H',lowByte(sentData));
+
+    data[2]=d;
+
+    //Load the data in the H register into the memory address (IY+d)
+    writeSingleInstruction(data, 2, 1, 1, addr);
+
+    if (data[3] != lowByte(sentData) || addr[3] != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((i % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+  
+  //Test enough times to ensure that we have hit every possible data value with a random address
+  for (int j=0; j<256; j++)
+  {
+
+    int8_t d=random(255);
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'Y', baseAddressBytes);
+
+    long sentData=j;
+    helper_ld_X_n('H',lowByte(sentData));
+    data[2]=d;
+
+    //Load the data in Register H into the memory address (IY+d)
+    writeSingleInstruction(data, 2, 1, 1, addr);
+
+    if (data[3] != lowByte(sentData) || addr[3] != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((j % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
 }
 bool LD_PTR_IY_PLUS_D_L() {
-  Serial.println(F("...Test not written"));
+  //Mnemonic:  LD (IY+d),L
+  //Assembled command: 0xFD75
+  //Expected behavior: L value from Register L is loaded into the memory address in the IY Register offset by d
+  //Test methodology: Load Register IY with a random value, load a random value into Register L.  Load the memory address (IY+d), where d is every possible value in an 8 bit signed integer with the value from Register L.  Load Register IY with a random address, load each possible value into register L.  Load that value into the memory address in IY, offset by a random value d
+  //Success criteria: Verify that the returned data & address matches the loaded data & address.
+
+  //Initialize some variables
+  bool error = false;
+
+  char targetMnemonic[]="LD (IY+d),L";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+  byte data[] = {highByte(inst.opCode), lowByte(inst.opCode), 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+
+
+  //Test enough times to ensure that we have hit every possible address value with random data
+  for (uint16_t i = 0; i < 256; i++) {
+
+    int8_t d=i;
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'Y', baseAddressBytes);
+
+    long sentData=random(255);
+    helper_ld_X_n('L',lowByte(sentData));
+
+    data[2]=d;
+
+    //Load the data in the L register into the memory address (IY+d)
+    writeSingleInstruction(data, 2, 1, 1, addr);
+
+    if (data[3] != lowByte(sentData) || addr[3] != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((i % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+  
+  //Test enough times to ensure that we have hit every possible data value with a random address
+  for (int j=0; j<256; j++)
+  {
+
+    int8_t d=random(255);
+    uint16_t baseAddr=random(65535);
+    byte baseAddressBytes[] = {lowByte(baseAddr), highByte(baseAddr)};
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'Y', baseAddressBytes);
+
+    long sentData=j;
+    helper_ld_X_n('L',lowByte(sentData));
+    data[2]=d;
+
+    //Load the data in Register L into the memory address (IY+d)
+    writeSingleInstruction(data, 2, 1, 1, addr);
+
+    if (data[3] != lowByte(sentData) || addr[3] != baseAddr+d) {
+      error=true;
+    } 
+    
+    //Display progress
+    if ((j % 16) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
 }
 bool LD_BC_NN() {
   //Mnemonic:  LD BC,nn
