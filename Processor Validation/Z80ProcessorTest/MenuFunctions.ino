@@ -59,6 +59,7 @@ void showMainMenu() {
       default:
         Serial.println(F("Invalid selection. Try again."));
     }
+    //randomSeed(millis());
     Serial.println();
   }
 }

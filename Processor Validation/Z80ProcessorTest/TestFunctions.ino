@@ -99,10 +99,9 @@ bool LD_B_N() {
 
   //Initialize some variables
   bool error = false;
-  byte outputData[] = {0x00, 0x00, 0x00};
+
   uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
-
-
+  byte outputData[] = {0x00, 0x00, 0x00};
   //Test enough times to ensure that we have hit every possible data value
   for (unsigned int i = 0; i < 256; i++) {
 
@@ -118,8 +117,6 @@ bool LD_B_N() {
     }
 
     helper_ld_ptr_nn_a(outputData, addr);
-
-
    
     //Test if the Data Bus reads the expected value
     if (outputData[2] != i) {
@@ -142,6 +139,8 @@ bool LD_B_N() {
   } else {
     Serial.println(F("Pass"));
   }
+
+
 }
 bool LD_C_N() {
   //Mnemonic:  LD C,n
@@ -414,14 +413,14 @@ bool LD_PTR_HL_N() {
     writeSingleInstruction(data, 1, 1, 1, addr);
     if (data[2] != lowByte(sentData) || addr[2] != i) {
       error=true;
-      Serial.print(F("Expected data: "));
+      /*Serial.print(F("Expected data: "));
       Serial.print(lowByte(sentData),HEX);
       Serial.print(F(" got: "));
       Serial.print(data[2],HEX);
       Serial.print(F(" Expected address:"));
       Serial.print(i, HEX);
       Serial.print(F(" got: "));
-      Serial.println(addr[2],HEX);
+      Serial.println(addr[2],HEX);*/
 
     } 
     
@@ -4724,12 +4723,12 @@ bool LD_I_A() {
       digitalWriteFast(WAIT, HIGH);
 
       //If the clock is set to the 32MHz setting, the readAddressBus function takes longer than the refresh cycle.  There is no way to pause the refresh cycle, so we need to slow the clock
-      if (prescaler==1){
+      /*if (prescaler==1){
         TCCR4B &= ~eraser;
         prescaler = 2;
         TCCR4B |= prescaler;
         prevVal=1;
-      }
+      }*/
 
       //Wait for the refresh cycle to start
       while (digitalReadFast(RFSH)) {
@@ -4740,12 +4739,12 @@ bool LD_I_A() {
       addr[i]=readAddressBus(0);
 
       //If we slowed the clock down, speed it back up
-      if (prevVal == 1){
+      /*if (prevVal == 1){
         TCCR4B &= ~eraser;
         prescaler = 1;
         TCCR4B |= prescaler;
         prevVal=0;
-      }
+      }*/
 
       //Carry on with the normal M1 Cycle routine
       while (!digitalReadFast(RFSH)) {
@@ -4823,13 +4822,13 @@ bool LD_R_A() {
       }
       digitalWriteFast(WAIT, HIGH);
 
-      //If the clock is set to the 32MHz setting, the readAddressBus function takes longer than the refresh cycle.  There is no way to pause the refresh cycle, so we need to slow the clock
+      /*//If the clock is set to the 32MHz setting, the readAddressBus function takes longer than the refresh cycle.  There is no way to pause the refresh cycle, so we need to slow the clock
       if (prescaler==1){
         TCCR4B &= ~eraser;
         prescaler = 2;
         TCCR4B |= prescaler;
         prevVal=1;
-      }
+      }*/
 
       //Wait for the refresh cycle to start
       while (digitalReadFast(RFSH)) {
@@ -4839,13 +4838,13 @@ bool LD_R_A() {
       //Capture the address
       addr[i]=readAddressBus(0);
 
-      //If we slowed the clock down, speed it back up
+      /*//If we slowed the clock down, speed it back up
       if (prevVal == 1){
         TCCR4B &= ~eraser;
         prescaler = 1;
         TCCR4B |= prescaler;
         prevVal=0;
-      }
+      }*/
 
       //Carry on with the normal M1 Cycle routine
       while (!digitalReadFast(RFSH)) {
@@ -8117,14 +8116,6 @@ bool LD_BC_NN() {
     //Test if the Data Bus reads the expected value
     if (data[2] != lowByte(i) || data[3] != highByte(i)) {
       error = true;
-      Serial.print(F("Expected Low Byte: "));
-      Serial.print(lowByte(i));
-      Serial.print(F(" got "));
-      Serial.print(data[2]);
-      Serial.print(F(" Expected High Byte: "));
-      Serial.print(highByte(i));
-      Serial.print(F(" got "));
-      Serial.println(data[3]);
     }
 
     //Display progress
@@ -8170,14 +8161,6 @@ bool LD_DE_NN() {
     //Test if the Data Bus reads the expected value
     if (data[2] != lowByte(i) || data[3] != highByte(i)) {
       error = true;
-      Serial.print(F("Expected Low Byte: "));
-      Serial.print(lowByte(i));
-      Serial.print(F(" got "));
-      Serial.print(data[2]);
-      Serial.print(F(" Expected High Byte: "));
-      Serial.print(highByte(i));
-      Serial.print(F(" got "));
-      Serial.println(data[3]);
     }
 
     //Display progress
@@ -8223,14 +8206,6 @@ bool LD_HL_NN() {
     //Test if the Data Bus reads the expected value
     if (data[2] != lowByte(i) || data[3] != highByte(i)) {
       error = true;
-      Serial.print(F("Expected Low Byte: "));
-      Serial.print(lowByte(i));
-      Serial.print(F(" got "));
-      Serial.print(data[2]);
-      Serial.print(F(" Expected High Byte: "));
-      Serial.print(highByte(i));
-      Serial.print(F(" got "));
-      Serial.println(data[3]);
     }
 
     //Display progress
@@ -8276,14 +8251,6 @@ bool LD_SP_NN() {
     //Test if the Data Bus reads the expected value
     if (data[2] != lowByte(i) || data[3] != highByte(i)) {
       error = true;
-      Serial.print(F("Expected Low Byte: "));
-      Serial.print(lowByte(i));
-      Serial.print(F(" got "));
-      Serial.print(data[2]);
-      Serial.print(F(" Expected High Byte: "));
-      Serial.print(highByte(i));
-      Serial.print(F(" got "));
-      Serial.println(data[3]);
     }
 
     //Display progress
@@ -8329,14 +8296,6 @@ bool LD_IX_NN() {
     //Test if the Data Bus reads the expected value
     if (data[2] != lowByte(i) || data[3] != highByte(i)) {
       error = true;
-      Serial.print(F("Expected Low Byte: "));
-      Serial.print(lowByte(i),HEX);
-      Serial.print(F(" got "));
-      Serial.print(data[2],HEX);
-      Serial.print(F(" Expected High Byte: "));
-      Serial.print(highByte(i),HEX);
-      Serial.print(F(" got "));
-      Serial.println(data[3],HEX);
     }
 
     //Display progress
@@ -8382,14 +8341,6 @@ bool LD_IY_NN() {
     //Test if the Data Bus reads the expected value
     if (data[2] != lowByte(i) || data[3] != highByte(i)) {
       error = true;
-      Serial.print(F("Expected Low Byte: "));
-      Serial.print(lowByte(i));
-      Serial.print(F(" got "));
-      Serial.print(data[2]);
-      Serial.print(F(" Expected High Byte: "));
-      Serial.print(highByte(i));
-      Serial.print(F(" got "));
-      Serial.println(data[3]);
     }
 
     //Display progress
@@ -8406,43 +8357,1000 @@ bool LD_IY_NN() {
   }
 }
 bool LD_BC_PTR_NN() {
-  Serial.println(F("...Test not written"));
+  //Mnemonic:  LD BC,(nn)
+  //Assembled command: 0xED4B
+  //Expected behavior: A value is loaded into Register BC from memory address (nn)
+  //Test methodology: Load a random value into Register BC.  The value should be "read" from memory address (nn), repeat for all memory addresses.  Secondly, load each possible value into BC from a random memory address (nn).
+  //Success criteria: Verify that the returned data matches the loaded data and that the source address matches (nn).
+
+  //Initialize some variables
+  bool error = false;
+  byte data[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  uint16_t sentData=0x00;
+  uint16_t rcvdData=0x00;
+  uint16_t sentAddr=0x00;
+  uint16_t rcvdAddr=0x00;
+
+  char targetMnemonic[]="LD BC,(nn)";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+
+  Serial.print(F(" (this will take several minutes)"));
+  //Test enough times to ensure that we have hit every possible address value
+  for (unsigned int i = 0; i < 65535; i++) {
+
+    sentData=random(65535);
+
+    data[0]=highByte(inst.opCode);
+    data[1]=lowByte(inst.opCode);
+    data[2]=lowByte(i);
+    data[3]=highByte(i);
+    data[4]=lowByte(sentData);
+    data[5]=highByte(sentData);
+
+    writeSingleInstruction(data, 2, 4, 0, addr);
+    rcvdAddr=addr[4];
+    
+    helper_ld_ptr_nn_XY('B', 'C', data);
+
+    //Test if the Data Bus and the written address read the expected value
+    if (data[2] != lowByte(sentData) || data[3] != highByte(sentData) || rcvdAddr != i) {
+      error = true;
+    }
+
+    //Display progress
+    if ((i % 2000) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+
+  //Test enough times to ensure that we have hit every possible data value
+  for (unsigned int i = 0; i < 65535; i++) {
+
+    sentAddr=random(65535);
+
+    data[0]=highByte(inst.opCode);
+    data[1]=lowByte(inst.opCode);
+    data[2]=lowByte(sentAddr);
+    data[3]=highByte(sentAddr);
+    data[4]=lowByte(i);
+    data[5]=highByte(i);
+
+    writeSingleInstruction(data, 2, 4, 0, addr);
+    rcvdAddr=addr[4];
+    
+    helper_ld_ptr_nn_XY('B', 'C', data);
+
+    //Test if the Data Bus reads the expected value
+    if (data[2] != lowByte(i) || data[3] != highByte(i) || rcvdAddr != sentAddr) {
+      error = true;
+    }
+
+    //Display progress
+    if ((i % 2000) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
 }
 bool LD_DE_PTR_NN() {
-  Serial.println(F("...Test not written"));
+  //Mnemonic:  LD DE,(nn)
+  //Assembled command: 0xED5B
+  //Expected behavior: A value is loaded into Register DE from memory address (nn)
+  //Test methodology: Load a random value into Register DE.  The value should be "read" from memory address (nn), repeat for all memory addresses.  Secondly, load each possible value into DE from a random memory address (nn).
+  //Success criteria: Verify that the returned data matches the loaded data and that the source address matches (nn).
+
+  //Initialize some variables
+  bool error = false;
+  byte data[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  uint16_t sentData=0x00;
+  uint16_t rcvdData=0x00;
+  uint16_t sentAddr=0x00;
+  uint16_t rcvdAddr=0x00;
+
+  char targetMnemonic[]="LD DE,(nn)";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+
+  Serial.print(F(" (this will take several minutes)"));
+  //Test enough times to ensure that we have hit every possible address value
+  for (unsigned int i = 0; i < 65535; i++) {
+
+    sentData=random(65535);
+
+    data[0]=highByte(inst.opCode);
+    data[1]=lowByte(inst.opCode);
+    data[2]=lowByte(i);
+    data[3]=highByte(i);
+    data[4]=lowByte(sentData);
+    data[5]=highByte(sentData);
+
+    writeSingleInstruction(data, 2, 4, 0, addr);
+    rcvdAddr=addr[4];
+    
+    helper_ld_ptr_nn_XY('D', 'E', data);
+
+    //Test if the Data Bus and the written address read the expected value
+    if (data[2] != lowByte(sentData) || data[3] != highByte(sentData) || rcvdAddr != i) {
+      error = true;
+    }
+
+    //Display progress
+    if ((i % 2000) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+
+  //Test enough times to ensure that we have hit every possible data value
+  for (unsigned int i = 0; i < 65535; i++) {
+
+    sentAddr=random(65535);
+
+    data[0]=highByte(inst.opCode);
+    data[1]=lowByte(inst.opCode);
+    data[2]=lowByte(sentAddr);
+    data[3]=highByte(sentAddr);
+    data[4]=lowByte(i);
+    data[5]=highByte(i);
+
+    writeSingleInstruction(data, 2, 4, 0, addr);
+    rcvdAddr=addr[4];
+    
+    helper_ld_ptr_nn_XY('D', 'E', data);
+
+    //Test if the Data Bus reads the expected value
+    if (data[2] != lowByte(i) || data[3] != highByte(i) || rcvdAddr != sentAddr) {
+      error = true;
+    }
+
+    //Display progress
+    if ((i % 2000) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
 }
 bool LD_HL_PTR_NN() {
-  Serial.println(F("...Test not written"));
+  //Mnemonic:  LD HL,(nn)
+  //Assembled command: 0x2A
+  //Expected behavior: A value is loaded into Register BC from memory address (nn)
+  //Test methodology: Load a random value into Register BC.  The value should be "read" from memory address (nn), repeat for all memory addresses.  Secondly, load each possible value into BC from a random memory address (nn).
+  //Success criteria: Verify that the returned data matches the loaded data and that the source address matches (nn).
+
+  //Initialize some variables
+  bool error = false;
+  byte data[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  uint16_t sentData=0x00;
+  uint16_t rcvdData=0x00;
+  uint16_t sentAddr=0x00;
+  uint16_t rcvdAddr=0x00;
+
+  char targetMnemonic[]="LD HL,(nn)";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+
+  Serial.print(F(" (this will take several minutes)"));
+
+  //Test enough times to ensure that we have hit every possible address value
+  for (unsigned int i = 0; i < 65535; i++) {
+
+    sentData=random(65535);
+
+    data[0]=inst.opCode;
+    data[1]=lowByte(i);
+    data[2]=highByte(i);
+    data[3]=lowByte(sentData);
+    data[4]=highByte(sentData);
+
+    writeSingleInstruction(data, 1, 4, 0, addr);
+    rcvdAddr=addr[3];
+
+    for (int j=0; j<6; j++){
+      data[j]=0;
+    }
+   
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+
+    helper_ld_ptr_nn_XY('H', 'L', data);
+    if (data[2] != lowByte(sentData) || data[3] != highByte(sentData) || rcvdAddr != i) {
+      error = true;
+      Serial.println(F("Fail in address testing."));    
+      Serial.print(data[4],HEX);
+      Serial.print(F(" "));
+      Serial.print(highByte(sentData),HEX);
+      Serial.print(F(" "));
+      Serial.print(data[3],HEX);
+      Serial.print(F(" "));
+      Serial.print(lowByte(sentData),HEX);
+      Serial.print(F(" "));
+      Serial.print(i,HEX);
+      Serial.print(F(" "));
+      Serial.println(rcvdAddr,HEX);
+
+    }
+
+    //Display progress
+    if ((i % 2000) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+
+  //Test enough times to ensure that we have hit every possible data value
+  for (unsigned int i = 0; i < 65535; i++) {
+
+    sentAddr=random(65535);
+
+    data[0]=inst.opCode;
+    data[1]=lowByte(sentAddr);
+    data[2]=highByte(sentAddr);
+    data[3]=lowByte(i);
+    data[4]=highByte(i);
+
+    writeSingleInstruction(data, 1, 4, 0, addr);
+    rcvdAddr=addr[3];
+    
+    for (int j=0; j<6; j++){
+      data[j]=0;
+    }
+    for (int j=0; j<6; j++){
+      addr[j]=0;
+    }
+    helper_ld_ptr_nn_XY('H', 'L', data);
+
+    //Test if the Data Bus reads the expected value
+    if (data[2] != lowByte(i) || data[3] != highByte(i) || rcvdAddr != sentAddr) {
+      error = true;
+      Serial.println(F("Fail in data testing."));
+    }
+
+    //Display progress
+    if ((i % 2000) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
 }
 bool LD_SP_PTR_NN() {
-  Serial.println(F("...Test not written"));
+  //Mnemonic:  LD BC,(nn)
+  //Assembled command: 0xED7B
+  //Expected behavior: A value is loaded into Register SP from memory address (nn)
+  //Test methodology: Load a random value into Register SP.  The value should be "read" from memory address (nn), repeat for all memory addresses.  Secondly, load each possible value into SP from a random memory address (nn).
+  //Success criteria: Verify that the returned data matches the loaded data and that the source address matches (nn).
+
+  //Initialize some variables
+  bool error = false;
+  byte data[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  uint16_t sentData=0x00;
+  uint16_t rcvdData=0x00;
+  uint16_t sentAddr=0x00;
+  uint16_t rcvdAddr=0x00;
+
+  char targetMnemonic[]="LD SP,(nn)";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+
+  Serial.print(F(" (this will take several minutes)"));
+  //Test enough times to ensure that we have hit every possible address value
+  for (unsigned int i = 0; i < 65535; i++) {
+
+    sentData=random(65535);
+
+    data[0]=highByte(inst.opCode);
+    data[1]=lowByte(inst.opCode);
+    data[2]=lowByte(i);
+    data[3]=highByte(i);
+    data[4]=lowByte(sentData);
+    data[5]=highByte(sentData);
+
+    writeSingleInstruction(data, 2, 4, 0, addr);
+    rcvdAddr=addr[4];
+    
+    helper_ld_ptr_nn_XY('S', 'P', data);
+
+    //Test if the Data Bus and the written address read the expected value
+    if (data[2] != lowByte(sentData) || data[3] != highByte(sentData) || rcvdAddr != i) {
+      error = true;
+    }
+
+    //Display progress
+    if ((i % 2000) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+
+  //Test enough times to ensure that we have hit every possible data value
+  for (unsigned int i = 0; i < 65535; i++) {
+
+    sentAddr=random(65535);
+
+    data[0]=highByte(inst.opCode);
+    data[1]=lowByte(inst.opCode);
+    data[2]=lowByte(sentAddr);
+    data[3]=highByte(sentAddr);
+    data[4]=lowByte(i);
+    data[5]=highByte(i);
+
+    writeSingleInstruction(data, 2, 4, 0, addr);
+    rcvdAddr=addr[4];
+    
+    helper_ld_ptr_nn_XY('S', 'P', data);
+
+    //Test if the Data Bus reads the expected value
+    if (data[2] != lowByte(i) || data[3] != highByte(i) || rcvdAddr != sentAddr) {
+      error = true;
+    }
+
+    //Display progress
+    if ((i % 2000) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
 }
 bool LD_IX_PTR_NN() {
-  Serial.println(F("...Test not written"));
+  //Mnemonic:  LD IX,(nn)
+  //Assembled command: 0xDD2A
+  //Expected behavior: A value is loaded into Register IX from memory address (nn)
+  //Test methodology: Load a random value into Register IX.  The value should be "read" from memory address (nn), repeat for all memory addresses.  Secondly, load each possible value into IX from a random memory address (nn).
+  //Success criteria: Verify that the returned data matches the loaded data and that the source address matches (nn).
+
+  //Initialize some variables
+  bool error = false;
+  byte data[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  uint16_t sentData=0x00;
+  uint16_t rcvdData=0x00;
+  uint16_t sentAddr=0x00;
+  uint16_t rcvdAddr=0x00;
+
+  char targetMnemonic[]="LD IX,(nn)";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+
+  Serial.print(F(" (this will take several minutes)"));
+  //Test enough times to ensure that we have hit every possible address value
+  for (unsigned int i = 0; i < 65535; i++) {
+
+    sentData=random(65535);
+
+    data[0]=highByte(inst.opCode);
+    data[1]=lowByte(inst.opCode);
+    data[2]=lowByte(i);
+    data[3]=highByte(i);
+    data[4]=lowByte(sentData);
+    data[5]=highByte(sentData);
+
+    writeSingleInstruction(data, 2, 4, 0, addr);
+    rcvdAddr=addr[4];
+    
+    helper_ld_ptr_nn_XY('I', 'X', data);
+
+    //Test if the Data Bus and the written address read the expected value
+    if (data[2] != lowByte(sentData) || data[3] != highByte(sentData) || rcvdAddr != i) {
+      error = true;
+    }
+
+    //Display progress
+    if ((i % 2000) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+
+  //Test enough times to ensure that we have hit every possible data value
+  for (unsigned int i = 0; i < 65535; i++) {
+
+    sentAddr=random(65535);
+
+    data[0]=highByte(inst.opCode);
+    data[1]=lowByte(inst.opCode);
+    data[2]=lowByte(sentAddr);
+    data[3]=highByte(sentAddr);
+    data[4]=lowByte(i);
+    data[5]=highByte(i);
+
+    writeSingleInstruction(data, 2, 4, 0, addr);
+    rcvdAddr=addr[4];
+    
+    helper_ld_ptr_nn_XY('I', 'X', data);
+
+    //Test if the Data Bus reads the expected value
+    if (data[2] != lowByte(i) || data[3] != highByte(i) || rcvdAddr != sentAddr) {
+      error = true;
+    }
+
+    //Display progress
+    if ((i % 2000) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
 }
 bool LD_IY_PTR_NN() {
-  Serial.println(F("...Test not written"));
+  //Mnemonic:  LD IY,(nn)
+  //Assembled command: 0xFD2A
+  //Expected behavior: A value is loaded into Register IY from memory address (nn)
+  //Test methodology: Load a random value into Register IY.  The value should be "read" from memory address (nn), repeat for all memory addresses.  Secondly, load each possible value into IY from a random memory address (nn).
+  //Success criteria: Verify that the returned data matches the loaded data and that the source address matches (nn).
+
+  //Initialize some variables
+  bool error = false;
+  byte data[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  uint16_t sentData=0x00;
+  uint16_t rcvdData=0x00;
+  uint16_t sentAddr=0x00;
+  uint16_t rcvdAddr=0x00;
+
+  char targetMnemonic[]="LD IY,(nn)";
+  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
+  instructionDefinitionType inst;
+  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
+
+  Serial.print(F(" (this will take several minutes)"));
+  //Test enough times to ensure that we have hit every possible address value
+  for (unsigned int i = 0; i < 65535; i++) {
+
+    sentData=random(65535);
+
+    data[0]=highByte(inst.opCode);
+    data[1]=lowByte(inst.opCode);
+    data[2]=lowByte(i);
+    data[3]=highByte(i);
+    data[4]=lowByte(sentData);
+    data[5]=highByte(sentData);
+
+    writeSingleInstruction(data, 2, 4, 0, addr);
+    rcvdAddr=addr[4];
+    
+    helper_ld_ptr_nn_XY('I', 'Y', data);
+
+    //Test if the Data Bus and the written address read the expected value
+    if (data[2] != lowByte(sentData) || data[3] != highByte(sentData) || rcvdAddr != i) {
+      error = true;
+    }
+
+    //Display progress
+    if ((i % 2000) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+
+  //Test enough times to ensure that we have hit every possible data value
+  for (unsigned int i = 0; i < 65535; i++) {
+
+    sentAddr=random(65535);
+
+    data[0]=highByte(inst.opCode);
+    data[1]=lowByte(inst.opCode);
+    data[2]=lowByte(sentAddr);
+    data[3]=highByte(sentAddr);
+    data[4]=lowByte(i);
+    data[5]=highByte(i);
+
+    writeSingleInstruction(data, 2, 4, 0, addr);
+    rcvdAddr=addr[4];
+    
+    helper_ld_ptr_nn_XY('I', 'Y', data);
+
+    //Test if the Data Bus reads the expected value
+    if (data[2] != lowByte(i) || data[3] != highByte(i) || rcvdAddr != sentAddr) {
+      error = true;
+    }
+
+    //Display progress
+    if ((i % 2000) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
 }
 bool LD_PTR_NN_BC() {
-  Serial.println(F("...Test not written"));
+  //Mnemonic:  LD (nn),BC
+  //Assembled command: 0xED43
+  //Expected behavior: A value is read from Register BC into a specified memory address
+  //Test methodology: Load a random value into Register BC, write the value of Register BC to each memory address to verify.  Note:  All possible data values were tested in the LD BC,nn test
+  //Success criteria: Verify that the returned data matches the loaded data and that the written address matches the target address.
+
+  //Initialize some variables
+  bool error = false;
+  byte data[] = {0x00, 0x00, 0x00, 0x00};
+  uint16_t sentData=0x00;
+
+  //Test enough times to ensure that we have hit every possible data value
+  for (unsigned int i = 0; i < 65535; i++) {
+
+    sentData=random(65535);
+    data[0]=lowByte(sentData);
+    data[1]=highByte(sentData);
+    //Send the LD A,n command
+    helper_ld_XY_nn('B', 'C', data);
+
+    //Read the data in the HL register   
+    for (int j=0; j<4; j++) {
+      data[j]=0x0;
+    }
+    data[0]=lowByte(i);
+    data[1]=highByte(i);
+
+    helper_ld_ptr_nn_XY('B', 'C', data);
+
+   
+    //Test if the Data Bus reads the expected value
+    if (data[0] != lowByte(i) || data[1] != highByte(i) || data[2] != lowByte(sentData) || data[3] != highByte(sentData)) {
+      error = true;
+      Serial.print(F("Expected address: "));
+      Serial.print(i,HEX);
+      Serial.print(F(" got: "));
+      Serial.print(data[1],HEX);
+      Serial.print(data[0],HEX);
+      Serial.print(F(" Expected data: "));
+      Serial.print(sentData,HEX);
+      Serial.print(F(" got: "));
+      Serial.print(data[3],HEX);
+      Serial.print(data[2],HEX);
+      Serial.println(F(""));
+    }
+
+
+
+    //Display progress
+    if ((i % 1000) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
 }
 bool LD_PTR_NN_DE() {
-  Serial.println(F("...Test not written"));
+  //Mnemonic:  LD (nn),DE
+  //Assembled command: 0xED53
+  //Expected behavior: A value is read from Register DE into a specified memory address
+  //Test methodology: Load a random value into Register DE, write the value of Register DE to each memory address to verify.  Note:  All possible data values were tested in the LD DE,nn test
+  //Success criteria: Verify that the returned data matches the loaded data and that the written address matches the target address.
+
+  //Initialize some variables
+  bool error = false;
+  byte data[] = {0x00, 0x00, 0x00, 0x00};
+  uint16_t sentData=0x00;
+
+  //Test enough times to ensure that we have hit every possible data value
+  for (unsigned int i = 0; i < 65535; i++) {
+
+    sentData=random(65535);
+    data[0]=lowByte(sentData);
+    data[1]=highByte(sentData);
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('D', 'E', data);
+
+    //Read the data in the DE register   
+    for (int j=0; j<4; j++) {
+      data[j]=0x0;
+    }
+    data[0]=lowByte(i);
+    data[1]=highByte(i);
+
+    helper_ld_ptr_nn_XY('D', 'E', data);
+
+   
+    //Test if the Data Bus reads the expected value
+    if (data[0] != lowByte(i) || data[1] != highByte(i) || data[2] != lowByte(sentData) || data[3] != highByte(sentData)) {
+      error = true;
+      Serial.print(F("Expected address: "));
+      Serial.print(i,HEX);
+      Serial.print(F(" got: "));
+      Serial.print(data[1],HEX);
+      Serial.print(data[0],HEX);
+      Serial.print(F(" Expected data: "));
+      Serial.print(sentData,HEX);
+      Serial.print(F(" got: "));
+      Serial.print(data[3],HEX);
+      Serial.print(data[2],HEX);
+      Serial.println(F(""));
+    }
+
+
+
+    //Display progress
+    if ((i % 1000) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
 }
 bool LD_PTR_NN_HL() {
-  Serial.println(F("...Test not written"));
+  //Mnemonic:  LD (nn),HL
+  //Assembled command: 0x22
+  //Expected behavior: A value is read from Register HL into a specified memory address
+  //Test methodology: Load a random value into Register HL, write the value of Register BC to each memory address to verify.  Note:  All possible data values were tested in the LD HL,nn test
+  //Success criteria: Verify that the returned data matches the loaded data and that the written address matches the target address.
+
+  //Initialize some variables
+  bool error = false;
+  byte data[] = {0x00, 0x00, 0x00, 0x00};
+  uint16_t sentData=0x00;
+
+  //Test enough times to ensure that we have hit every possible data value
+  for (unsigned int i = 0; i < 65535; i++) {
+
+    sentData=random(65535);
+    data[0]=lowByte(sentData);
+    data[1]=highByte(sentData);
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('H', 'L', data);
+
+    //Read the data at the address in the HL register   
+    for (int j=0; j<4; j++) {
+      data[j]=0x0;
+    }
+    data[0]=lowByte(i);
+    data[1]=highByte(i);
+
+    /*Serial.print(F("Sent Address: "));
+    Serial.print(i,HEX);
+    Serial.print(F(" Sent Data: "));
+    Serial.println(sentData,HEX);*/
+    helper_ld_ptr_nn_XY('H', 'L', data);
+
+   
+    //Test if the Data Bus reads the expected value
+    if (data[0] != lowByte(i) || data[1] != highByte(i) || data[2] != lowByte(sentData) || data[3] != highByte(sentData)) {
+      error = true;
+    }
+
+
+
+    //Display progress
+    if ((i % 1000) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
 }
 bool LD_PTR_NN_SP() {
-  Serial.println(F("...Test not written"));
+  //Mnemonic:  LD (nn),SP
+  //Assembled command: 0xED73
+  //Expected behavior: A value is read from Register SP into a specified memory address
+  //Test methodology: Load a random value into Register SP, write the value of Register SP to each memory address to verify.  Note:  All possible data values were tested in the LD SP,nn test
+  //Success criteria: Verify that the returned data matches the loaded data and that the written address matches the target address.
+
+  //Initialize some variables
+  bool error = false;
+  byte data[] = {0x00, 0x00, 0x00, 0x00};
+  uint16_t sentData=0x00;
+
+  //Test enough times to ensure that we have hit every possible data value
+  for (unsigned int i = 0; i < 65535; i++) {
+
+    sentData=random(65535);
+    data[0]=lowByte(sentData);
+    data[1]=highByte(sentData);
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('S', 'P', data);
+
+    //Read the data in the SP register   
+    for (int j=0; j<4; j++) {
+      data[j]=0x0;
+    }
+    data[0]=lowByte(i);
+    data[1]=highByte(i);
+
+    helper_ld_ptr_nn_XY('S', 'P', data);
+
+   
+    //Test if the Data Bus reads the expected value
+    if (data[0] != lowByte(i) || data[1] != highByte(i) || data[2] != lowByte(sentData) || data[3] != highByte(sentData)) {
+      error = true;
+      Serial.print(F("Expected address: "));
+      Serial.print(i,HEX);
+      Serial.print(F(" got: "));
+      Serial.print(data[1],HEX);
+      Serial.print(data[0],HEX);
+      Serial.print(F(" Expected data: "));
+      Serial.print(sentData,HEX);
+      Serial.print(F(" got: "));
+      Serial.print(data[3],HEX);
+      Serial.print(data[2],HEX);
+      Serial.println(F(""));
+    }
+
+
+
+    //Display progress
+    if ((i % 1000) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
 }
 bool LD_PTR_NN_IX() {
-  Serial.println(F("...Test not written"));
+  //Mnemonic:  LD (nn),IX
+  //Assembled command: 0xDD22
+  //Expected behavior: A value is read from Register IX into a specified memory address
+  //Test methodology: Load a random value into Register IX, write the value of Register IX to each memory address to verify.  Note:  All possible data values were tested in the LD IX,nn test
+  //Success criteria: Verify that the returned data matches the loaded data and that the written address matches the target address.
+
+  //Initialize some variables
+  bool error = false;
+  byte data[] = {0x00, 0x00, 0x00, 0x00};
+  uint16_t sentData=0x00;
+
+  //Test enough times to ensure that we have hit every possible data value
+  for (unsigned int i = 0; i < 65535; i++) {
+
+    sentData=random(65535);
+    data[0]=lowByte(sentData);
+    data[1]=highByte(sentData);
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'X', data);
+
+    //Read the data in the IX register   
+    for (int j=0; j<4; j++) {
+      data[j]=0x0;
+    }
+    data[0]=lowByte(i);
+    data[1]=highByte(i);
+
+    helper_ld_ptr_nn_XY('I', 'X', data);
+
+   
+    //Test if the Data Bus reads the expected value
+    if (data[0] != lowByte(i) || data[1] != highByte(i) || data[2] != lowByte(sentData) || data[3] != highByte(sentData)) {
+      error = true;
+      Serial.print(F("Expected address: "));
+      Serial.print(i,HEX);
+      Serial.print(F(" got: "));
+      Serial.print(data[1],HEX);
+      Serial.print(data[0],HEX);
+      Serial.print(F(" Expected data: "));
+      Serial.print(sentData,HEX);
+      Serial.print(F(" got: "));
+      Serial.print(data[3],HEX);
+      Serial.print(data[2],HEX);
+      Serial.println(F(""));
+    }
+
+
+
+    //Display progress
+    if ((i % 1000) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
 }
 bool LD_PTR_NN_IY() {
-  Serial.println(F("...Test not written"));
+  //Mnemonic:  LD (nn),IY
+  //Assembled command: 0xFD22
+  //Expected behavior: A value is read from Register IY into a specified memory address
+  //Test methodology: Load a random value into Register IY, write the value of Register IY to each memory address to verify.  Note:  All possible data values were tested in the LD IY,nn test
+  //Success criteria: Verify that the returned data matches the loaded data and that the written address matches the target address.
+
+  //Initialize some variables
+  bool error = false;
+  byte data[] = {0x00, 0x00, 0x00, 0x00};
+  uint16_t sentData=0x00;
+
+  //Test enough times to ensure that we have hit every possible data value
+  for (unsigned int i = 0; i < 65535; i++) {
+
+    sentData=random(65535);
+    data[0]=lowByte(sentData);
+    data[1]=highByte(sentData);
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('I', 'Y', data);
+
+    //Read the data in the IY register   
+    for (int j=0; j<4; j++) {
+      data[j]=0x0;
+    }
+    data[0]=lowByte(i);
+    data[1]=highByte(i);
+    data[2]=lowByte(sentData);
+    data[3]=highByte(sentData);
+
+    helper_ld_ptr_nn_XY('I', 'Y', data);
+
+   
+    //Test if the Data Bus reads the expected value
+    if (data[0] != lowByte(i) || data[1] != highByte(i) || data[2] != lowByte(sentData) || data[3] != highByte(sentData)) {
+      error = true;
+      Serial.print(F("Expected address: "));
+      Serial.print(i,HEX);
+      Serial.print(F(" got: "));
+      Serial.print(data[1],HEX);
+      Serial.print(data[0],HEX);
+      Serial.print(F(" Expected data: "));
+      Serial.print(sentData,HEX);
+      Serial.print(F(" got: "));
+      Serial.print(data[3],HEX);
+      Serial.print(data[2],HEX);
+      Serial.println(F(""));
+      Serial.println(F("Debug Data: "));
+      for (int l=0; l<6; l++){
+        Serial.print(debugData[l],HEX);
+        Serial.print(F(" "));
+      }
+      Serial.println(F(""));
+      Serial.println(F("Debug Address: "));
+      for (int l=0; l<6; l++){
+        Serial.print(debugAddr[l],HEX);
+        Serial.print(F(" "));
+      }
+      Serial.println(F(""));
+    }
+
+
+
+    //Display progress
+    if ((i % 1000) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
 }
 bool LD_SP_HL() {
-  Serial.println(F("...Test not written"));
+  //Mnemonic:  LD SP,HL
+  //Assembled command: 0xFD23
+  //Expected behavior: A value is read from Register IY into a specified memory address
+  //Test methodology: Load a random value into Register IYDE, write the value of Register IY to each memory address to verify.  Note:  All possible data values were tested in the LD IY,nn test
+  //Success criteria: Verify that the returned data matches the loaded data and that the written address matches the target address.
+
+  //Initialize some variables
+  bool error = false;
+  byte data[] = {0x00, 0x00, 0x00, 0x00};
+  uint16_t sentData=0x00;
+
+  //Test enough times to ensure that we have hit every possible data value
+  for (unsigned int i = 0; i < 65535; i++) {
+
+    sentData=random(65535);
+    data[0]=lowByte(sentData);
+    data[1]=highByte(sentData);
+    //Send the LD XY,nn command
+    helper_ld_XY_nn('H', 'L', data);
+
+    //Read the data in the IY register   
+    for (int j=0; j<4; j++) {
+      data[j]=0x0;
+    }
+    data[0]=lowByte(i);
+    data[1]=highByte(i);
+    data[2]=lowByte(sentData);
+    data[3]=highByte(sentData);
+
+    helper_ld_ptr_nn_XY('H', 'L', data);
+
+   
+    //Test if the Data Bus reads the expected value
+    if (data[0] != lowByte(i) || data[1] != highByte(i) || data[2] != lowByte(sentData) || data[3] != highByte(sentData)) {
+      error = true;
+      Serial.print(F("Expected address: "));
+      Serial.print(i,HEX);
+      Serial.print(F(" got: "));
+      Serial.print(data[1],HEX);
+      Serial.print(data[0],HEX);
+      Serial.print(F(" Expected data: "));
+      Serial.print(sentData,HEX);
+      Serial.print(F(" got: "));
+      Serial.print(data[3],HEX);
+      Serial.print(data[2],HEX);
+      Serial.println(F(""));
+      Serial.println(F("Debug Data: "));
+      for (int l=0; l<6; l++){
+        Serial.print(debugData[l],HEX);
+        Serial.print(F(" "));
+      }
+      Serial.println(F(""));
+      Serial.println(F("Debug Address: "));
+      for (int l=0; l<6; l++){
+        Serial.print(debugAddr[l],HEX);
+        Serial.print(F(" "));
+      }
+      Serial.println(F(""));
+    }
+
+
+
+    //Display progress
+    if ((i % 1000) == 0) {
+      Serial.print(F("."));
+    }
+  }
+
+  //Display status
+  if (error) {
+    Serial.println(F("Fail"));
+  } else {
+    Serial.println(F("Pass"));
+  }
 }
 bool LD_SP_IX() {
   Serial.println(F("...Test not written"));

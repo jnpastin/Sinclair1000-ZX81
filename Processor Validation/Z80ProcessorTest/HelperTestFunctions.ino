@@ -11,8 +11,7 @@ void helper_ld_X_n(char targetRegister, byte data)
   byte localData[]={inst.opCode, data};
  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
 
-  writeSingleInstruction(localData, 1, 1, 0, addr);
-
+ writeSingleInstruction(localData, 1, 1, 0, addr);
 }
 
 //Helper function to load register with an 16 bit value 
@@ -58,6 +57,7 @@ void helper_ld_X_Y(char targetRegister, char sourceRegister)
 
   uint16_t addr[]={0x00,};
   byte localData[]={inst.opCode};
+
   writeSingleInstruction(localData, 1, 0, 0, addr);
 }
 
@@ -69,19 +69,17 @@ void helper_ld_ptr_nn_a(byte* data, uint16_t* addresses)
   // [0] = Address Low Byte
   // [1] = Address High Byte
   // [2] = Data Byte to overwrite with the retrieved data
-  char targetMnemonic[]="LD (nn),A";
-  int instIndex=findInstructionIndexByMnemonic(targetMnemonic);
-  instructionDefinitionType inst;
-  memcpy_P(&inst, &InstructionDefinitions[instIndex], sizeof(inst));
 
-  byte localData[]={inst.opCode, data[0], data[1], data[2]};
+  //Add the instruction Op Code to the data array
+  byte localData[]={0x32, data[0], data[1], data[2]};
 
   writeSingleInstruction(localData, 1, 2, 1, addresses);
 
+  //Copy the returned data back to the original array
   data[2]=localData[3];
 }
 
-//Helper function to load memory address nn with the contents of the HL register
+//Helper function to load memory address nn with the contents of a 16 bit register
 void helper_ld_ptr_nn_XY(char targetRegister, char targetRegister2, byte* data)
 {
   //Expects a byte array consisting of:
@@ -104,29 +102,31 @@ void helper_ld_ptr_nn_XY(char targetRegister, char targetRegister2, byte* data)
     localData[2]=data[0];
     localData[3]=data[1];
     localData[4]=data[2];
+    localData[5]=data[3];
     numM1Cycles=2;
   } else {
     localData[0]=inst.opCode;
     localData[1]=data[0];
     localData[2]=data[1];
     localData[3]=data[2];
+    localData[4]=data[3];
     numM1Cycles=1;
   }
-  /*Serial.println(targetMnemonic);
-  Serial.println(inst.opCode,HEX);
-  for (int i=0; i<6; i++){
-    Serial.println (localData[i],HEX);
-  }*/
-  uint16_t addr[]={0x00, 0x00, 0x00, 0x00};
+  
+  uint16_t addr[]={0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+
   writeSingleInstruction(localData, numM1Cycles, 2, 2, addr);
-
-
 
   
   if (highByte(inst.opCode) != 0){
+
+    data[0]=lowByte(addr[4]);
+    data[1]=highByte(addr[4]);
     data[2]=localData[4];
     data[3]=localData[5];
   } else {
+    data[0]=localData[1];
+    data[1]=localData[2];
     data[2]=localData[3];
     data[3]=localData[4];
   }

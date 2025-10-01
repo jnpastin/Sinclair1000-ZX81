@@ -2,116 +2,219 @@
 #include <Arduino.h>
 #include <stdint.h>
 
+byte debugData[]={0,0,0,0,0,0,0};
+uint16_t debugAddr[]={0,0,0,0,0,0,0};
+
+//
+//Define some macros
+//
+
+  //Directly modify the state of GPIO pins
+  //This is significantly faster than digitalRead or digitalWrite
+  #define SET_PIN(port, mask) ((port) |= (mask))
+  #define CLEAR_PIN(port, mask) ((port) &= ~(mask))
+//
+
 //
 //Define Pins
 //
 
   //Data Bus
-  const int D_0 = 28;
-  const int D_1 = 30;
-  const int D_2 = 24;
-  const int D_3 = 5;
-  const int D_4 = 6;
-  const int D_5 = 4;
-  const int D_6 = 3;
-  const int D_7 = 26;
+  //Port L on ATMega2560
+  const int D_0 = 49;
+  const int D_1 = 48;
+  const int D_2 = 47;
+  const int D_3 = 46;
+  const int D_4 = 45;
+  const int D_5 = 44;
+  const int D_6 = 43;
+  const int D_7 = 42;
   const int DataBus[] = { D_0, D_1, D_2, D_3, D_4, D_5, D_6, D_7 };
 
   //Address Bus
-  const int A_0 = 43;
-  const int A_1 = 41;
-  const int A_2 = 39;
-  const int A_3 = 37;
-  const int A_4 = 35;
-  const int A_5 = 33;
-  const int A_6 = 31;
+  //Low Byte - Port A on ATMega2560
+  //High Byte - Port C on ATMega2560
+  const int A_0 = 22;
+  const int A_1 = 23;
+  const int A_2 = 24;
+  const int A_3 = 25;
+  const int A_4 = 26;
+  const int A_5 = 27;
+  const int A_6 = 28;
   const int A_7 = 29;
-  const int A_8 = 27;
-  const int A_9 = 25;
-  const int A_10 = 23;
-  const int A_11 = 12;
-  const int A_12 = 11;
-  const int A_13 = 10;
-  const int A_14 = 9;
-  const int A_15 = 8;
+  const int A_8 = 37;
+  const int A_9 = 36;
+  const int A_10 = 35;
+  const int A_11 = 34;
+  const int A_12 = 33;
+  const int A_13 = 32;
+  const int A_14 = 31;
+  const int A_15 = 30;
   const int AddressBus[] = { A_0, A_1, A_2, A_3, A_4, A_5, A_6, A_7, A_8, A_9, A_10, A_11, A_12, A_13, A_14, A_15 };
 
   //System Control
-  const int M1 = 49;
-  const int MREQ = 38;
-  const int IORQ = 40;
-  const int RD = 42;
-  const int WR = 44;
-  const int RFSH = 47;
+  //Port B on ATMega2560
+  const int M1 = 12;    
+  const int MREQ = 52;  
+  const int IORQ = 51;  
+  const int RD = 50;    
+  const int WR = 10;    
+  const int RFSH = 13;  
+  const int HALT = 4;  
 
   //CPU Control
-  const int HALT = 36;
-  const int WAIT = 48;
-  const int INT = 32;
-  const int NMI = 34;
-  const int RESET = 51;
-  const int CLK = 7;
+  //Port H on ATMega2560
+  const int WAIT = 6;   
+  const int INT = 17;   
+  const int NMI = 16;   
+  const int RESET = 9;  
+  const int CLK = 3;    
 
   //CPU Bus Control
-  const int BUSRQ = 50;
-  const int BUSAK = 46;
-// 
+  //Port H on ATMega2560
+  const int BUSRQ = 25;   
+  const int BUSAK = 11;   
 
+  //Debug Enable pin
+  const int DEBUGEN=15;
+// 
 
 //
 //Define bitmasks
 //
 
-  //Data Bus
-  const int D_0_Mask = 1;
-  const int D_1_Mask = 2;
-  const int D_2_Mask = 4;
-  const int D_3_Mask = 8;
-  const int D_4_Mask = 16;
-  const int D_5_Mask = 32;
-  const int D_6_Mask = 64;
-  const int D_7_Mask = 128;
-  const int DataBusMask[] = { D_0_Mask, D_1_Mask, D_2_Mask, D_3_Mask, D_4_Mask, D_5_Mask, D_6_Mask, D_7_Mask };
+  //Bus bitmasks
 
-  //Address Bus
-  const int A_0_Mask = 1;
-  const int A_1_Mask = 2;
-  const int A_2_Mask = 4;
-  const int A_3_Mask = 8;
-  const int A_4_Mask = 16;
-  const int A_5_Mask = 32;
-  const int A_6_Mask = 64;
-  const int A_7_Mask = 128;
-  const int A_8_Mask = 256;
-  const int A_9_Mask = 512;
-  const int A_10_Mask = 1024;
-  const int A_11_Mask = 2048;
-  const int A_12_Mask = 4096;
-  const int A_13_Mask = 8192;
-  const int A_14_Mask = 16384;
-  const int A_15_Mask = 32768;
-  const int AddressBusMask[] = { A_0_Mask, A_1_Mask, A_2_Mask, A_3_Mask, A_4_Mask, A_5_Mask, A_6_Mask, A_7_Mask, A_8_Mask, A_9_Mask, A_10_Mask, A_11_Mask, A_12_Mask, A_13_Mask, A_14_Mask, A_15_Mask };
+    //Data Bus
+    const int D_0_Mask = 1;
+    const int D_1_Mask = 2;
+    const int D_2_Mask = 4;
+    const int D_3_Mask = 8;
+    const int D_4_Mask = 16;
+    const int D_5_Mask = 32;
+    const int D_6_Mask = 64;
+    const int D_7_Mask = 128;
+    const int DataBusMask[] = { D_0_Mask, D_1_Mask, D_2_Mask, D_3_Mask, D_4_Mask, D_5_Mask, D_6_Mask, D_7_Mask };
+
+    //Address Bus
+    const int A_0_Mask = 1;
+    const int A_1_Mask = 2;
+    const int A_2_Mask = 4;
+    const int A_3_Mask = 8;
+    const int A_4_Mask = 16;
+    const int A_5_Mask = 32;
+    const int A_6_Mask = 64;
+    const int A_7_Mask = 128;
+    const int A_8_Mask = 256;
+    const int A_9_Mask = 512;
+    const int A_10_Mask = 1024;
+    const int A_11_Mask = 2048;
+    const int A_12_Mask = 4096;
+    const int A_13_Mask = 8192;
+    const int A_14_Mask = 16384;
+    const int A_15_Mask = 32768;
+    const int AddressBusMask[] = { A_0_Mask, A_1_Mask, A_2_Mask, A_3_Mask, A_4_Mask, A_5_Mask, A_6_Mask, A_7_Mask, A_8_Mask, A_9_Mask, A_10_Mask, A_11_Mask, A_12_Mask, A_13_Mask, A_14_Mask, A_15_Mask };
+
+  //
+
+
+  //ATMega2560 Port bitmasks
+    const int D_0_ATM = 1;
+    const int D_1_ATM = 2;
+    const int D_2_ATM = 4;
+    const int D_3_ATM = 8;
+    const int D_4_ATM = 16;
+    const int D_5_ATM = 32;
+    const int D_6_ATM = 64;
+    const int D_7_ATM = 128;
+
+    //Port A (Address Bus - Low Byte)
+    const int A_0_ATM = 1;
+    const int A_1_ATM = 2;
+    const int A_2_ATM = 4;
+    const int A_3_ATM = 8;
+    const int A_4_ATM = 16;
+    const int A_5_ATM = 32;
+    const int A_6_ATM = 64;
+    const int A_7_ATM = 128;
+
+    //Port C (Address Bus - High Byte)
+    const int A_8_ATM = 1;
+    const int A_9_ATM = 2;
+    const int A_10_ATM = 4;
+    const int A_11_ATM = 8;
+    const int A_12_ATM = 16;
+    const int A_13_ATM = 32;
+    const int A_14_ATM = 64;
+    const int A_15_ATM = 128;
+
+    //Port B (System Control)
+    const int HALT_ATM = 1;
+    const int MREQ_ATM = 2;
+    const int IORQ_ATM = 4;
+    const int RD_ATM = 8;
+    const int WR_ATM = 16;
+    const int BUSAK_ATM = 32;
+    const int M1_ATM = 64;
+    const int RFSH_ATM = 128;
+
+
+    //Port H (CPU Control)
+    const int INT_ATM = 1;
+    const int NMI_ATM = 2;
+    //Port H Pin 2 is not exposed
+    const int WAIT_ATM = 8;
+    //Port H pin 4 is not used
+    const int BUSRQ_ATM = 32;
+    const int RESET_ATM = 64;
+
+    //Port E
+    const int CLK_ATM = 32;
+  //
+
+  //Some timing cycle bitmasks
+  //These are to bitwise AND with the appropriate ports to get the correct signals
+  // eg: if (PINH & M1_Cycle == M1_Cycle_Target) {...}
+
+    //OpCode Fetch portion of the M1 Cycle is when M1, MREQ, and RD are LOW with RFSH being HIGH
+    const int M1_Cycle = MREQ_ATM + RD_ATM + M1_ATM + RFSH_ATM;
+    const int M1_CycleTarget = RFSH_ATM;
+
+    //Read Cycle is when MREQ and RD are LOW with M1 being HIGH
+    const int RD_Cycle = MREQ_ATM + RD_ATM + M1_ATM;
+    const int RD_CycleTarget = M1_ATM;
+
+    //Write Cycle is when MREQ and WR are LOW, however WR is only LOW for one clock cycle
+    //Trigger the WAIT when MREQ is LOW and everything else is HIGH
+    const int WR_PreCycle = MREQ_ATM + WR_ATM + RD_ATM + M1_ATM + RFSH_ATM;
+    const int WR_PreCycleTarget = WR_ATM + RD_ATM + M1_ATM + RFSH_ATM;
+    const int WR_Cycle = MREQ_ATM + WR_ATM + RD_ATM + M1_ATM + RFSH_ATM;
+    const int WR_CycleTarget = RD_ATM + M1_ATM + RFSH_ATM;
+
+
+  //
+
 //
 
 //
 //Define instructions
 //
   enum InstructionGroup {
-    GROUP_16BIT_ARITHMETIC,
-    GROUP_16BIT_LOAD,
-    GROUP_8BIT_ARITHMETIC_LOGIC,
     GROUP_8BIT_LOAD,
-    GROUP_BIT_MANIPULATION,
-    GROUP_BLOCK_SEARCH,
-    GROUP_BLOCK_TRANSFER,
+    GROUP_16BIT_LOAD,
     GROUP_EXCHANGES,
+    GROUP_BLOCK_TRANSFER,
+    GROUP_BLOCK_SEARCH,
+    GROUP_8BIT_ARITHMETIC_LOGIC,
     GROUP_GENERAL_PURPOSE_AF_OPERATIONS,
-    GROUP_INPUT,
-    GROUP_JUMP_CALL_RETURN,
-    GROUP_MISCELLANEOUS_CPU_CONTROL,
-    GROUP_OUTPUT,
-    GROUP_RESTART,
+    GROUP_16BIT_ARITHMETIC,
     GROUP_ROTATES_SHIFTS,
+    GROUP_BIT_MANIPULATION,
+    GROUP_JUMP_CALL_RETURN,
+    GROUP_RESTART,
+    GROUP_INPUT,
+    GROUP_OUTPUT,
+    GROUP_MISCELLANEOUS_CPU_CONTROL,
     GROUP_COUNT  // always last, not a real group
   };
 
@@ -2307,160 +2410,206 @@
 //Prototype functions
 //
 
-  void printProgmemString(const char* progmemPtr);
-  void readLine(char* buffer, size_t bufferSize);
 
+  //Arduino PROGMEM interface strings
+    void printProgmemString(const char* progmemPtr);
+    void readLine(char* buffer, size_t bufferSize);
   //
+
   // General CPU interaction functions
+    uint16_t readAddressBus(int delayTime);
+    void writeData(byte data);
+    uint16_t readDataBus(int delayTime);
+    void writeSingleInstruction(byte* data, int numM1Cycles, int numReadCycles, int numWriteCycles, uint16_t* writtenAddress);
   //
 
-  uint16_t readAddressBus(int delayTime);
-  void writeData(byte data);
-  uint16_t readDataBus(int delayTime);
-  void writeSingleInstruction(byte* data, int numM1Cycles, int numReadCycles, int numWriteCycles, uint16_t* writtenAddress);
-
-
-  //
   //Test execution functions
+    void runAllTests();
+    void runAllTestsForGroup(InstructionGroup group);
+    void runTest(const instructionDefinitionType& inst);
+    int findInstructionIndexByMnemonic(const char* targetMnemonic);
+    void helper_ld_X_n(char targetRegister, byte data);
+    void helper_ld_X_Y(char targetRegister, char sourceRegister);
+    void helper_ld_ptr_nn_a(byte* data);
+    void helper_ld_XY_nn(char targetRegister, char targetRegister2, byte* data);
+    void helper_ld_ptr_nn_XY(char targetRegister, char targetRegister2, byte* data);
   //
 
-  void runAllTests();
-  void runAllTestsForGroup(InstructionGroup group);
-  void runTest(const instructionDefinitionType& inst);
-  int findInstructionIndexByMnemonic(const char* targetMnemonic);
-  void helper_ld_X_n(char targetRegister, byte data);
-  void helper_ld_X_Y(char targetRegister, char sourceRegister);
-  void helper_ld_ptr_nn_a(byte* data);
-  void helper_ld_XY_nn(char targetRegister, char targetRegister2, byte* data);
-  void helper_ld_ptr_nn_XY(char targetRegister, char targetRegister2, byte* data);
-
-
-  //
   //Menu functions
+    void showMainMenu();
+    void showGroupMenu(void (*callback)(InstructionGroup));
+    void showInstructionMenu(InstructionGroup group);
   //
 
-  void showMainMenu();
-  void showGroupMenu(void (*callback)(InstructionGroup));
-  void showInstructionMenu(InstructionGroup group);
+  //Program control functions
+    void setNextCycle (int numM1Cycles, int numReadCycles, int numWriteCycles, int i);
+    void checkCycle();
+  //
 //
 
-float period = 0;
-int prescaler;
-int eraser = 7; //0b111
+//
+//Declare global variables
+//
+  //Clock related variables
+    float period = 0;
+    /*int prescaler;
+    int eraser = 7; //0b111*/
+  //
+
+  //Program control related variables
+    volatile int currentCycle = 0;
+    volatile int nextCycle = 0; 
+    volatile int needsCycleEnd = 0;
+
+    //Define the cycle lookup table
+    uint8_t cycleTable[256];
+
+  //
+//
 
 void setup() {
   //Start the serial console
   Serial.begin(115200);
 
+
   //
   //Set up pins
   //
 
-  //Note that CPU inputs are outputs here and vice versa
+    //Note that CPU inputs are outputs here and vice versa
 
-  //Data Bus
-  //These can be either input or output, initializing as input
-  pinMode(D_0, INPUT);
-  pinMode(D_1, INPUT);
-  pinMode(D_2, INPUT);
-  pinMode(D_3, INPUT);
-  pinMode(D_4, INPUT);
-  pinMode(D_5, INPUT);
-  pinMode(D_6, INPUT);
-  pinMode(D_7, INPUT);
+    //Data Bus
+    //These can be either input or output, initializing as input
+    pinMode(D_0, INPUT);
+    pinMode(D_1, INPUT);
+    pinMode(D_2, INPUT);
+    pinMode(D_3, INPUT);
+    pinMode(D_4, INPUT);
+    pinMode(D_5, INPUT);
+    pinMode(D_6, INPUT);
+    pinMode(D_7, INPUT);
 
-  //Address Bus
-  pinMode(A_0, INPUT);
-  pinMode(A_1, INPUT);
-  pinMode(A_2, INPUT);
-  pinMode(A_3, INPUT);
-  pinMode(A_4, INPUT);
-  pinMode(A_5, INPUT);
-  pinMode(A_6, INPUT);
-  pinMode(A_7, INPUT);
-  pinMode(A_8, INPUT);
-  pinMode(A_9, INPUT);
-  pinMode(A_10, INPUT);
-  pinMode(A_11, INPUT);
-  pinMode(A_12, INPUT);
-  pinMode(A_13, INPUT);
-  pinMode(A_14, INPUT);
-  pinMode(A_15, INPUT);
+    //Address Bus
+    pinMode(A_0, INPUT);
+    pinMode(A_1, INPUT);
+    pinMode(A_2, INPUT);
+    pinMode(A_3, INPUT);
+    pinMode(A_4, INPUT);
+    pinMode(A_5, INPUT);
+    pinMode(A_6, INPUT);
+    pinMode(A_7, INPUT);
+    pinMode(A_8, INPUT);
+    pinMode(A_9, INPUT);
+    pinMode(A_10, INPUT);
+    pinMode(A_11, INPUT);
+    pinMode(A_12, INPUT);
+    pinMode(A_13, INPUT);
+    pinMode(A_14, INPUT);
+    pinMode(A_15, INPUT);
 
-  //System Control
-  pinMode(M1, INPUT);
-  pinMode(MREQ, INPUT);
-  pinMode(IORQ, INPUT);
-  pinMode(RD, INPUT);
-  pinMode(WR, INPUT);
-  pinMode(RFSH, INPUT);
+    //System Control
+    pinMode(M1, INPUT);
+    pinMode(MREQ, INPUT);
+    pinMode(IORQ, INPUT);
+    pinMode(RD, INPUT);
+    pinMode(WR, INPUT);
+    pinMode(RFSH, INPUT);
 
-  //CPU Control
-  pinMode(HALT, INPUT);
-  pinMode(WAIT, OUTPUT);
-  pinMode(INT, OUTPUT);
-  pinMode(NMI, OUTPUT);
-  pinMode(RESET, OUTPUT);
-  pinMode(CLK, OUTPUT);
+    //CPU Control
+    pinMode(HALT, INPUT);
+    pinMode(WAIT, OUTPUT);
+    pinMode(INT, OUTPUT);
+    pinMode(NMI, OUTPUT);
+    pinMode(RESET, OUTPUT);
+    pinMode(CLK, OUTPUT);
 
-  //CPU Bus Control
-  pinMode(BUSRQ, OUTPUT);
-  pinMode(BUSAK, INPUT);
+    //CPU Bus Control
+    pinMode(BUSRQ, OUTPUT);
+    pinMode(BUSAK, INPUT);
+
+    //Debug Enable
+    pinMode(DEBUGEN, OUTPUT);
+
+    //Initialize pins to CPU
+    digitalWriteFast(WAIT, HIGH);
+    digitalWriteFast(INT, HIGH);
+    digitalWriteFast(NMI, HIGH);
+    digitalWriteFast(RESET, HIGH);
+    digitalWriteFast(BUSRQ, HIGH);
+    digitalWriteFast(DEBUGEN, HIGH);
+  //
 
   //
   //Set up the clock
   //
+    //Set the clock pin to output
+    pinMode( CLK, OUTPUT );
 
-  //First clear the bits the timer uses for generating the frequency
+    //This prevents other timer interrupts from messing with the ISR at the cost of breaking things like millis() and micros()
+    TIMSK0 = 0;
 
-  TCCR4B &= ~eraser;
-  //Next set the desired frequency using the prescaler
-  // 1 = 31kHz
-  // 2 = 4kHz
-  // 3 = 490Hz (default value)
-  // 4 = 120Hz
-  // 5 = 30Hz
-  prescaler = 1;
-  TCCR4B |= prescaler;
-  
-  switch (prescaler) {
-    case 1:
-      period = 32.25;
-      break;
-    case 2:
-      period = 250;
-      break;
-    case 3:
-      period = 2040.82;
-      break;
-    case 4:
-      period = 8333.33;
-      break;
-    case 5:
-      period = 33333.33;
-      break;
-    default:
-      period=10000000;
-      break;
+
+    //Clear any configuration on the counter
+    TCCR3A = 0;
+    TCCR3B = 0;
+
+    //Configure the counter
+    //WGM=14 Fast PWM, TOP=ICR3, BOTTOM=0
+    //prescaler = 1 (16MHz clock rate)
+    TCCR3A = _BV(COM3C1) | _BV(WGM31) ;
+    TCCR3B = _BV(WGM33) | _BV(WGM32) | _BV(CS30);
+
+    //Set the max number to count to 
+    ICR3 = 0xFF;
+
+    //Specify when during the count the pin should transition.  This defines the duty cycle.
+    //Since we are interrupting on the rising edge of the clock, we need a high time of ~10us
+    //The low time is not as sensitive, but this seems to be a consistently working number
+    OCR3C = 0xA0;
+
+    //Set the period of the clock in uS. This is a 16-bit counter that gets incremented once per ATMega2560 clock cycle, so divide the TOP by 16.
+    period=ICR3/0xF;
+
+    //Interrupt on the rising edge of each clock cycle
+    attachInterrupt(digitalPinToInterrupt(CLK), checkCycle, RISING);
+  //
+
+  //
+  //Populate the cycle lookup table
+  //
+    for (int i = 0; i < 256; i++) {
+      if ((i & M1_Cycle) == M1_CycleTarget)
+          cycleTable[i] = 1; // M1
+      else if ((i & RD_Cycle) == RD_CycleTarget)
+          cycleTable[i] = 2; // RD
+      else if ((i & WR_PreCycle) == WR_PreCycleTarget)
+          cycleTable[i] = 3; // WR
+      else if ((i & WR_Cycle) == WR_CycleTarget)
+          cycleTable[i] = 3; // WR
+      else
+          cycleTable[i] = 0; // None
     }
-
-  
-
-
-  //Set up the pin for PWM
-  analogWrite(CLK, 128);
-
-  //Set the CPU Control Pins
-  digitalWriteFast(INT, HIGH);
-  digitalWriteFast(NMI, HIGH);
-  digitalWriteFast(BUSRQ, HIGH);
+  //
 
   //
-  //Issue a reset to the CPU
+  //Initialize the Z80 CPU
   //
-  digitalWriteFast(RESET, LOW);
-  delay(10);
-  digitalWriteFast(RESET, HIGH);
+    //Set the CPU Control Pins
+    digitalWriteFast(WAIT, HIGH);
+    digitalWriteFast(INT, HIGH);
+    digitalWriteFast(NMI, HIGH);
+    digitalWriteFast(RESET, HIGH);
+    digitalWriteFast(BUSRQ, HIGH);
+
+    //
+    //Issue a reset to the CPU
+    //
+    digitalWriteFast(RESET, LOW);
+    delay(10);
+    digitalWriteFast(RESET, HIGH);
+    delay(10);
+  //
+
 
   //Show the menu
   showMainMenu();

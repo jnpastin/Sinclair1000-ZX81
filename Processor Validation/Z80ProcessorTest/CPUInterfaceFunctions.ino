@@ -5,36 +5,22 @@ uint16_t readAddressBus(int delayTime) {
   if (delayTime > 0) {
     delayMicroseconds(delayTime);
   }
-  bool value;
   uint16_t curAddr = 0;
 
-  //Read each line and add the bitmask for that line if it is high
-
-
-  for (int i = 0; i < 16; i++) {
-    value=digitalReadFast(AddressBus[i]);
-
-    if (value) {
-      curAddr += AddressBusMask[i];
-    }
-      /*Serial.print(F("Address "));
-      Serial.print(i);
-      Serial.print(F(" value: "));
-      Serial.print(value);
-      Serial.print(F(" current value: "));
-      Serial.println(curAddr, HEX);*/
-
-  }
-
+  //The low byte of the address bus is on PORT A
+  //The high byte is on PORT C and needs to be shifted left by 8 positions
+  curAddr=PINA + (PINC << 8);
   return curAddr;
 }
 
+//Set the Data lines
 void writeData(byte data) {
-  //Write the bitwise AND of the data byte and each bitmask onto the appropriate pins
-  for (int i = 0; i < 8; i++) {
-    pinMode(DataBus[i], OUTPUT);
-    digitalWriteFast(DataBus[i], data & DataBusMask[i]);
-  }
+
+  //Set all data lines to output
+  DDRL = 0xFF;
+
+  //Set all data lines simultaneously
+  PORTL = data;
 }
 
 //Read the address currently on the Address Bus
@@ -46,140 +32,132 @@ uint16_t readDataBus(int delayTime) {
   }
 
   uint16_t curData = 0;
-  //Read each line and add the bitmask for that line if it is high
-  for (int i = 0; i < 8; i++) {
-    pinMode(DataBus[i], INPUT);
-    if (digitalReadFast(DataBus[i])) {
-      curData += DataBusMask[i];
-    }
-  }
+
+  //Set all data lines to input
+  DDRL=0x00;
+
+  //Read all data lines concurrently
+  curData = PINL;
+
   return curData;
 }
 
 void writeSingleInstruction(byte* data, int numM1Cycles, int numReadCycles, int numWriteCycles, uint16_t* addresses) {
-  byte curData=0;
-  uint16_t curAddr=0;
+
+  setNextCycle(numM1Cycles, numReadCycles, numWriteCycles, 0);
+  CLEAR_PIN(PORTH,WAIT_ATM);
+  delayMicroseconds(1/2*period);
+
   //Process the M1 cycles
   for (int i = 0; i < (numM1Cycles+numReadCycles+numWriteCycles); i++) {
     //There are three possible next cycles. M1, Read, Write
 
     //Execute all of the M1 cycles first
-    if (numM1Cycles >= (i + 1)) {
+    if (nextCycle == 1) {
 
-      //We always have to wait for the second half of a T cycle to deactivate Wait
-      while (digitalReadFast(CLK)) {
-        delayMicroseconds(period/2);
+      needsCycleEnd=0;
+
+      while (currentCycle != 1) {
+        delayMicroseconds(1);
       }
-      digitalWriteFast(WAIT, HIGH);
+
+      //Disable interrupts so that nothing interfers with setting the data lines
+      noInterrupts();
+
+      //Set the data lines as outputs    
+      DDRL = 0xFF;
+
+      //Set the Data lines
+      PORTL=data[i];
+
+      //Determine what cycle is next
+      setNextCycle(numM1Cycles, numReadCycles, numWriteCycles, i+1);
+
+      needsCycleEnd = 1;
+
+      interrupts();
 
       //Wait for the next M1 cycle to start
-      while (digitalReadFast(RD) || digitalReadFast(MREQ) || digitalReadFast(M1) || !digitalReadFast(RFSH)) {
+      while (currentCycle != 0) {
         delayMicroseconds(1);
       }
-
-      //Tell the CPU to wait while data is being written
-      digitalWriteFast(WAIT, LOW);
-
-      //Set the Data lines
-      writeData(data[i]);
-
-      //Tell the CPU that the data is valid
-      while (digitalReadFast(CLK)) {
-        delayMicroseconds(1);
-      }
-      digitalWriteFast(WAIT, HIGH);
-
-      //M1 cycles have a DRAM refresh cycle buried in them, wait until it is over
-      while (digitalReadFast(RFSH)) {
-        delayMicroseconds(1);
-      }
-      while (!digitalReadFast(RFSH)) {
-        delayMicroseconds(1);
-      }
-
-      //Tell the CPU to wait while we process everything
-      digitalWriteFast(WAIT, LOW);
+      DDRL=0xFF;
+      PORTL = 0x00;
 
     // Then execute the Read cycles
-    } else if (numReadCycles >= (i - numM1Cycles + 1)) {
+    } else if (nextCycle == 2) {
 
-      while (digitalReadFast(CLK)) {
+      needsCycleEnd=0;
+      
+      while (currentCycle != 2) {
         delayMicroseconds(1);
       }
-      digitalWriteFast(WAIT, HIGH);
+    
+      //Disable interrupts so that nothing interfers with setting the data lines
+      noInterrupts();
 
-      //Wait for the next Read cycle to start
-      while (digitalReadFast(RD) || digitalReadFast(MREQ)) {
-        delayMicroseconds(1);
-      }
-
-      //Tell the CPU to wait while data is being written
-      digitalWriteFast(WAIT, LOW);
+      //Set the data lines as outputs    
+      DDRL = 0xFF;
 
       //Set the Data lines
-      writeData(data[i]);
+      PORTL=data[i];
 
-      curAddr=readAddressBus(0);
+      //Capture the address
+      addresses[i]=PINA+(PINC << 8);
 
-      //Tell the CPU that the data is valid
-      while (digitalReadFast(CLK)) {
+      //Determine what cycle is next
+      setNextCycle(numM1Cycles, numReadCycles, numWriteCycles, i+1);      
+
+      needsCycleEnd = 1;
+
+      interrupts();
+
+      //Wait for the next Read cycle to start
+      while (currentCycle != 0) {
         delayMicroseconds(1);
       }
-      digitalWriteFast(WAIT, HIGH);
-
-      addresses[i]=curAddr;
-
-      //Wait until the end of the current Read Cycle
-      while (!digitalReadFast(RD) || !digitalReadFast(MREQ)) {
-        delayMicroseconds(1);
-      }
-
-      //Tell the CPU to wait while we process everything
-      digitalWriteFast(WAIT, LOW);
+      DDRL=0xFF;
+      PORTL = 0x00;
 
     //Then execute the Write cycles
-    } else if (numWriteCycles >= (i - numM1Cycles - numReadCycles + 1)) {
+    } else if (nextCycle == 3) {
     
+      needsCycleEnd=0;
 
-      while (digitalReadFast(CLK)) {
-        delayMicroseconds(1);
-
-      }
-      digitalWriteFast(WAIT, HIGH);
-
-      //Wait for the next Write cycle
-      while (!digitalReadFast(RD) || digitalReadFast(MREQ) || !digitalReadFast(M1)) {
+      //This will be true when MREQ goes low while M1, RD, and WR are all still high.
+      //This is necessary because WR is only low for one clock cycle, so we need to give the ISR time 
+      //to enable WAIT      
+      while (currentCycle != 3) {
         delayMicroseconds(1);
       }
 
-      //Tell the CPU to wait while data is being written
-      digitalWriteFast(WAIT, LOW);
+      //Wait one clock cycle to ensure that we are in the actual WR cycle
+      delayMicroseconds(period/2);
+
+      //Disable interrupts so that nothing interfers with setting the data lines
+      noInterrupts();
+
+      //Set the data lines as inputs    
+      DDRL = 0x00;
 
       //Read the Data lines
-      curData=readDataBus(0);
-      curAddr=readAddressBus(0);
+      data[i]=PINL;
 
-      //Tell the CPU that we have read the data
-      while (digitalReadFast(CLK)) {
-        delayMicroseconds(1);
-      }
-      digitalWriteFast(WAIT, HIGH);
+      //Determine what cycle is next
+      setNextCycle(numM1Cycles, numReadCycles, numWriteCycles, i+1);
+      
+      needsCycleEnd = 1;
 
-      //Write the retrieved data back to the passed array
-      data[i]=curData;
-      addresses[i]=curAddr;
-      //Serial.println(curAddr,HEX);
-      //Serial.println(i,HEX);
+      //Reenable interrupts
+      interrupts();
 
-
-      //Wait for the end of the Write cycle
-      while (!digitalReadFast(WR) || !digitalReadFast(MREQ)){
+      //Wait for the next Write cycle
+      while (currentCycle != 0) {
         delayMicroseconds(1);
       }
 
-      //Tell the CPU to wait while we process everything
-      digitalWriteFast(WAIT, LOW);
-
+      DDRL=0xFF;
+      PORTL = 0x00;
     //If we get here, we must have a timing issue
     } else {
             Serial.print(F("In cycle: "));
@@ -187,5 +165,45 @@ void writeSingleInstruction(byte* data, int numM1Cycles, int numReadCycles, int 
       Serial.println(F(" which does not match"));
 
     }
+
+  }
+  interrupts();
+  nextCycle=0;
+}
+
+
+void setNextCycle (int numM1Cycles, int numReadCycles, int numWriteCycles, int i) {
+
+  if(numM1Cycles > (i)) {
+    nextCycle = 1;
+  } else if (numReadCycles > (i - numM1Cycles)) {
+    nextCycle = 2;
+  } else if (numWriteCycles > (i - numM1Cycles - numReadCycles)) {
+    nextCycle = 3;
+  } else  if (numM1Cycles+numReadCycles+numWriteCycles == (i)) {
+    nextCycle = 0;
+  } else {
+    Serial.println ("Error in cycle detection");
+    return;
+  }
+
+  return;
+}
+
+//Define the ISR, this needs to stay lean
+void checkCycle() {
+
+  //Get the current state and compare it to the lookup table
+  int currentState = PINB;
+  currentCycle = cycleTable[currentState];
+
+  //Set WAIT accordingly
+  if (currentCycle == nextCycle && needsCycleEnd == 0 && nextCycle != 0){
+    CLEAR_PIN(PORTH, WAIT_ATM);
+  } else if (currentCycle == 0 && needsCycleEnd == 1) {
+    SET_PIN(PORTH, WAIT_ATM);
+    needsCycleEnd = 0;
+  } else {
+    SET_PIN(PORTH, WAIT_ATM);
   }
 }
