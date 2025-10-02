@@ -45,7 +45,7 @@ const uint8_t Dout_Mask = 32;
 
 const uint8_t ROWS=128;
 const uint8_t COLS=128;
-const uint8_t readDelay=4;
+const uint8_t readDelay=40;
 
 //
 //Function prototyping
@@ -432,6 +432,8 @@ void writePageDRAM(uint8_t row, uint8_t* data) {
 
     //Activate Write Enable and CAS
     CLEAR_PIN(PORTB, WRITE_Mask + CAS_Mask);
+
+    DELAY_CYCLES(5);
 
     //Deactivate Write Enable and CAS
     SET_PIN(PORTB, (WRITE_Mask+CAS_Mask));
