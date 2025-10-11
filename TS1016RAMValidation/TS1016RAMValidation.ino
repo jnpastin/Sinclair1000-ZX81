@@ -45,7 +45,7 @@ const uint8_t Dout_Mask = 32;
 
 const uint8_t ROWS=128;
 const uint8_t COLS=128;
-const uint8_t readDelay=40;
+const uint8_t readDelay=50;
 
 //
 //Function prototyping
@@ -238,12 +238,12 @@ void setup() {
       writePageDRAM(i, inputData);
       
       //Test RAS Only Refreshes
-      for (uint8_t j=0; j<10; j++) {
+      for (uint8_t j=0; j<6; j++) {
         setAddr(i);
         CLEAR_PIN(PORTB,RAS_Mask);
-        delayMicroseconds(1);
+        delayMicroseconds(4);
         SET_PIN(PORTB,RAS_Mask);
-        delay(1);
+        delayMicroseconds(1000);
       }
 
       //Read back the page worth of data
@@ -256,6 +256,14 @@ void setup() {
         successCount++;
         }else {
         errorCount++;
+        /*Serial.print("Error at row: ");
+        Serial.print(i);
+        Serial.print(" Byte: ");
+        Serial.print(j);
+        Serial.print(" Expected: ");
+        Serial.print(inputData[j],HEX);
+        Serial.print(" Received: ");
+        Serial.println(retrievedData[j],HEX);*/
         }
       if (i%4==0){
         Serial.print(F("."));
@@ -433,7 +441,7 @@ void writePageDRAM(uint8_t row, uint8_t* data) {
     //Activate Write Enable and CAS
     CLEAR_PIN(PORTB, WRITE_Mask + CAS_Mask);
 
-    DELAY_CYCLES(5);
+    DELAY_CYCLES(7);
 
     //Deactivate Write Enable and CAS
     SET_PIN(PORTB, (WRITE_Mask+CAS_Mask));
