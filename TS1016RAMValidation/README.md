@@ -1,0 +1,6 @@
+# TS1016 16K External RAM Expansion Module
+Depending on the version of the system, these machines had either 1K or 2K of internal RAM.  This was obviously pretty limiting, so the TS1016 was created.  This provided a full 16K of RAM, disabling the internal RAM.  The expansion module relies on DRAM instead of the SRAM that was used internally.
+
+The design of these was fairly simple.  I was not able to find any schematics online, so I reverse engineered it, and uploaded my findings here.  Each unit consists of two PCBs linked by a 22 conductor ribbon cable.  One board houses the logic, mostly addressing and such, typical glue logic.  The other houses the DRAM chips and the power supply.  The 4116 DRAM chips require +12V, +5V, and -5V, so the module has to create them from the unregulated +9V available on on the card edge connector.  My unit came populated with ITT 4116-3 (200ns access time), however, I was only able to source TI 4116-4 (250ns access time) ICs.  I have not encountered any issues associated with the different brand or timing.  
+
+The Arduino script ran on a Nano with no issues, and is designed to test individual RAM ICs.  It assumes external power supplies, as Arduino's cannot generate the required voltages.  Overall it was a straightforward breadboard setup.
