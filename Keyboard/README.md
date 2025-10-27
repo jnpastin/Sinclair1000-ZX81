@@ -1,4 +1,4 @@
-#External Keyboard for Timex Sinclair 1000 and Sinclair ZX81 computers
+# External Keyboard for Timex Sinclair 1000 and Sinclair ZX81 computers
 It is well known how awful the keyboard on these machines is.  It was fairly common back in the day for people to modify their machines to connect an external keyboard.  I decided to follow in that tradition, but with a more modern approach.  There were a few design requirements:
 * Should physically resemble the factory keyboard as much as reasonably possible
 * Needs to be a comfortable size to use with two hands
