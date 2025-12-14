@@ -18,5 +18,9 @@ All of the necessary files should be available here, including:
 * Gerbers
 * PDF of the keycap inserts
 * PPT of the keycap inserts
+* Step and STL files for the case.
 
-Once I finish designing the case, I will include STEP and STL files for it here as well.
+
+## Images
+![PCB for the keyboard with keyswitches and keycaps installed](/Keyboard/PCB.jpg)
+![Completed keyboard](/Keyboard/Keyboard.jpg)
