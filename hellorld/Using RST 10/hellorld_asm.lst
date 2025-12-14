@@ -1,0 +1,22 @@
+;
+;Assembly listing to print "HELLORLD." on a Timex Sinclair 1000/Sinclair ZX81
+;
+0000	3E 2D		ld	A,$2d		;Load the character code for "H" into the A register.
+0002	D7		RST	$10		;Call the PRINT routine defined in ROM
+0003	3E 2A		ld	A,$2a		;Load the character code for "E" into the A register.
+0005	D7		RST	$10		;Call the PRINT routine defined in ROM
+0006	3E 31		ld	A,$31		;Load the character code for "L" into the A register.
+0008	D7		RST	$10		;Call the PRINT routine defined in ROM
+0009	D7		RST	$10		;Call the PRINT routine defined in ROM
+000A	3E 34		ld	A,$34		;Load the character code for "O" into the A register.
+000C	D7		RST	$10		;Call the PRINT routine defined in ROM
+000D	3E 37		ld	A,$37		;Load the character code for "R" into the A register.
+000F	D7		RST	$10		;Call the PRINT routine defined in ROM
+0010	3E 31		ld	A,$31		;Load the character code for "L" into the A register.
+0012	D7		RST	$10		;Call the PRINT routine defined in ROM
+0013	3E 29		ld	A,$29		;Load the character code for "D" into the A register.
+0015	D7		RST	$10		;Call the PRINT routine defined in ROM
+0016	3E 1B		ld	A,$1b		;Load the character code for "." into the A register.
+0018	D7		RST	$10		;Call the PRINT routine defined in ROM
+0019	C9		RET			;Return to BASIC
+	

@@ -1,0 +1,53 @@
+4792                          .ORG   $4792   		; 18322d - This is suitable for 2k based systems, adjust accordingly.  This should be above RAMTOP
+4792							;Query the system variables to get some file locations
+4792   3A 0C 40               LD   A,($400C)   		; Get the low byte of the D_FILE address
+4795   4F                     LD   C,A   		; Load that into the C register
+4796   3A 0D 40               LD   A,($400D)   		; Get the high byte of the D_FILE address
+4799   47                     LD   B,A   		; Load that into the B register
+479A                             			;At this point BC has the address of DFILE, get the length of it
+479A							;This is done by subtracting that address from the VARS address, which is immediately above it in memory space
+479A   3A 10 40               LD   A,($4010)   		; Get the low byte of the VARS address
+479D   6F                     LD   L,A   		; Load that into the L register
+479E   3A 11 40               LD   A,($4011)   		; Get the high byte of the VARS address
+47A1   67                     LD   H,A   		; Load that into the H register
+47A2                             			;At this point HL has the address of VARS.
+47A2                             			;Low RAM systems will have a dfile 25 bytes long, high ram systems will be 793 bytes long.
+47A2							;On low RAM systems, the D_FILE will need to be expanded to account for the message.  Determine which we are dealing with.
+47A2   ED 42                  SBC  HL,BC   		; Subtract the starting address of D_FILE from the starting address of VARS to get the length of D_FILE in HL
+47A4   7D                     LD   A,L   		; Load the low byte into A
+47A5   D6 19                  SUB  $19   		; Subtract 25
+47A7   C2 B2 47               JP   NZ,START   		; If this is zero we have a low RAM system and will need to reassign the start of D_FILE, calculate the new location
+47AA   79                     LD   A,C   		; Load the low byte of the D_FILE address into A
+47AB   DE 0C                  SBC  A,$C   		; Subtract the length of the message (12 bytes) to give the new starting point
+47AD   4F                     LD   C,A			; Put that value back in the C register
+47AE   D2 B2 47               JP   NC,START   		; If there was no carry, there is no need to modify the high byte of the address
+47B1   05                     DEC  B   			; If we got here, we need to decrement the high byte
+47B2   60 69        START:    LD   HL,BC   		; Store the desired starting address of the D_FILE in HL for use later
+47B4							;Start to load the string into the D_FILE
+47B4   11 CC 47               LD   DE,STRING            ; Get the start of the string
+47B7   1A           LOOP:     LD   A,(DE)   		; Load the code of the first character into the A register
+47B8   FE FF                  CP   $FF   		; Check to ensure it isnt FF, which is being used as a terminator
+47BA   CA C3 47               JP   Z,DONE   		; Jump out of the loop if it is.
+47BD   02                     LD   (BC),A   		; Place the character in the A register into the D_FILE
+47BE   03                     INC  BC   		; Increment the destination address in the D_FILE
+47BF   13                     INC  DE   		; Increment the message position counter
+47C0   C3 B7 47               JP   LOOP   		; Iterate on the loop
+47C3                DONE:        			;Load the system var with the new address of the D_FILE
+47C3   7D                     LD   A,L   		; Load the low byte into A
+47C4   32 0C 40               LD   ($400c),A   		; Store that value into the low byte of the address in system vars
+47C7   7C                     LD   a,h   		; Load the high byte into A
+47C8   32 0D 40               LD   ($400d),a   		; Store that value into the high byte of the address in system vars
+47CB   C9                     RET      			; Return to BASIC
+47CC							;Define the message using the proprietary character set
+47CC   76 76 2D 2A 31 31 34 37 31 29 1B 76 FF STRING:   DB   $76,$76,$2D,$2A,$31,$31,$34,$37,$31,$29,$1B,$76,$FF   
+
+
+START:              47B2 DEFINED AT LINE 29
+                    > USED AT LINE 22
+                    > USED AT LINE 26
+LOOP:               47B7 DEFINED AT LINE 32
+                    > USED AT LINE 38
+DONE:               47C3 DEFINED AT LINE 40
+                    > USED AT LINE 34
+STRING:             47CC DEFINED AT LINE 50
+                    > USED AT LINE 30
