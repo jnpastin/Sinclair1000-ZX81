@@ -1,0 +1,41 @@
+Z80_Pin,Z80_Signal,Direction,Arduino_Pin,Port,Bit,Notes
+14,D0,Bidir,22,PA0,0,Data Bus bit 0
+15,D1,Bidir,23,PA1,1,Data Bus bit 1
+12,D2,Bidir,24,PA2,2,Data Bus bit 2
+8,D3,Bidir,25,PA3,3,Data Bus bit 3
+7,D4,Bidir,26,PA4,4,Data Bus bit 4
+9,D5,Bidir,27,PA5,5,Data Bus bit 5
+10,D6,Bidir,28,PA6,6,Data Bus bit 6
+13,D7,Bidir,29,PA7,7,Data Bus bit 7
+30,A0,Output,37,PC0,0,Address Bus bit 0
+31,A1,Output,36,PC1,1,Address Bus bit 1
+32,A2,Output,35,PC2,2,Address Bus bit 2
+33,A3,Output,34,PC3,3,Address Bus bit 3
+34,A4,Output,33,PC4,4,Address Bus bit 4
+35,A5,Output,32,PC5,5,Address Bus bit 5
+36,A6,Output,31,PC6,6,Address Bus bit 6
+37,A7,Output,30,PC7,7,Address Bus bit 7
+38,A8,Output,A8(62),PK0,0,Address Bus bit 8
+39,A9,Output,A9(63),PK1,1,Address Bus bit 9
+40,A10,Output,A10(64),PK2,2,Address Bus bit 10
+1,A11,Output,A11(65),PK3,3,Address Bus bit 11
+2,A12,Output,A12(66),PK4,4,Address Bus bit 12
+3,A13,Output,A13(67),PK5,5,Address Bus bit 13
+4,A14,Output,A14(68),PK6,6,Address Bus bit 14
+5,A15,Output,A15(69),PK7,7,Address Bus bit 15
+19,MREQ,Output,2,PE4,4,Memory Request (active low) - INT4 ✅
+20,IORQ,Output,48,PL1,1,I/O Request (active low) ✅
+21,RD,Output,47,PL2,2,Read (active low) ✅
+22,WR,Output,46,PL3,3,Write (active low) ✅
+27,M1,Output,45,PL4,4,Machine Cycle 1 (active low) ✅
+28,RFSH,Output,44,PL5,5,Refresh (active low) ✅
+18,HALT,Output,43,PL6,6,Halt Status (active low) ✅
+23,BUSAK,Output,42,PL7,7,Bus Acknowledge (active low) ✅
+26,RESET,Input,53,PB0,0,Reset (active low)
+24,WAIT,Input,52,PB1,1,Wait State (active low)
+16,INT,Input,51,PB2,2,Interrupt Request (active low)
+17,NMI,Input,50,PB3,3,Non-Maskable Interrupt (active low)
+25,BUSRQ,Input,10,PB4,4,Bus Request (active low)
+6,CLK,Input,11,PB5,5,Clock from Timer1 OC1A
+11,VCC,Power,5V,Power,-,+5V from Arduino
+29,GND,Power,GND,Power,-,Ground from Arduino
