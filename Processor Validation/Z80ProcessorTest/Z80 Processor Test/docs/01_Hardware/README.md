@@ -149,6 +149,123 @@ Detailed comparison between Arduino Mega 2560 and Teensy 4.1 platforms.
 
 ---
 
+### [Physical_Layout.md](Physical_Layout.md) 🔧 **BUILD GUIDE**
+Detailed physical assembly design for three-board system.
+
+**Topics Covered:**
+- Proto board specifications (breadboard-style topology)
+- Level shifter board layout (5 modules, 63 rows)
+- Z80 board layout (socket + 38 LEDs, 63 rows)
+- Teensy board layout (30 rows)
+- Row-by-row component placement
+- Connector strategy (JST XH split cables)
+- Power distribution on each board
+- Cable routing and management
+- 3D printed mounting plate design
+- Assembly tips and techniques
+
+**Key Features:**
+- ✅ Module-by-module breakout with logic analyzer headers
+- ✅ Split signal/ground connectors for clean wiring
+- ✅ OE junction on level shifter board
+- ✅ LED indicator placement strategy
+- ✅ Threaded insert mounting system
+
+---
+
+### [Z80_Board_Layout.md](Z80_Board_Layout.md)
+Complete Z80 board assembly details with LED debug display.
+
+**Topics Covered:**
+- DIP-40 socket placement (rows 1-20)
+- LED array layout (38 LEDs, rows 23-60)
+- LED color scheme (yellow=data, green=address, blue=control)
+- LED circuit design (1.5kΩ resistors, 2 mA current)
+- Signal routing from connectors to socket and LEDs
+- Bypass capacitor placement
+- Power distribution (5V rail)
+- Component list and assembly order
+- Testing procedures
+
+**Visual Feedback:**
+- 8 yellow LEDs: Data bus (D0-D7)
+- 16 green LEDs: Address bus (A0-A15)
+- 14 blue LEDs: Control signals (CLK, interrupts, memory control)
+
+---
+
+### [Teensy_Board_Layout.md](Teensy_Board_Layout.md)
+Teensy 4.1 controller board with power distribution.
+
+**Topics Covered:**
+- Teensy placement on 30-row proto board
+- VUSB power tap for 5V distribution
+- 3.3V power output
+- Signal output connectors (5× 12-pin JST XH)
+- Power output connector (6-pin JST XH)
+- OE control output (2-pin JST XH)
+- Bypass capacitor placement (VUSB and 3.3V)
+- Cable connection strategy
+- Power budget analysis
+- Testing procedures
+
+**Power Distribution:**
+- VUSB (5V): 400 mA available for downstream boards
+- 3.3V: 150 mA for level shifter VCCA rails
+- USB-only power (no external supply needed)
+
+---
+
+### [BOM.md](BOM.md) 📦 **SHOPPING LIST**
+Complete bill of materials organized by board.
+
+**Topics Covered:**
+- Main components (Teensy, level shifters, proto boards)
+- Passive components (capacitors, resistors)
+- Connectors (JST XH all sizes and quantities)
+- LEDs (38 total with color breakdown)
+- Wire and cable specifications
+- Mounting hardware (M3 inserts and screws)
+- Optional components (ZIF socket, LED holders)
+- Component summary by board
+- Quality considerations
+
+**Component Highlights:**
+- 5× HW-221 level shifter modules
+- 38× LEDs (8 yellow, 16 green, 14 blue)
+- 38× 1.5kΩ resistors
+- 32× JST XH connectors (various sizes)
+- ~10 feet shielded cable
+- Bypass capacitors (10µF, 220µF, 100nF)
+
+---
+
+### [Assembly_and_Testing.md](Assembly_and_Testing.md) 🔨 **BUILD SEQUENCE**
+Step-by-step assembly order with testing at each stage.
+
+**Topics Covered:**
+- Incremental build strategy (5 phases)
+- Phase 1: Teensy board assembly and testing
+- Phase 2: Level shifter Module 5 (clock test)
+- Phase 3: Remaining level shifter modules
+- Phase 4: Z80 board assembly (no Z80 yet)
+- Phase 5: First Z80 power-up sequence
+- Phase 6: Full system validation
+- Testing procedures with pass/fail criteria
+- Troubleshooting guide for common issues
+- Timeline estimates (15-22 hours total)
+- Code examples for each test phase
+- Safety notes
+
+**Testing Strategy:**
+- ✅ Validate power before signals
+- ✅ Test one module at a time
+- ✅ Verify continuity and voltages at each stage
+- ✅ Use multimeter, scope, and logic analyzer
+- ✅ Don't install Z80 until all boards verified
+
+---
+
 ## Phase 1 Deliverables
 
 - [x] Complete pin mapping table ✅
