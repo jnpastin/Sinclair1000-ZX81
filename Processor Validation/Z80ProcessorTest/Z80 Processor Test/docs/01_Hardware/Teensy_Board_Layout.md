@@ -1,6 +1,6 @@
 # Teensy Board Layout
 
-**Status:** 📋 Planning Complete  
+**Status:** 📋 Optimized Pin Mapping  
 **Date:** December 23, 2025  
 **Hardware:** 30-row breadboard-style proto board
 
@@ -94,7 +94,7 @@ Exposed columns:
 **OE control connector:**
 - 2-pin JST XH or single wire with pin header
 - Pinout:
-  - Pin 1: Teensy Pin 42 (OE control signal)
+  - Pin 1: Teensy Pin 31 (OE control signal)
   - Pin 2: GND (reference)
 
 ### Row 4-5: Bypass Capacitors
@@ -286,7 +286,7 @@ VUSB pin (row 30, column D or G)
 
 3. **Install OE control connector** (row 3)
    - 2-pin JST XH or pin header
-   - Connect to Pin 42 routing
+   - Connect to Pin 31 routing
 
 4. **Install signal output connectors** (rows 25-30)
    - 5× 12-pin JST XH receptacles
@@ -373,7 +373,7 @@ VUSB pin (row 30, column D or G)
 **Module 3 (Address High):** Teensy pins 0-1, 22-27  
 **Module 4 (Control In):** Teensy pins 28-31, 37-40  
 **Module 5 (Control Out):** Teensy pins 36, 2-5, 41  
-**OE Control:** Teensy pin 42  
+**OE Control:** Teensy pin 31  
 
 See [Pin_Mapping.md](Pin_Mapping.md) for complete signal-to-pin mapping.
 

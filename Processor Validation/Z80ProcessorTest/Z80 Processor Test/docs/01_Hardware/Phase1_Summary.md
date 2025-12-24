@@ -1,7 +1,7 @@
 # Phase 1 Hardware Plan - Summary
 
 **Status:** ✅ Complete - Ready for Implementation  
-**Date:** December 22, 2025  
+**Date:** December 23, 2025 (Pin mapping optimized)  
 **Phase:** Planning Complete, Awaiting Hardware
 
 ---
@@ -18,17 +18,22 @@ This document summarizes the complete hardware plan for migrating the Z80 Proces
 
 **Priorities (in order):**
 1. ✅ **Speed & Reliability** - Direct register access, optimized GPIO banks
-2. ✅ **Pin Grouping** - Consecutive pins for simplified wiring
-3. ✅ **Bank Consolidation** - All 16 address bits on GPIO6, all 8 data bits on GPIO7
+2. ✅ **Bank Consolidation** - All 16 address bits on GPIO1.16-31, data bus on GPIO2 two groups
+3. ✅ **Pin Grouping** - Consecutive pins for simplified wiring
+
 
 **Pin Allocations:**
-- **Data Bus (D0-D7):** Teensy pins 6-13 (consecutive, **all GPIO7!**)
-- **Address Low (A0-A7):** Teensy pins 14-21 (consecutive, **all GPIO6!**)
-- **Address High (A8-A15):** Teensy pins 0-1, 22-27 (**all GPIO6!**)
-- **Control Inputs:** Teensy pins 28-31, 37-40 (GPIO8 + GPIO9)
-- **Control Outputs + CLK:** Teensy pins 2-5, 36, 41 (GPIO8 + GPIO9)
+- **Address Bus (A0-A15):** **GPIO1.16-31** (consecutive bits, single-shift 16-bit read!)
+  - Teensy pins: 19,18,14,15,40,41,17,16,22,23,20,21,38,39,26,27
+- **Data Bus (D0-D7):** **GPIO2** two groups (0-3, 16-19, optimized extraction)
+  - D0-D3: Teensy pins 10,12,11,13 (GPIO2.0-3)
+  - D4-D7: Teensy pins 8,7,36,37 (GPIO2.16-19)
+- **Control Outputs (Z80→Teensy):** **GPIO1, GPIO4** grouped by function
+  - Teensy pins: 1,0,24,2,3,4,33,5 (HALT, IORQ, BUSACK, M1, RFSH, RD, WR, MREQ)
+- **Control Inputs (Teensy→Z80):** **GPIO2, GPIO3**
+  - Teensy pins: 28,6,9,35,32,34 (CLK, INT, NMI, WAIT, BUSREQ, RESET)
 
-**Total:** 39 signals mapped to 40 Teensy pins + 1 for OE control = 40 used
+**Total:** 38 Z80 signals + CLK mapped to 39 Teensy pins + 1 for OE Control + spare pins available
 
 ### 2. Power Supply Design ✓
 
@@ -110,7 +115,7 @@ USB Cable → Teensy
 
 ### 5. Clock Generation ✓
 
-**Implementation:** Hardware PWM using FlexPWM2_A on Teensy pin 36
+**Implementation:** Hardware PWM using FlexPWM2_A on Teensy pin 28
 
 **Capabilities:**
 - Frequency range: **100 KHz - 10+ MHz** (vs 100 KHz - 1 MHz on Mega)
@@ -118,7 +123,7 @@ USB Cable → Teensy
 - Jitter-free operation (hardware timer)
 - Zero CPU overhead once configured
 
-**Connection:** Pin 36 → Level Shifter Module 5 → Z80 Pin 6 (CLK)
+**Connection:** Pin 28 (GPIO3.18) → Level Shifter Module 5 → Z80 Pin 6 (CLK)
 
 ### 6. Debug Infrastructure ✓
 
@@ -146,41 +151,42 @@ USB Cable → Teensy
 - Clock: 1 LED
 - Current: 2 mA per LED (1.5kΩ resistors)
 - Power: 76 mA peak, ~24 mA average (@30% duty cycle)
-- Mounted on level shifter board for real-time bus activity visualization
+- Mounted on Z80 board for real-time bus activity visualization
 
 ### 7. Interrupt Configuration ✓
 
 **Interrupt Pins:**
-- **Pin 28:** /RD signal (falling edge trigger)
-- **Pin 30:** /WR signal (falling edge trigger)
+- **Pin 4:** /RD signal (GPIO4.06, falling edge trigger)
+- **Pin 33:** /WR signal (GPIO4.07, falling edge trigger)
 
 **Advantages:**
-- Both on GPIO8 bank → fast interrupt handling
-- NVIC priority 0 (highest) for ISRs
+- Both on GPIO4 bank → fast interrupt handling
+- All Z80 status outputs grouped on GPIO4 (M1, RFSH, RD, WR, MREQ)
+- NVIC priority configurable to 0 (highest) for ISRs
 - ~50-100 ns latency (vs ~1.6 µs on Mega) = **16-32x faster**
-- Preemptive multitasking capable (not needed for this project)
+- Single register read captures all control signals
 
 ### 8. GPIO Bank Optimization ✓
 
 **Key Optimizations:** 
-- **All 16 address bits (A0-A15) on GPIO6** → Single register read
-- **All 8 data bits (D0-D7) on GPIO7** → Single register read/write
+- **All 16 address bits (A0-A15) on GPIO1.16-31** → Single-shift 16-bit read (~5 ns)
+- **Data bus (D0-D7) on GPIO2** in two groups (0-3, 16-19) → Two-mask extraction (~10 ns)
+- **All Z80 status outputs on GPIO4** → Single register read for all control signals
 
 **Performance Impact:**
 ```cpp
-// Single 32-bit register read captures ENTIRE 16-bit address bus!
-uint32_t gpio6 = GPIO6_PSR;  // ~1.7 ns @ 600 MHz
-uint16_t address = extract_address(gpio6);  // ~10-15 ns total
+// Single 32-bit register read + shift captures ENTIRE 16-bit address bus!
+uint16_t address = GPIO1_DR >> 16;  // ~5 ns @ 600 MHz
 
-// Single 32-bit register read/write for ENTIRE 8-bit data bus!
-uint32_t gpio7 = GPIO7_PSR;  // ~1.7 ns
-uint8_t data = extract_data(gpio7);  // ~10-15 ns total
+// Two-mask extraction for 8-bit data bus
+uint32_t gpio2 = GPIO2_DR;
+uint8_t data = (gpio2 & 0x0F) | ((gpio2 >> 12) & 0xF0);  // ~10 ns total
 
 // vs Arduino Mega (16 separate digitalRead() calls for address)
 // ~2000 ns total
 ```
 
-**Speedup:** ~**100-200x faster** for bus operations
+**Speedup:** ~**400x faster address reads**, ~**200x faster data reads**
 
 ---
 
@@ -203,8 +209,8 @@ uint8_t data = extract_data(gpio7);  // ~10-15 ns total
 |----------------------|--------------|-------------------|--------------|  
 | **Max Z80 Clock**    | 1 MHz        | 5-10 MHz          | **5-10x**    |  
 | **ISR Latency**      | 1.6 µs       | 50-100 ns         | **16-32x**   |  
-| **Address Bus Read** | 2.0 µs       | 15-20 ns          | **100-133x** |  
-| **Data Bus Read**    | 1.0 µs       | 10-15 ns          | **67-100x**  |  
+| **Address Bus Read** | 2.0 µs       | 5 ns              | **400x** ⚡  |  
+| **Data Bus Read**    | 1.0 µs       | 10 ns             | **100x** ⚡  |  
 | **GPIO Toggle Rate** | 4 MHz        | 150 MHz           | **37.5x**    |**Expected Z80 Performance:** **5+ MHz sustained operation** (validated by ISR timing budget)
 
 ---
@@ -231,35 +237,35 @@ uint8_t data = extract_data(gpio7);  // ~10-15 ns total
 
 ### Module 1 - Data Bus (Bidirectional)
 ```
-Teen sy 6-13 <--[TXS0108E]--> Z80 14,12,8,7,9,10,13,15 (D4,D3,D5,D6,D2,D7,D0,D1)
+Teensy 10,12,11,13,8,7,36,37 <--[TXS0108E]--> Z80 14,15,12,8,7,9,10,13 (D0-D7)
 ```
-**All GPIO7 bank** - Single register read/write for entire data bus!
+**GPIO2 two groups (0-3, 16-19)** - Two-mask extraction for data bus
 
 ### Module 2 - Address Low (A0-A7)
 ```
-Tee nsy 14-21 --[TXS0108E]--> Z80 30-37 (A0-A7)
+Teensy 19,18,14,15,40,41,17,16 --[TXS0108E]--> Z80 30-37 (A0-A7)
 ```
-**All GPIO6 bank** - Left side of Z80 DIP
+**GPIO1.16-23** - Part of consecutive 16-bit address optimization
 
 ### Module 3 - Address High (A8-A15)
 ```
-Teensy 0-1, 22-27 --[TXS0108E]--> Z80 38-39,1-6 (A8-A15)
+Teensy 22,23,20,21,38,39,26,27 --[TXS0108E]--> Z80 1-6,38-39 (A8-A15)
 ```
-**All GPIO6 bank** - Right side of Z80 DIP. **Full 16-bit address in one register!**
+**GPIO1.24-31** - Part of consecutive 16-bit address optimization. **Full 16-bit address = GPIO1.16-31!**
 
 ### Module 4 - Control Inputs (Z80 → Teensy)
 ```
-Teensy 28-31, 37-40 <--[TXS0108E]-- Z80 18-23,27-28 (HALT,MREQ,IORQ,RD,WR,BUSACK,M1,RFSH)
+Teensy 1,0,24,2,3,4,33,5 <--[TXS0108E]-- Z80 18,20,23,27,28,21,22,19 (HALT,IORQ,BUSACK,M1,RFSH,RD,WR,MREQ)
 ```
-Mostly GPIO8, /RD and /WR interrupt-capable
+**GPIO1 + GPIO4** grouped by function, RD/WR interrupt-capable on GPIO4
 
 ### Module 5 - Control Outputs (Teensy → Z80)
 ```
-Teensy 2-5, 36, 41 --[TXS0108E]--> Z80 6,16,17,24,25,26 (CLK,INT,NMI,WAIT,BUSREQ,RESET)
+Teensy 28,6,9,35,32,34 --[TXS0108E]--> Z80 6,16,17,24,25,26 (CLK,INT,NMI,WAIT,BUSREQ,RESET)
 ```
-Pin 36 = FlexPWM2_A for hardware clock generation
+Pin 28 = FlexPWM2_A for hardware clock generation
 
-**Wiring Complexity:** Moderate - follows Z80 DIP physical order for minimal wire crossing
+**Wiring Complexity:** Moderate - optimized for GPIO performance over physical pin order
 
 ---
 
@@ -268,54 +274,41 @@ Pin 36 = FlexPWM2_A for hardware clock generation
 ### Fast I/O Macros (To Be Implemented)
 
 ```cpp
-// Address bus read (ALL 16 bits on GPIO6!)
+// Address bus read (ALL 16 bits on GPIO1.16-31!)
 inline uint16_t readAddressBus() {
-  uint32_t gpio6 = GPIO6_PSR;  // All A0-A15 on GPIO6
-  uint16_t address = 
-    ((gpio6 >> 18) & 0x0001) |  // A0 (pin 14)
-    ((gpio6 >> 19) & 0x0002) |  // A1 (pin 15)
-    ((gpio6 >> 23) & 0x0004) |  // A2 (pin 16)
-    ((gpio6 >> 22) & 0x0008) |  // A3 (pin 17)
-    ((gpio6 >> 17) & 0x0010) |  // A4 (pin 18)
-    ((gpio6 >> 16) & 0x0020) |  // A5 (pin 19)
-    ((gpio6 >> 26) & 0x0040) |  // A6 (pin 20)
-    ((gpio6 >> 27) & 0x0080) |  // A7 (pin 21)
-    ((gpio6 >> 24) & 0x0100) |  // A8 (pin 22)
-    ((gpio6 >> 25) & 0x0200) |  // A9 (pin 23)
-    ((gpio6 >> 3)  & 0x0400) |  // A10 (pin 0)
-    ((gpio6 >> 2)  & 0x0800) |  // A11 (pin 1)
-    ((gpio6 >> 12) & 0x1000) |  // A12 (pin 24)
-    ((gpio6 >> 13) & 0x2000) |  // A13 (pin 25)
-    ((gpio6 >> 30) & 0x4000) |  // A14 (pin 26)
-    ((gpio6 >> 31) & 0x8000);   // A15 (pin 27)
-  return address;
+  return GPIO1_DR >> 16;  // Single shift! A0-A15 on consecutive bits 16-31
 }
-// ~10-15 ns total
+// ~5 ns total
 
-// Data bus read (ALL 8 bits on GPIO7!)
+// Data bus read (GPIO2 two groups: 0-3, 16-19)
 inline uint8_t readDataBus() {
-  uint32_t gpio7 = GPIO7_PSR;  // All D0-D7 on GPIO7
-  uint8_t data = 
-    ((gpio7 >> 10) & 0x10) |  // D4 (pin 6)
-    ((gpio7 >> 17) & 0x08) |  // D3 (pin 7)
-    ((gpio7 >> 16) & 0x20) |  // D5 (pin 8)
-    ((gpio7 >> 11) & 0x40) |  // D6 (pin 9)
-    ((gpio7 >> 0)  & 0x04) |  // D2 (pin 10)
-    ((gpio7 >> 2)  & 0x80) |  // D7 (pin 11)
-    ((gpio7 >> 1)  & 0x01) |  // D0 (pin 12)
-    ((gpio7 >> 3)  & 0x02);   // D1 (pin 13)
-  return data;
+  uint32_t gpio2 = GPIO2_DR;
+  return (gpio2 & 0x0F) |          // D0-D3 from bits 0-3
+         ((gpio2 >> 12) & 0xF0);   // D4-D7 from bits 16-19, shift to bits 4-7
 }
-// ~10-15 ns total
+// ~10 ns total
+
+// Data bus write
+inline void writeDataBus(uint8_t data) {
+  uint32_t gpio2 = GPIO2_DR & ~0x000F000F;  // Clear data bits
+  gpio2 |= (data & 0x0F);                    // D0-D3
+  gpio2 |= ((uint32_t)(data & 0xF0)) << 12;  // D4-D7
+  GPIO2_DR = gpio2;
+}
+// ~12 ns total
 
 // Control signal checks
 inline bool isReadCycle() {
-  return (GPIO8_PSR >> 18) & 1;  // Pin 28 = GPIO8 bit 18 (/RD)
+  return !(GPIO4_DR & (1 << 6));  // Pin 4 = GPIO4 bit 6 (/RD, active low)
 }
-// ~5 ns
+
+inline bool isWriteCycle() {
+  return !(GPIO4_DR & (1 << 7));  // Pin 33 = GPIO4 bit 7 (/WR, active low)
+}
+// ~5 ns each
 ```
 
-**Performance:** All I/O operations <20 ns (vs 125 ns - 2 µs on Arduino Mega)
+**Performance:** Address read ~5 ns, data read/write ~10-12 ns (vs 125 ns - 2 µs on Arduino Mega)
 
 ---
 
@@ -325,7 +318,7 @@ inline bool isReadCycle() {
 **Goal:** Generate Z80 clock signal
 
 - [ ] Connect Module 5 level shifter
-- [ ] Wire Teensy pin 36 → Module 5 → Z80 pin 6
+- [ ] Wire Teensy pin 28 → Module 5 → Z80 pin 6
 - [ ] Implement FlexPWM clock generation (Phase 2 deliverable)
 - [ ] Test clock output with oscilloscope
 - [ ] Verify 50% duty cycle at 1 MHz, 2 MHz, 3 MHz
@@ -349,7 +342,7 @@ inline bool isReadCycle() {
 - [ ] Connect Module 4 level shifter
 - [ ] Wire control signals (8 pins)
 - [ ] Implement control signal read functions
-- [ ] Configure interrupts on pins 28 (/RD) and 30 (/WR)
+- [ ] Configure interrupts on pins 4 (/RD) and 33 (/WR)
 - [ ] Test interrupt triggering
 
 **Success Criteria:** ISRs triggered by /RD and /WR transitions
@@ -454,5 +447,5 @@ inline bool isReadCycle() {
 ---
 
 **Status:** ✅ Phase 1 Planning Complete  
-**Date:** December 22, 2025  
+**Date:** December 23, 2025 (Pin mapping optimized)  
 **Next Phase:** [Phase 2 - Clock Generation](../02_Clock/README.md) (implementation after Phase 1 hardware validated)

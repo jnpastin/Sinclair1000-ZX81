@@ -1,7 +1,7 @@
 # Level Shifting - 5V Z80 to 3.3V Teensy
 
-**Status:** 📋 Planning Phase  
-**Date:** December 22, 2025  
+**Status:** 📋 Optimized Pin Mapping  
+**Date:** December 23, 2025  
 **Hardware:** HW-221 Level Shifter Modules (TXS0108E)
 
 ---
@@ -82,16 +82,16 @@ The Z80 CPU operates at **5V logic levels** (both NMOS and CMOS variants), while
 
 ```
          ┌─────────────────┐
-    GND ─┤1              20├─ VCCB (5V)
-     OE ─┤2              19├─ B8
-     A1 ─┤3              18├─ B7
-     A2 ─┤4              17├─ B6
-     A3 ─┤5              16├─ B5
-     A4 ─┤6              15├─ B4
-     A5 ─┤7              14├─ B3
-     A6 ─┤8              13├─ B2
-     A7 ─┤9              12├─ B1
-     A8 ─┤10             11├─ VCCA (3.3V)
+   VCCA ─┤1              20├─ VCCB (5V)
+     A1 ─┤2              19├─ B1
+     A2 ─┤3              18├─ B2
+     A3 ─┤4              17├─ B3
+     A4 ─┤5              16├─ B4
+     A5 ─┤6              15├─ B5
+     A6 ─┤7              14├─ B6
+     A7 ─┤8              13├─ B7
+     A8 ─┤9              12├─ B8
+     OE ─┤10             11├─ GND
          └─────────────────┘
          
 A side = Teensy (3.3V)
@@ -103,14 +103,14 @@ OE = Output Enable (pull HIGH to enable, LOW to disable)
 
 | Pin | Name  | Connection             | Notes                                        |
 |-----|-------|------------------------|----------------------------------------------|
-| 1   | GND   | Common ground          | Connect to both Teensy GND and Z80 GND       |
-| 2   | OE    | Teensy 3.3V            | Tie HIGH to enable (active HIGH)             |
-| 3-10| A1-A8 | Teensy GPIO            | 3.3V side (Teensy pins)                      |
-| 11  | VCCA  | Teensy 3.3V            | Power from Teensy 3.3V output                |
-| 12-19| B1-B8| Z80 pins               | 5V side (Z80 pins)                           |
+| 1   | VCCA  | Teensy 3.3V            | Power from Teensy 3.3V output                |
+| 2-9 | A1-A8 | Teensy GPIO            | 3.3V side (Teensy pins)                      |
+| 10  | OE    | Teensy Pin 31          | Software-controlled enable (active HIGH)     |
+| 11  | GND   | Common ground          | Connect to both Teensy GND and Z80 GND       |
+| 12-19| B8-B1| Z80 pins               | 5V side (Z80 pins, reversed order)           |
 | 20  | VCCB  | +5V supply             | Power Z80 and level shifter B side           |
 
-**Important:** OE pin must be HIGH to enable level shifting. Tie to VCCA (3.3V).
+**Important:** OE pin controlled by Teensy Pin 31 for clean reset and debug modes. 10kΩ pull-down keeps disabled when Teensy not powered.
 
 ---
 
@@ -122,18 +122,20 @@ OE = Output Enable (pull HIGH to enable, LOW to disable)
 
 | Module Pin | Teensy Side (3.3V) | Z80 Side (5V)  | Direction     |
 |------------|--------------------|-----------------|--------------|
-| A1         | Pin 0 (D4)         | Pin 14 (D4)    | ← Bidir →   |
-| A2         | Pin 1 (D3)         | Pin 12 (D3)    | ← Bidir →   |
-| A3         | Pin 2 (D5)         | Pin 8 (D5)     | ← Bidir →   |
-| A4         | Pin 3 (D6)         | Pin 7 (D6)     | ← Bidir →   |
-| A5         | Pin 4 (D2)         | Pin 9 (D2)     | ← Bidir →   |
-| A6         | Pin 5 (D7)         | Pin 10 (D7)    | ← Bidir →   |
-| A7         | Pin 6 (D0)         | Pin 13 (D0)    | ← Bidir →   |
-| A8         | Pin 7 (D1)         | Pin 15 (D1)    | ← Bidir →   |
+| A1         | Pin 10 (D0)        | Pin 14 (D0)    | ← Bidir →   |
+| A2         | Pin 12 (D1)        | Pin 15 (D1)    | ← Bidir →   |
+| A3         | Pin 11 (D2)        | Pin 12 (D2)    | ← Bidir →   |
+| A4         | Pin 13 (D3)        | Pin 8 (D3)     | ← Bidir →   |
+| A5         | Pin 8 (D4)         | Pin 7 (D4)     | ← Bidir →   |
+| A6         | Pin 7 (D5)         | Pin 9 (D5)     | ← Bidir →   |
+| A7         | Pin 36 (D6)        | Pin 10 (D6)    | ← Bidir →   |
+| A8         | Pin 37 (D7)        | Pin 13 (D7)    | ← Bidir →   |
 | VCCA       | Teensy 3.3V        | -              | Power        |
 | VCCB       | -                  | +5V            | Power        |
-| OE         | Teensy 3.3V        | -              | Enable       |
-| GND        | Teensy GND         | Z80 GND        | Ground       |**Configuration:** Leave OE high (tie to VCCA). TXS0108E auto-detects direction.
+| OE         | Teensy Pin 31      | -              | Enable       |
+| GND        | Teensy GND         | Z80 GND        | Ground       |
+
+**Configuration:** OE controlled by software (Pin 31). TXS0108E auto-detects direction.
 
 ---
 
@@ -143,18 +145,20 @@ OE = Output Enable (pull HIGH to enable, LOW to disable)
 
 | Module Pin | Teensy Side (3.3V) | Z80 Side (5V)  | Direction  |
 |------------|--------------------|-----------------|-----------|
-| A1         | Pin 8 (A0)         | Pin 30 (A0)    | ← Input   |
-| A2         | Pin 9 (A1)         | Pin 31 (A1)    | ← Input   |
-| A3         | Pin 10 (A2)        | Pin 32 (A2)    | ← Input   |
-| A4         | Pin 11 (A3)        | Pin 33 (A3)    | ← Input   |
-| A5         | Pin 12 (A4)        | Pin 34 (A4)    | ← Input   |
-| A6         | Pin 13 (A5)        | Pin 35 (A5)    | ← Input   |
-| A7         | Pin 14 (A6)        | Pin 36 (A6)    | ← Input   |
-| A8         | Pin 15 (A7)        | Pin 37 (A7)    | ← Input   |
+| A1         | Pin 19 (A0)        | Pin 30 (A0)    | ← Input   |
+| A2         | Pin 18 (A1)        | Pin 31 (A1)    | ← Input   |
+| A3         | Pin 14 (A2)        | Pin 32 (A2)    | ← Input   |
+| A4         | Pin 15 (A3)        | Pin 33 (A3)    | ← Input   |
+| A5         | Pin 40 (A4)        | Pin 34 (A4)    | ← Input   |
+| A6         | Pin 41 (A5)        | Pin 35 (A5)    | ← Input   |
+| A7         | Pin 17 (A6)        | Pin 36 (A6)    | ← Input   |
+| A8         | Pin 16 (A7)        | Pin 37 (A7)    | ← Input   |
 | VCCA       | Teensy 3.3V        | -              | Power      |
 | VCCB       | -                  | +5V            | Power      |
-| OE         | Teensy 3.3V        | -              | Enable     |
-| GND        | Teensy GND         | Z80 GND        | Ground     |**Configuration:** Unidirectional Z80→Teensy. TXS0108E handles this automatically.
+| OE         | Teensy Pin 31      | -              | Enable     |
+| GND        | Teensy GND         | Z80 GND        | Ground     |
+
+**Configuration:** Unidirectional Z80→Teensy. OE controlled by software (Pin 31).
 
 ---
 
@@ -164,17 +168,17 @@ OE = Output Enable (pull HIGH to enable, LOW to disable)
 
 | Module Pin | Teensy Side (3.3V) | Z80 Side (5V)  | Direction  |
 |------------|--------------------|-----------------|-----------|
-| A1         | Pin 16 (A8)        | Pin 38 (A8)    | ← Input   |
-| A2         | Pin 17 (A9)        | Pin 39 (A9)    | ← Input   |
-| A3         | Pin 18 (A10)       | Pin 1 (A10)    | ← Input   |
-| A4         | Pin 19 (A11)       | Pin 2 (A11)    | ← Input   |
-| A5         | Pin 20 (A12)       | Pin 3 (A12)    | ← Input   |
-| A6         | Pin 21 (A13)       | Pin 4 (A13)    | ← Input   |
-| A7         | Pin 22 (A14)       | Pin 5 (A14)    | ← Input   |
-| A8         | Pin 23 (A15)       | Pin 6 (A15)    | ← Input   |
+| A1         | Pin 22 (A8)        | Pin 1 (A8)     | ← Input   |
+| A2         | Pin 23 (A9)        | Pin 2 (A9)     | ← Input   |
+| A3         | Pin 20 (A10)       | Pin 3 (A10)    | ← Input   |
+| A4         | Pin 21 (A11)       | Pin 4 (A11)    | ← Input   |
+| A5         | Pin 38 (A12)       | Pin 5 (A12)    | ← Input   |
+| A6         | Pin 39 (A13)       | Pin 6 (A13)    | ← Input   |
+| A7         | Pin 26 (A14)       | Pin 38 (A14)   | ← Input   |
+| A8         | Pin 27 (A15)       | Pin 39 (A15)   | ← Input   |
 | VCCA       | Teensy 3.3V        | -              | Power      |
 | VCCB       | -                  | +5V            | Power      |
-| OE         | Teensy 3.3V        | -              | Enable     |
+| OE         | Teensy Pin 31      | -              | Enable     |
 | GND        | Teensy GND         | Z80 GND        | Ground     |---
 
 ### Module 4: Control Inputs (Z80 → Teensy) - Unidirectional
@@ -183,18 +187,20 @@ OE = Output Enable (pull HIGH to enable, LOW to disable)
 
 | Module Pin | Teensy Side (3.3V)  | Z80 Side (5V)   | Direction | Signal         |
 |------------|---------------------|------------------|-----------|-----------------|
-| A1         | Pin 24 (/RD)        | Pin 21 (/RD)    | ← Input   | Read strobe    |
-| A2         | Pin 25 (/WR)        | Pin 22 (/WR)    | ← Input   | Write strobe   |
-| A3         | Pin 26 (/MREQ)      | Pin 19 (/MREQ)  | ← Input   | Memory request |
-| A4         | Pin 27 (/IORQ)      | Pin 20 (/IORQ)  | ← Input   | I/O request    |
-| A5         | Pin 28 (/M1)        | Pin 27 (/M1)    | ← Input   | Machine cycle 1|
-| A6         | Pin 29 (/RFSH)      | Pin 28 (/RFSH)  | ← Input   | Refresh cycle  |
-| A7         | Pin 30 (/HALT)      | Pin 18 (/HALT)  | ← Input   | Halt status    |
-| A8         | Pin 31 (/BUSACK)    | Pin 23 (/BUSACK)| ← Input   | Bus acknowledge|
+| A1         | Pin 1 (HALT)        | Pin 18 (HALT)   | ← Input   | Halt status    |
+| A2         | Pin 0 (IORQ)        | Pin 20 (IORQ)   | ← Input   | I/O request    |
+| A3         | Pin 24 (BUSACK)     | Pin 23 (BUSACK) | ← Input   | Bus acknowledge|
+| A4         | Pin 2 (M1)          | Pin 27 (M1)     | ← Input   | Machine cycle 1|
+| A5         | Pin 3 (RFSH)        | Pin 28 (RFSH)   | ← Input   | Refresh cycle  |
+| A6         | Pin 4 (RD)          | Pin 21 (RD)     | ← Input   | Read strobe    |
+| A7         | Pin 33 (WR)         | Pin 22 (WR)     | ← Input   | Write strobe   |
+| A8         | Pin 5 (MREQ)        | Pin 19 (MREQ)   | ← Input   | Memory request |
 | VCCA       | Teensy 3.3V         | -               | Power     | -              |
 | VCCB       | -                   | +5V             | Power     | -              |
-| OE         | Teensy 3.3V         | -               | Enable    | -              |
-| GND        | Teensy GND          | Z80 GND         | Ground    | -              |**Note:** /RD and /WR on this module are interrupt sources for Teensy ISRs.
+| OE         | Teensy Pin 31       | -               | Enable    | -              |
+| GND        | Teensy GND          | Z80 GND         | Ground    | -              |
+
+**Note:** RD (pin 4) and WR (pin 33) are interrupt sources for Teensy ISRs.
 
 ---
 
@@ -204,18 +210,20 @@ OE = Output Enable (pull HIGH to enable, LOW to disable)
 
 | Module Pin | Teensy Side (3.3V)  | Z80 Side (5V)    | Direction | Signal                   |
 |------------|---------------------|-------------------|-----------|--------------------------|
-| A1         | Pin 36 (CLK)        | Pin 6 (CLK)      | Output →  | Clock signal             |
-| A2         | Pin 37 (/RESET)     | Pin 26 (/RESET)  | Output →  | Reset (active low)       |
-| A3         | Pin 38 (/WAIT)      | Pin 24 (/WAIT)   | Output →  | Wait state               |
-| A4         | Pin 39 (/INT)       | Pin 16 (/INT)    | Output →  | Interrupt request        |
-| A5         | Pin 40 (/NMI)       | Pin 17 (/NMI)    | Output →  | Non-maskable interrupt   |
-| A6         | Pin 41 (/BUSREQ)    | Pin 25 (/BUSREQ) | Output →  | Bus request              |
+| A1         | Pin 28 (CLK)        | Pin 6 (CLK)      | Output →  | Clock signal             |
+| A2         | Pin 6 (INT)         | Pin 16 (INT)     | Output →  | Interrupt request        |
+| A3         | Pin 9 (NMI)         | Pin 17 (NMI)     | Output →  | Non-maskable interrupt   |
+| A4         | Pin 35 (WAIT)       | Pin 24 (WAIT)    | Output →  | Wait state               |
+| A5         | Pin 32 (BUSREQ)     | Pin 25 (BUSREQ)  | Output →  | Bus request              |
+| A6         | Pin 34 (RESET)      | Pin 26 (RESET)   | Output →  | Reset (active low)       |
 | A7         | (spare)             | -                | -         | Unused                   |
 | A8         | (spare)             | -                | -         | Unused                   |
 | VCCA       | Teensy 3.3V         | -                | Power     | -                        |
 | VCCB       | -                   | +5V              | Power     | -                        |
-| OE         | Teensy 3.3V         | -                | Enable    | -                        |
-| GND        | Teensy GND          | Z80 GND          | Ground    | -                        |**Note:** CLK signal generated by Teensy FlexPWM (Phase 2).
+| OE         | Teensy Pin 31       | -                | Enable    | -                        |
+| GND        | Teensy GND          | Z80 GND          | Ground    | -                        |
+
+**Note:** CLK signal (Pin 28) generated by Teensy FlexPWM2_A (Phase 2).
 
 ---
 
@@ -387,14 +395,14 @@ Teensy GND ─┬─ Z80 GND
 
 ### Implementation: Software-Controlled Enable ✅
 
-**All 5 OE pins tied together → Single Teensy GPIO (Pin 42)**
+**All 5 OE pins tied together → Single Teensy GPIO (Pin 31)**
 
 ```
-Teenosy Pin 42 ──┬→ Module 1 OE
-                 ├→ Module 2 OE
-                 ├→ Module 3 OE
-                 ├→ Module 4 OE
-                 └→ Module 5 OE
+Teensy Pin 31 ──┬→ Module 1 OE
+                ├→ Module 2 OE
+                ├→ Module 3 OE
+                ├→ Module 4 OE
+                └→ Module 5 OE
                  
 10kΩ pull-down to GND (keeps disabled if Teensy not powered)
 ```
@@ -408,7 +416,7 @@ Teenosy Pin 42 ──┬→ Module 1 OE
 
 **Software Control:**
 ```cpp
-#define LEVEL_SHIFTER_OE_PIN  42
+#define LEVEL_SHIFTER_OE_PIN  31  // GPIO3.22
 
 void setup() {
     pinMode(LEVEL_SHIFTER_OE_PIN, OUTPUT);

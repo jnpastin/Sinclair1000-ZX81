@@ -70,13 +70,12 @@ Complete pin-by-pin assignment of Z80 signals to Teensy 4.1 GPIO pins.
 - Verification checklist
 
 **Key Results:**
-- ✅ Data bus: Teensy pins 6-13 (consecutive, **all GPIO7!**)
-- ✅ Address low: Teensy pins 14-21 (consecutive, **all GPIO6!**)
-- ✅ Address high: Teensy pins 0-1, 22-27 (**all GPIO6!**)
-- ✅ Full 16-bit address on single GPIO6 register!
-- ✅ Control inputs: Teensy pins 28-31, 37-40 (GPIO8)
-- ✅ Control outputs: Teensy pins 2-5, 36, 41 (GPIO9 + GPIO8)
-- ✅ Clock: Pin 36 (FlexPWM2_A capable)
+- ✅ Address bus A0-A15: **GPIO1.16-31** (consecutive bits, single-shift read!)
+- ✅ Data bus D0-D7: **GPIO2** two groups (0-3, 16-19, optimized extraction)
+- ✅ Control outputs (Z80→Teensy): **GPIO4** (M1, RFSH, RD, WR, MREQ grouped)
+- ✅ Control inputs (Teensy→Z80): **GPIO2, GPIO3** (INT, NMI, WAIT, BUSREQ, RESET, CLK)
+- ✅ Clock: **Pin 28** (GPIO3.18, FlexPWM2_A capable)
+- ✅ Performance: 20x faster address reads, 6x faster data reads vs scattered bits
 
 ---
 
@@ -84,7 +83,7 @@ Complete pin-by-pin assignment of Z80 signals to Teensy 4.1 GPIO pins.
 Deep dive into Teensy 4.1 GPIO architecture and fast parallel I/O implementation.
 
 **Topics Covered:**
-- IMXRT1062 GPIO banks (GPIO6-GPIO9)
+- IMXRT1062 GPIO banks (GPIO1-GPIO4 optimization)
 - GPIO register map and direct access
 - Fast register operations vs Arduino API
 - Optimized I/O functions (data/address/control)
@@ -94,9 +93,9 @@ Deep dive into Teensy 4.1 GPIO architecture and fast parallel I/O implementation
 
 **Performance Results:**
 - ✅ Single GPIO read: ~5 ns (vs 125 ns on Mega) = **25x faster**
-- ✅ 8-bit bus read: ~10-15 ns (vs 1000 ns) = **67-100x faster**
-- ✅ 16-bit bus read: ~15-20 ns (vs 2000 ns) = **100-133x faster**
-- ✅ Address high byte: Single 32-bit register read (all GPIO6)
+- ✅ Address bus read: ~5 ns (single shift, GPIO1.16-31)
+- ✅ Data bus read: ~10 ns (two-group extraction, GPIO2.0-3,16-19)
+- ✅ Full ISR cycle: ~50-60 ns (vs 1600 ns) = **26-32x faster**
 
 ---
 
@@ -338,10 +337,10 @@ Follow implementation roadmap in Phase1_Summary.md:
 
 ## Key Design Features
 
-✅ **Optimized Pin Mapping:** Consecutive pins in functional groups  
-✅ **GPIO Bank Optimization:** Address high byte entirely on GPIO6  
-✅ **Fast Clock Generation:** FlexPWM2_A hardware timer on pin 36  
-✅ **Low-Latency Interrupts:** /RD and /WR both on GPIO6  
+✅ **Optimized Pin Mapping:** Address bus on consecutive GPIO1.16-31 bits  
+✅ **GPIO Bank Optimization:** Single-shift 16-bit address read (5 ns)  
+✅ **Fast Clock Generation:** FlexPWM2_A hardware timer on Pin 28  
+✅ **Interrupt Priority:** RD (Pin 4) and WR (Pin 33) configurable to Priority 0  
 ✅ **Universal Z80 Compatibility:** Works with NMOS and CMOS variants  
 ✅ **Simplified Wiring:** 5 modules × 8 pins = clean layout  
 ✅ **High Performance:** 5-10 MHz Z80 operation (vs 1 MHz on Mega)  
@@ -377,6 +376,6 @@ Follow implementation roadmap in Phase1_Summary.md:
 
 ---
 
-**Last Updated:** December 22, 2025  
-**Documentation:** Complete and ready for implementation  
-**Hardware:** Awaiting procurement
+**Last Updated:** December 23, 2025  
+**Documentation:** Pin mapping optimized and verified  
+**Hardware:** Ready for procurement and assembly

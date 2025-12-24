@@ -1,6 +1,6 @@
 # Assembly Order & Testing Strategy
 
-**Status:** 📋 Planning Complete  
+**Status:** 📋 Optimized Pin Mapping  
 **Date:** December 23, 2025  
 **Approach:** Incremental build with validation at each stage
 
@@ -83,7 +83,7 @@ This document outlines the recommended assembly sequence and testing procedures 
    - Route each Teensy GPIO pin to appropriate output connector
    - Use solid-core wire (22-24 AWG)
    - Keep wiring organized (follow breadboard traces where possible)
-   - Pin 42 → OE control connector
+   - Pin 31 → OE control connector
 
 **Component checklist:**
 - [ ] Teensy 4.1 installed
@@ -247,7 +247,7 @@ This document outlines the recommended assembly sequence and testing procedures 
 **Level shifter enable test:**
 1. Upload test code to Teensy:
    ```cpp
-   #define LEVEL_SHIFTER_OE_PIN 42
+   #define LEVEL_SHIFTER_OE_PIN 31
    
    void setup() {
      pinMode(LEVEL_SHIFTER_OE_PIN, OUTPUT);
@@ -262,8 +262,8 @@ This document outlines the recommended assembly sequence and testing procedures 
 **Clock generation test:**
 1. Upload clock test code:
    ```cpp
-   #define LEVEL_SHIFTER_OE_PIN 42
-   #define CLOCK_PIN 36
+   #define LEVEL_SHIFTER_OE_PIN 31
+   #define CLOCK_PIN 28
    
    void setup() {
      // Enable level shifters
@@ -567,13 +567,13 @@ This document outlines the recommended assembly sequence and testing procedures 
 
 **Upload Z80 initialization firmware:**
 ```cpp
-#define LEVEL_SHIFTER_OE_PIN 42
-#define CLOCK_PIN 36
-#define RESET_PIN 41
-#define INT_PIN 2
-#define NMI_PIN 3
-#define WAIT_PIN 4
-#define BUSREQ_PIN 5
+#define LEVEL_SHIFTER_OE_PIN 31
+#define CLOCK_PIN 28
+#define RESET_PIN 34
+#define INT_PIN 6
+#define NMI_PIN 9
+#define WAIT_PIN 35
+#define BUSREQ_PIN 32
 
 void setup() {
   Serial.begin(115200);

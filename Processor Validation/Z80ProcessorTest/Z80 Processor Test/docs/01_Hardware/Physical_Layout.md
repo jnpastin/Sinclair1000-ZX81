@@ -1,6 +1,6 @@
 # Physical Layout - Proto Board Assembly
 
-**Status:** 📋 Planning Complete  
+**Status:** 📋 Optimized Pin Mapping  
 **Date:** December 23, 2025  
 **Hardware:** Breadboard-style proto boards with threaded insert mounting
 
@@ -110,30 +110,30 @@ Right Power Rail:  5V distribution to all VB pins
 
 **Module 1: Data Bus (D0-D7)**
 - Rows: 2-11
-- A-side: Teensy pins 6-13
-- B-side: Z80 pins 14,12,8,7,9,10,13,15
+- A-side: Teensy pins 10,12,11,13,8,7,36,37
+- B-side: Z80 pins 14,15,12,8,7,9,10,13
 
 **Module 2: Address Low Byte (A0-A7)**
 - Rows: 14-23
-- A-side: Teensy pins 14-21
-- B-side: Z80 pins 30-37
+- A-side: Teensy pins 19,18,14,15,40,41,17,16
+- B-side: Z80 pins 30,31,32,33,34,35,36,37
 
 **Module 3: Address High Byte (A8-A15)**
 - Rows: 26-35
-- A-side: Teensy pins 0-1, 22-27
-- B-side: Z80 pins 1-6, 38-39
+- A-side: Teensy pins 22,23,20,21,38,39,26,27
+- B-side: Z80 pins 1,2,3,4,5,6,38,39
 
 **Module 4: Control Inputs**
 - Rows: 38-47
-- Signals: HALT, MREQ, IORQ, RD, WR, BUSACK, M1, RFSH
-- A-side: Teensy pins 28-31, 37-40
-- B-side: Z80 pins 18-23, 27-28
+- Signals: HALT, IORQ, BUSACK, M1, RFSH, RD, WR, MREQ
+- A-side: Teensy pins 1,0,24,2,3,4,33,5
+- B-side: Z80 pins 18,20,23,27,28,21,22,19
 
 **Module 5: Control Outputs + Clock**
 - Rows: 50-59
 - Signals: CLK, INT, NMI, WAIT, BUSREQ, RESET
-- A-side: Teensy pins 36, 2-5, 41
-- B-side: Z80 pins 6, 16-17, 24-26
+- A-side: Teensy pins 28,6,9,35,32,34
+- B-side: Z80 pins 6,16,17,24,25,26
 
 ### Rows 60-63: Support Circuitry
 
@@ -144,7 +144,7 @@ Right Power Rail:  5V distribution to all VB pins
 Columns A-E bus:
 - Jumpers from all 5 modules (rows 11, 23, 35, 47, 59 column D)
 - 10kΩ resistor to ground
-- Wire to Teensy Pin 42 (via separate JST connector or direct wire)
+- Wire to Teensy Pin 31 (via separate JST connector or direct wire)
 ```
 
 **Row 62: Bypass Capacitors**
@@ -207,7 +207,7 @@ Columns A-E bus:
 - Teensy 3.3V pin distributed to level shifter board
 
 **OE Control:** Single wire or small 2-pin JST connector
-- From Teensy Pin 42 to level shifter row 61
+- From Teensy Pin 31 to level shifter row 61
 
 ---
 

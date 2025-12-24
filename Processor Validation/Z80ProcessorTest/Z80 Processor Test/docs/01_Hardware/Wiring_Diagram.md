@@ -1,6 +1,6 @@
 # Wiring Diagram - Teensy 4.1 to Z80 via Level Shifters
 
-**Date:** December 22, 2025  
+**Date:** December 23, 2025  
 **Hardware:** Teensy 4.1 + 5x HW-221 (TXS0108E) + Z80 CPU (40-pin DIP)
 
 ---
@@ -98,16 +98,16 @@ Teeensy GPIO → Dual-Row Headers → Level Shifter A-side
 ```
 Teensy 4.1 (3.3V)              HW-221 Module 1           Z80 CPU (5V)
                               ┌─────────────┐
-Pin 0 (GPIO6[3])  ────────────┤A1        B1 ├──────────  Pin 14 (D4)
-Pin 1 (GPIO6[2])  ────────────┤A2        B2 ├──────────  Pin 12 (D3)
-Pin 2 (GPIO9[4])  ────────────┤A3        B3 ├──────────  Pin 8  (D5)
-Pin 3 (GPIO9[5])  ────────────┤A4        B4 ├──────────  Pin 7  (D6)
-Pin 4 (GPIO9[6])  ────────────┤A5        B5 ├──────────  Pin 9  (D2)
-Pin 5 (GPIO9[8])  ────────────┤A6        B6 ├──────────  Pin 10 (D7)
-Pin 6 (GPIO7[10]) ────────────┤A7        B7 ├──────────  Pin 13 (D0)
-Pin 7 (GPIO7[17]) ────────────┤A8        B8 ├──────────  Pin 15 (D1)
+Pin 10 (GPIO2[0])  ────────────┤A1        B1 ├──────────  Pin 14 (D0)
+Pin 12 (GPIO2[1])  ────────────┤A2        B2 ├──────────  Pin 15 (D1)
+Pin 11 (GPIO2[2])  ────────────┤A3        B3 ├──────────  Pin 12 (D2)
+Pin 13 (GPIO2[3])  ────────────┤A4        B4 ├──────────  Pin 8  (D3)
+Pin 8  (GPIO2[16]) ────────────┤A5        B5 ├──────────  Pin 7  (D4)
+Pin 7  (GPIO2[17]) ────────────┤A6        B6 ├──────────  Pin 9  (D5)
+Pin 36 (GPIO2[18]) ────────────┤A7        B7 ├──────────  Pin 10 (D6)
+Pin 37 (GPIO2[19]) ────────────┤A8        B8 ├──────────  Pin 13 (D7)
                               │             │
-3.3V ─────────────────────────┤VCCA     OE  ├──── 3.3V (enable)
+3.3V ─────────────────────────┤VCCA     OE  ├──── Pin 31 (enable)
 GND ──────────────────────────┤GND    VCCB  ├──── 5V
                               └─────────────┘
 
@@ -122,16 +122,16 @@ Purpose: Z80 data bus D0-D7
 ```
 Teensy 4.1 (3.3V)              HW-221 Module 2           Z80 CPU (5V)
                               ┌─────────────┐
-Pin 8  (GPIO7[16]) ───────────┤A1        B1 ├──────────  Pin 30 (A0)
-Pin 9  (GPIO7[11]) ───────────┤A2        B2 ├──────────  Pin 31 (A1)
-Pin 10 (GPIO7[0])  ───────────┤A3        B3 ├──────────  Pin 32 (A2)
-Pin 11 (GPIO7[2])  ───────────┤A4        B4 ├──────────  Pin 33 (A3)
-Pin 12 (GPIO7[1])  ───────────┤A5        B5 ├──────────  Pin 34 (A4)
-Pin 13 (GPIO7[3])  ───────────┤A6        B6 ├──────────  Pin 35 (A5)
-Pin 14 (GPIO6[18]) ───────────┤A7        B7 ├──────────  Pin 36 (A6)
-Pin 15 (GPIO6[19]) ───────────┤A8        B8 ├──────────  Pin 37 (A7)
+Pin 19 (GPIO1[16]) ───────────┤A1        B1 ├──────────  Pin 30 (A0)
+Pin 18 (GPIO1[17]) ───────────┤A2        B2 ├──────────  Pin 31 (A1)
+Pin 14 (GPIO1[18]) ───────────┤A3        B3 ├──────────  Pin 32 (A2)
+Pin 15 (GPIO1[19]) ───────────┤A4        B4 ├──────────  Pin 33 (A3)
+Pin 40 (GPIO1[20]) ───────────┤A5        B5 ├──────────  Pin 34 (A4)
+Pin 41 (GPIO1[21]) ───────────┤A6        B6 ├──────────  Pin 35 (A5)
+Pin 17 (GPIO1[22]) ───────────┤A7        B7 ├──────────  Pin 36 (A6)
+Pin 16 (GPIO1[23]) ───────────┤A8        B8 ├──────────  Pin 37 (A7)
                               │             │
-3.3V ─────────────────────────┤VCCA     OE  ├──── 3.3V
+3.3V ─────────────────────────┤VCCA     OE  ├──── Pin 31
 GND ──────────────────────────┤GND    VCCB  ├──── 5V
                               └─────────────┘
 
@@ -146,22 +146,22 @@ Purpose: Address bus low byte A0-A7
 ```
 Teensy 4.1 (3.3V)              HW-221 Module 3           Z80 CPU (5V)
                               ┌─────────────┐
-Pin 16 (GPIO6[23]) ───────────┤A1        B1 ├──────────  Pin 38 (A8)
-Pin 17 (GPIO6[22]) ───────────┤A2        B2 ├──────────  Pin 39 (A9)
-Pin 18 (GPIO6[17]) ───────────┤A3        B3 ├──────────  Pin 1  (A10)
-Pin 19 (GPIO6[16]) ───────────┤A4        B4 ├──────────  Pin 2  (A11)
-Pin 20 (GPIO6[26]) ───────────┤A5        B5 ├──────────  Pin 3  (A12)
-Pin 21 (GPIO6[27]) ───────────┤A6        B6 ├──────────  Pin 4  (A13)
-Pin 22 (GPIO6[24]) ───────────┤A7        B7 ├──────────  Pin 5  (A14)
-Pin 23 (GPIO6[25]) ───────────┤A8        B8 ├──────────  Pin 6  (A15)
+Pin 22 (GPIO1[24]) ───────────┤A1        B1 ├──────────  Pin 1  (A8)
+Pin 23 (GPIO1[25]) ───────────┤A2        B2 ├──────────  Pin 2  (A9)
+Pin 20 (GPIO1[26]) ───────────┤A3        B3 ├──────────  Pin 3  (A10)
+Pin 21 (GPIO1[27]) ───────────┤A4        B4 ├──────────  Pin 4  (A11)
+Pin 38 (GPIO1[28]) ───────────┤A5        B5 ├──────────  Pin 5  (A12)
+Pin 39 (GPIO1[29]) ───────────┤A6        B6 ├──────────  Pin 6  (A13)
+Pin 26 (GPIO1[30]) ───────────┤A7        B7 ├──────────  Pin 38 (A14)
+Pin 27 (GPIO1[31]) ───────────┤A8        B8 ├──────────  Pin 39 (A15)
                               │             │
-3.3V ─────────────────────────┤VCCA     OE  ├──── 3.3V
+3.3V ─────────────────────────┤VCCA     OE  ├──── Pin 31
 GND ──────────────────────────┤GND    VCCB  ├──── 5V
                               └─────────────┘
 
 Direction: Z80 → Teensy (unidirectional)
 Purpose: Address bus high byte A8-A15
-Note: ⭐ ALL pins on GPIO6 bank = single register read!
+Note: ⭐ ALL pins on GPIO1 bank = single register read!
 ```
 
 ---
@@ -171,22 +171,22 @@ Note: ⭐ ALL pins on GPIO6 bank = single register read!
 ```
 Teensy 4.1 (3.3V)              HW-221 Module 4           Z80 CPU (5V)
                               ┌─────────────┐
-Pin 24 (GPIO6[12]) ───────────┤A1        B1 ├──────────  Pin 21 (/RD)     ⚡ INT
-Pin 25 (GPIO6[13]) ───────────┤A2        B2 ├──────────  Pin 22 (/WR)     ⚡ INT
-Pin 26 (GPIO6[30]) ───────────┤A3        B3 ├──────────  Pin 19 (/MREQ)
-Pin 27 (GPIO6[31]) ───────────┤A4        B4 ├──────────  Pin 20 (/IORQ)
-Pin 28 (GPIO8[18]) ───────────┤A5        B5 ├──────────  Pin 27 (/M1)
-Pin 29 (GPIO9[31]) ───────────┤A6        B6 ├──────────  Pin 28 (/RFSH)
-Pin 30 (GPIO8[23]) ───────────┤A7        B7 ├──────────  Pin 18 (/HALT)
-Pin 31 (GPIO8[22]) ───────────┤A8        B8 ├──────────  Pin 23 (/BUSACK)
+Pin 1  (GPIO1[2])  ───────────┤A1        B1 ├──────────  Pin 18 (/HALT)
+Pin 0  (GPIO1[3])  ───────────┤A2        B2 ├──────────  Pin 20 (/IORQ)
+Pin 24 (GPIO1[12]) ───────────┤A3        B3 ├──────────  Pin 23 (/BUSACK)
+Pin 2  (GPIO4[4])  ───────────┤A4        B4 ├──────────  Pin 27 (/M1)
+Pin 3  (GPIO4[5])  ───────────┤A5        B5 ├──────────  Pin 28 (/RFSH)
+Pin 4  (GPIO4[6])  ───────────┤A6        B6 ├──────────  Pin 21 (/RD)     ⚡ INT
+Pin 33 (GPIO4[7])  ───────────┤A7        B7 ├──────────  Pin 22 (/WR)     ⚡ INT
+Pin 5  (GPIO4[8])  ───────────┤A8        B8 ├──────────  Pin 19 (/MREQ)
                               │             │
-3.3V ─────────────────────────┤VCCA     OE  ├──── 3.3V
+3.3V ─────────────────────────┤VCCA     OE  ├──── Pin 31
 GND ──────────────────────────┤GND    VCCB  ├──── 5V
                               └─────────────┘
 
 Direction: Z80 → Teensy (unidirectional)
 Purpose: Z80 control signal outputs (status signals)
-Note: Pins 24 & 25 configured as interrupt sources (falling edge)
+Note: Pins 4 & 33 configured as interrupt sources (falling edge)
 ```
 
 ---
@@ -196,22 +196,22 @@ Note: Pins 24 & 25 configured as interrupt sources (falling edge)
 ```
 Teensy 4.1 (3.3V)              HW-221 Module 5           Z80 CPU (5V)
                               ┌─────────────┐
-Pin 36 (GPIO8[28]) ───────────┤A1        B1 ├──────────  Pin 6  (CLK)     ⏰ PWM
-Pin 37 (GPIO8[29]) ───────────┤A2        B2 ├──────────  Pin 26 (/RESET)
-Pin 38 (GPIO8[30]) ───────────┤A3        B3 ├──────────  Pin 24 (/WAIT)
-Pin 39 (GPIO8[31]) ───────────┤A4        B4 ├──────────  Pin 16 (/INT)
-Pin 40 (GPIO9[16]) ───────────┤A5        B5 ├──────────  Pin 17 (/NMI)
-Pin 41 (GPIO9[17]) ───────────┤A6        B6 ├──────────  Pin 25 (/BUSREQ)
+Pin 28 (GPIO3[18]) ───────────┤A1        B1 ├──────────  Pin 6  (CLK)     ⏰ PWM
+Pin 6  (GPIO2[10]) ───────────┤A2        B2 ├──────────  Pin 16 (/INT)
+Pin 9  (GPIO2[11]) ───────────┤A3        B3 ├──────────  Pin 17 (/NMI)
+Pin 35 (GPIO2[28]) ───────────┤A4        B4 ├──────────  Pin 24 (/WAIT)
+Pin 32 (GPIO2[12]) ───────────┤A5        B5 ├──────────  Pin 25 (/BUSREQ)
+Pin 34 (GPIO2[29]) ───────────┤A6        B6 ├──────────  Pin 26 (/RESET)
 (spare)                       │A7        B7 │            (unused)
 (spare)                       │A8        B8 │            (unused)
                               │             │
-3.3V ─────────────────────────┤VCCA     OE  ├──── 3.3V
+3.3V ─────────────────────────┤VCCA     OE  ├──── Pin 31
 GND ──────────────────────────┤GND    VCCB  ├──── 5V
                               └─────────────┘
 
 Direction: Teensy → Z80 (unidirectional)
 Purpose: Teensy control signal outputs (Z80 inputs)
-Note: Pin 36 driven by FlexPWM2_A (hardware PWM clock)
+Note: Pin 28 driven by FlexPWM2_A (hardware PWM clock)
 ```
 
 ---

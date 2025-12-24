@@ -143,7 +143,7 @@ DDRA = 0xFF;         // Configure all 8 as outputs (125 ns)
 | **GPIO Count**          | 55 digital, 18 analog              | Total 55 I/O pins                             |
 | **Logic Voltage**       | 3.3V (LVCMOS)                      | **3.3V only (NOT 5V tolerant)**               |
 | **GPIO Organization**   | 9 GPIO banks, 32 bits each         | GPIO1-GPIO9 (32-bit wide)                     |
-| **Direct Access**       | Yes (GPIO6_DR, GPIO7_DR, etc.)     | Ultra-fast register access                    |
+| **Direct Access**       | Yes (GPIO1_DR, GPIO2_DR, etc.)     | Ultra-fast register access                    |
 | **Atomic Operations**   | 32 bits per bank                   | All 32 pins in bank at once                   |
 | **Read/Write Speed**    | ~1.7 ns (1 cycle @ 600 MHz)        | Direct register access                        |
 | **pinMode Speed**       | ~150 ns                            | Arduino API overhead                          |
@@ -155,14 +155,14 @@ DDRA = 0xFF;         // Configure all 8 as outputs (125 ns)
 
 **GPIO Register Examples:**
 ```cpp
-GPIO6_DR = 0xFFFFFFFF;       // Set all GPIO6 pins HIGH (1.7 ns)
-uint32_t val = GPIO6_PSR;    // Read all GPIO6 pins (1.7 ns)
-GPIO6_GDIR = 0xFFFFFFFF;     // Configure all GPIO6 as outputs (1.7 ns)
+GPIO1_DR = 0xFFFF0000;       // Set A0-A15 HIGH (1.7 ns)
+uint32_t addr = GPIO1_PSR >> 16;  // Read A0-A15 (1.7 ns)
+GPIO1_GDIR &= ~0xFFFF0000;   // Configure A0-A15 as inputs (1.7 ns)
 
 // Atomic set/clear/toggle
-GPIO6_DR_SET = (1 << 18);    // Set pin 14 (A0) HIGH (atomic)
-GPIO6_DR_CLEAR = (1 << 19);  // Set pin 15 (A1) LOW (atomic)
-GPIO6_DR_TOGGLE = (1 << 24); // Toggle pin 22 (A8)
+GPIO1_DR_SET = (1 << 16);    // Set pin 19 (A0) HIGH (atomic)
+GPIO1_DR_CLEAR = (1 << 17);  // Set pin 18 (A1) LOW (atomic)
+GPIO1_DR_TOGGLE = (1 << 24); // Toggle pin 22 (A8)
 ```
 
 **Performance Comparison:**
@@ -279,14 +279,14 @@ ISR(INT4_vect) {
 | **Interrupt Vectors**      | 256+ vectors                       | Extensive peripheral support       |
 
 **Z80 Project Uses:**
-- **Pin 28 (/RD):** GPIO8 interrupt, priority 0 (highest)
-- **Pin 30 (/WR):** GPIO8 interrupt, priority 0 (highest)
+- **Pin 4 (/RD):** GPIO4 interrupt, priority 0 (highest)
+- **Pin 33 (/WR):** GPIO4 interrupt, priority 0 (highest)
 - Both on same GPIO bank for fast ISR context
 
 **Example:**
 ```cpp
-// Attach interrupt to pin 24 (/RD signal)
-attachInterrupt(digitalPinToInterrupt(24), rdISR, FALLING);
+// Attach interrupt to pin 4 (/RD signal)
+attachInterrupt(digitalPinToInterrupt(4), rdISR, FALLING);
 NVIC_SET_PRIORITY(IRQ_GPIO6789, 0);  // Highest priority
 
 void rdISR() {
