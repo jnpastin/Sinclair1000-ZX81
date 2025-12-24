@@ -379,20 +379,20 @@ Columns A-E bus:
 │                          ↓                               │
 │                    (USB Cable Entry)                     │
 │                          │                               │
-│        Cables ←──────────┼──────────→ Cables            │
+│        Cables ←──────────┼──────────→ Cables             │
 │          ↓               │               ↓               │
 │                          │                               │
-│  [Level Shifter Board]  │          [Z80 + LEDs]        │
-│       (63 rows)         │           (63 rows)           │
-│                         │                                │
-│  - 5 HW-221 modules    │      - DIP-40 socket          │
-│  - JST connectors      │      - 38 LEDs                │
-│  - Logic analyzer      │      - Input connectors       │
-│    headers             │                                │
-│                        │                                │
-│  ○ ○                   │                   ○ ○         │
-│    (standoffs)         │              (standoffs)       │
-│  ○ ○                   │                   ○ ○         │
+│  [Level Shifter Board]   │          [Z80 + LEDs]         │
+│       (63 rows)          │           (63 rows)           │
+│                          │                               │
+│  - 5 HW-221 modules      │      - DIP-40 socket          │
+│  - JST connectors        │      - 38 LEDs                │
+│  - Logic analyzer        │      - Input connectors       │
+│    headers               │                               │
+│                          │                               │
+│  ○ ○                     │                   ○ ○         │
+│    (standoffs)           │             (standoffs)       │
+│  ○ ○                     │                   ○ ○         │
 │                                                          │
 └──────────────────────────────────────────────────────────┘
 
