@@ -21,50 +21,50 @@ This document contains the **corrected and optimized** pin mapping for the Teens
 
 ## Complete Pin Assignment Table
 
-| Teensy Pin | GPIO      | Z80 Signal | Direction    | Module | Notes                          |
-|------------|-----------|------------|--------------|--------|--------------------------------|
-| 0          | GPIO1.03  | IORQ       | Input        | 4      | I/O Request (active low)       |
-| 1          | GPIO1.02  | HALT       | Input        | 4      | CPU Halted (active low)        |
-| 2          | GPIO4.04  | M1         | Input        | 4      | Machine Cycle 1 (active low)   |
-| 3          | GPIO4.05  | RFSH       | Input        | 4      | Memory Refresh (active low)    |
-| 4          | GPIO4.06  | RD         | Input        | 4      | Memory Read (active low)       |
-| 5          | GPIO4.08  | MREQ       | Input        | 4      | Memory Request (active low)    |
-| 6          | GPIO2.10  | INT        | Output       | 5      | Maskable Interrupt (active low)|
-| 7          | GPIO2.17  | D5         | Bidirectional| 1      | Data Bus bit 5                 |
-| 8          | GPIO2.16  | D4         | Bidirectional| 1      | Data Bus bit 4                 |
-| 9          | GPIO2.11  | NMI        | Output       | 5      | Non-Maskable Interrupt         |
-| 10         | GPIO2.00  | D0         | Bidirectional| 1      | Data Bus bit 0                 |
-| 11         | GPIO2.02  | D2         | Bidirectional| 1      | Data Bus bit 2                 |
-| 12         | GPIO2.01  | D1         | Bidirectional| 1      | Data Bus bit 1                 |
-| 13         | GPIO2.03  | D3         | Bidirectional| 1      | Data Bus bit 3                 |
-| 14         | GPIO1.18  | A2         | Input        | 2      | Address Bus bit 2              |
-| 15         | GPIO1.19  | A3         | Input        | 2      | Address Bus bit 3              |
-| 16         | GPIO1.23  | A7         | Input        | 2      | Address Bus bit 7              |
-| 17         | GPIO1.22  | A6         | Input        | 2      | Address Bus bit 6              |
-| 18         | GPIO1.17  | A1         | Input        | 2      | Address Bus bit 1              |
-| 19         | GPIO1.16  | A0         | Input        | 2      | Address Bus bit 0              |
-| 20         | GPIO1.26  | A10        | Input        | 3      | Address Bus bit 10             |
-| 21         | GPIO1.27  | A11        | Input        | 3      | Address Bus bit 11             |
-| 22         | GPIO1.24  | A8         | Input        | 3      | Address Bus bit 8              |
-| 23         | GPIO1.25  | A9         | Input        | 3      | Address Bus bit 9              |
-| 24         | GPIO1.12  | BUSACK     | Input        | 4      | Bus Acknowledge (active low)   |
-| 25         | GPIO1.13  | (spare)    | -            | -      | Available for expansion        |
-| 26         | GPIO1.30  | A14        | Input        | 3      | Address Bus bit 14             |
-| 27         | GPIO1.31  | A15        | Input        | 3      | Address Bus bit 15             |
-| 28         | GPIO3.18  | CLK        | Output       | 5      | Z80 Clock (FlexPWM2_A)         |
-| 29         | GPIO4.31  | (spare)    | -            | -      | Available for expansion        |
-| 30         | GPIO3.23  | (spare)    | -            | -      | Available for expansion        |
-| 31         | GPIO3.22  | OE         | Output       | 5*     | Level Shifter Enable (all 5)   |
-| 32         | GPIO2.12  | BUSREQ     | Output       | 5      | Bus Request (active low)       |
-| 33         | GPIO4.07  | WR         | Input        | 4      | Memory Write (active low)      |
-| 34         | GPIO2.29  | RESET      | Output       | 5      | CPU Reset (active low)         |
-| 35         | GPIO2.28  | WAIT       | Output       | 5      | Wait State Request (active low)|
-| 36         | GPIO2.18  | D6         | Bidirectional| 1      | Data Bus bit 6                 |
-| 37         | GPIO2.19  | D7         | Bidirectional| 1      | Data Bus bit 7                 |
-| 38         | GPIO1.28  | A12        | Input        | 3      | Address Bus bit 12             |
-| 39         | GPIO1.29  | A13        | Input        | 3      | Address Bus bit 13             |
-| 40         | GPIO1.20  | A4         | Input        | 2      | Address Bus bit 4              |
-| 41         | GPIO1.21  | A5         | Input        | 2      | Address Bus bit 5              |
+| Teensy Pin | GPIO      | Z80 Signal | Direction     | Module | Notes                              |
+|------------|-----------|------------|---------------|--------|------------------------------------|
+| 0          | GPIO1.03  | IORQ       | Input         | 4      | I/O Request (active low)           |
+| 1          | GPIO1.02  | HALT       | Input         | 4      | CPU Halted (active low)            |
+| 2          | GPIO4.04  | M1         | Input         | 4      | Machine Cycle 1 (active low)       |
+| 3          | GPIO4.05  | RFSH       | Input         | 4      | Memory Refresh (active low)        |
+| 4          | GPIO4.06  | RD         | Input         | 4      | Memory Read (active low)           |
+| 5          | GPIO4.08  | MREQ       | Input         | 4      | Memory Request (active low)        |
+| 6          | GPIO2.10  | INT        | Output        | 5      | Maskable Interrupt (active low)    |
+| 7          | GPIO2.17  | D5         | Bidirectional | 1      | Data Bus bit 5                     |
+| 8          | GPIO2.16  | D4         | Bidirectional | 1      | Data Bus bit 4                     |
+| 9          | GPIO2.11  | NMI        | Output        | 5      | Non-Maskable Interrupt             |
+| 10         | GPIO2.00  | D0         | Bidirectional | 1      | Data Bus bit 0                     |
+| 11         | GPIO2.02  | D2         | Bidirectional | 1      | Data Bus bit 2                     |
+| 12         | GPIO2.01  | D1         | Bidirectional | 1      | Data Bus bit 1                     |
+| 13         | GPIO2.03  | D3         | Bidirectional | 1      | Data Bus bit 3                     |
+| 14         | GPIO1.18  | A2         | Input         | 2      | Address Bus bit 2                  |
+| 15         | GPIO1.19  | A3         | Input         | 2      | Address Bus bit 3                  |
+| 16         | GPIO1.23  | A7         | Input         | 2      | Address Bus bit 7                  |
+| 17         | GPIO1.22  | A6         | Input         | 2      | Address Bus bit 6                  |
+| 18         | GPIO1.17  | A1         | Input         | 2      | Address Bus bit 1                  |
+| 19         | GPIO1.16  | A0         | Input         | 2      | Address Bus bit 0                  |
+| 20         | GPIO1.26  | A10        | Input         | 3      | Address Bus bit 10                 |
+| 21         | GPIO1.27  | A11        | Input         | 3      | Address Bus bit 11                 |
+| 22         | GPIO1.24  | A8         | Input         | 3      | Address Bus bit 8                  |
+| 23         | GPIO1.25  | A9         | Input         | 3      | Address Bus bit 9                  |
+| 24         | GPIO1.12  | BUSACK     | Input         | 4      | Bus Acknowledge (active low)       |
+| 25         | GPIO1.13  | (spare)    | -             | -      | Available for expansion            |
+| 26         | GPIO1.30  | A14        | Input         | 3      | Address Bus bit 14                 |
+| 27         | GPIO1.31  | A15        | Input         | 3      | Address Bus bit 15                 |
+| 28         | GPIO3.18  | CLK        | Output        | 5      | Z80 Clock (FlexPWM2_A)             |
+| 29         | GPIO4.31  | (spare)    | -             | -      | Available for expansion            |
+| 30         | GPIO3.23  | (spare)    | -             | -      | Available for expansion            |
+| 31         | GPIO3.22  | OE         | Output        | 5*     | Level Shifter Enable (all 5)       |
+| 32         | GPIO2.12  | BUSREQ     | Output        | 5      | Bus Request (active low)           |
+| 33         | GPIO4.07  | WR         | Input         | 4      | Memory Write (active low)          |
+| 34         | GPIO2.29  | RESET      | Output        | 5      | CPU Reset (active low)             |
+| 35         | GPIO2.28  | WAIT       | Output        | 5      | Wait State Request (active low)    |
+| 36         | GPIO2.18  | D6         | Bidirectional | 1      | Data Bus bit 6                     |
+| 37         | GPIO2.19  | D7         | Bidirectional | 1      | Data Bus bit 7                     |
+| 38         | GPIO1.28  | A12        | Input         | 3      | Address Bus bit 12                 |
+| 39         | GPIO1.29  | A13        | Input         | 3      | Address Bus bit 13                 |
+| 40         | GPIO1.20  | A4         | Input         | 2      | Address Bus bit 4                  |
+| 41         | GPIO1.21  | A5         | Input         | 2      | Address Bus bit 5                  |
 
 **Module Assignments:**
 - **Module 1:** Data Bus (D0-D7)
@@ -178,16 +178,16 @@ bool mreq  = !(gpio4 & (1 << 8));
 
 ### Module 1: Data Bus (8 channels)
 
-| Channel | Teensy Pin | GPIO     | Z80 Signal | Direction      |
-|---------|------------|----------|------------|----------------|
-| 1       | 10         | GPIO2.00 | D0         | Bidirectional  |
-| 2       | 12         | GPIO2.01 | D1         | Bidirectional  |
-| 3       | 11         | GPIO2.02 | D2         | Bidirectional  |
-| 4       | 13         | GPIO2.03 | D3         | Bidirectional  |
-| 5       | 8          | GPIO2.16 | D4         | Bidirectional  |
-| 6       | 7          | GPIO2.17 | D5         | Bidirectional  |
-| 7       | 36         | GPIO2.18 | D6         | Bidirectional  |
-| 8       | 37         | GPIO2.19 | D7         | Bidirectional  |
+| Channel | Teensy Pin | GPIO     | Z80 Signal | Direction     |
+|---------|------------|----------|------------|---------------|
+| 1       | 10         | GPIO2.00 | D0         | Bidirectional |
+| 2       | 12         | GPIO2.01 | D1         | Bidirectional |
+| 3       | 11         | GPIO2.02 | D2         | Bidirectional |
+| 4       | 13         | GPIO2.03 | D3         | Bidirectional |
+| 5       | 8          | GPIO2.16 | D4         | Bidirectional |
+| 6       | 7          | GPIO2.17 | D5         | Bidirectional |
+| 7       | 36         | GPIO2.18 | D6         | Bidirectional |
+| 8       | 37         | GPIO2.19 | D7         | Bidirectional |
 
 ### Module 2: Address Low Byte (8 channels)
 
