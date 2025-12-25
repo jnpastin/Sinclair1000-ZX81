@@ -163,10 +163,9 @@ Complete component list for three-board system: Level Shifter Board, Z80 Board, 
 
 ### Level Shifter Board
 - 5× HW-221 modules
-- 10× 8-pin JST XH receptacles
-- 10× 4-pin JST XH receptacles
-- 1× 6-pin JST XH receptacle (power in)
-- 1× 2-pin JST XH receptacle (OE control)
+- 5× 12-pin headers (one per module: 8 signals + VCCA + VCCB + OE + GND)
+- 1× 6-pin header (power distribution: 5V, 5V, 3.3V, GND, GND, GND)
+- Or: Use breakaway header strips and cut to size
 - 5× 10-pin headers (logic analyzer)
 - 1× 220µF electrolytic capacitor
 - 2× 100nF ceramic capacitors
@@ -175,7 +174,8 @@ Complete component list for three-board system: Level Shifter Board, Z80 Board, 
 
 ### Z80 Board
 - 1× DIP-40 socket
-- 5× 12-pin JST XH receptacles
+- 5× 12-pin headers (input from level shifter modules)
+- Or: Use breakaway header strips and cut to size
 - 38× LEDs (8 yellow, 16 green, 14 blue)
 - 38× 1.5kΩ resistors
 - 1× 10µF electrolytic capacitor
@@ -184,21 +184,29 @@ Complete component list for three-board system: Level Shifter Board, Z80 Board, 
 
 ### Teensy Board
 - 1× Teensy 4.1
-- 5× 12-pin JST XH receptacles
-- 1× 6-pin JST XH receptacle (power out)
-- 1× 2-pin JST XH receptacle (OE control)
+- 5× 12-pin headers (output to level shifter modules)
+- 1× 6-pin header (power output)
+- 1× 2-pin header (OE control output)
+- Or: Use breakaway header strips and cut to size
 - 2× 10µF electrolytic capacitors
 - 2× 100nF ceramic capacitors
 - 2× 24-pin machine-pin sockets (optional)
 - Proto board (30 rows)
 
 ### Cables
-- 10× 12-pin JST XH plug housings
-- 10× 8-pin JST XH plug housings
-- 10× 4-pin JST XH plug housings
-- 1× 6-pin JST XH plug housing
-- 1× 2-pin JST XH plug housing
-- 200× JST XH crimp terminals
+**Option 1: Pre-made Dupont Jumper Wires (Recommended)**
+- 120× female-to-female Dupont jumpers (assorted: 10cm, 20cm, 30cm)
+- Bundle and label by function
+
+**Option 2: Custom Ribbon Cables with Dupont**
+- 5× 10-conductor ribbon cables (20-30cm)
+- 10× 10-pin Dupont connector housings (2×5 arrangement)
+- Ribbon cable IDC tools
+
+**Option 3: DIY Crimped Dupont**
+- Dupont connector housings (2-12 pin, various sizes)
+- 200× Dupont crimp pins (for 24-26 AWG wire)
+- Dupont crimping tool
 - ~10 feet 15-conductor shielded cable
 - Solid-core wire (22 & 24 AWG)
 
