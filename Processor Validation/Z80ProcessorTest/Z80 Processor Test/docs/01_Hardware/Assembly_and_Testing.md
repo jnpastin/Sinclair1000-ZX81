@@ -49,18 +49,18 @@ This document outlines the recommended assembly sequence and testing procedures 
    - USB connector at row 7 (top edge)
    - VUSB pin at row 30
 
-2. **Install power output connector** (rows 1-2)
-   - 6-pin JST XH receptacle
+2. **Install power output header** (rows 1-2)
+   - 6-pin header (straight or right-angle)
    - Pinout: Pin 1-2=VUSB (5V), Pin 3=3.3V, Pin 4-6=GND
 
-3. **Install OE control connector** (row 3)
-   - 2-pin JST XH receptacle
+3. **Install OE control header** (row 3)
+   - 2-pin header (straight or right-angle)
    - Pin 1=OE signal, Pin 2=GND
 
-4. **Install signal output connectors** (rows 25-30)
-   - 5× 12-pin JST XH receptacles
+4. **Install signal output headers** (rows 25-30)
+   - 5× 12-pin headers (straight or right-angle)
    - Label each: Module 1-5
-   - Space for cable access
+   - Space for Dupont connector access
 
 5. **Solder Teensy 4.1**
    - Option A: Direct solder (permanent)
@@ -89,9 +89,9 @@ This document outlines the recommended assembly sequence and testing procedures 
 - [ ] Teensy 4.1 installed
 - [ ] 2× 10µF capacitors
 - [ ] 2× 100nF capacitors
-- [ ] 1× 6-pin JST XH
-- [ ] 1× 2-pin JST XH
-- [ ] 5× 12-pin JST XH
+- [ ] 1× 6-pin header
+- [ ] 1× 2-pin header
+- [ ] 5× 12-pin headers
 - [ ] Wire routing complete
 
 ### Testing Phase 1
@@ -174,16 +174,16 @@ This document outlines the recommended assembly sequence and testing procedures 
    - Verify orientation (pin 1 indicator)
    - Ensure flush seating, no bent pins
 
-2. **Install Module 5 connectors**
-   - Row 51-58, column A: 8-pin JST XH (A-side signals)
-   - Left ground rail: 4-pin JST XH (A-side grounds)
-   - Row 51-58, column J: 8-pin JST XH (B-side signals)
-   - Right ground rail: 4-pin JST XH (B-side grounds)
+2. **Install Module 5 headers**
+   - Row 51-58, column A: 12-pin header (8 A-side signals + VCCA + VB + OE + GND)
+   - Row 51-58, column J: 12-pin header (8 B-side signals + power/control)
    - Row 50, column D: Logic analyzer header (10-pin)
+   - Alternatively: Use individual pins or smaller grouped headers
 
-3. **Install power input connectors** (rows 1-2)
-   - 6-pin JST XH (or 2× 3-pin)
-   - 2-pin JST XH for OE control
+3. **Install power input header** (rows 1-2)
+   - 6-pin header (straight or right-angle)
+   - Or: 2× 3-pin headers for flexibility
+   - 2-pin header for OE control
 
 4. **Install bypass capacitors** (row 62)
    - 220µF electrolytic on 5V rail
@@ -205,26 +205,24 @@ This document outlines the recommended assembly sequence and testing procedures 
    - Wire from row 61 to OE input connector
    - This is the common OE bus (other modules will connect here later)
 
-7. **Assemble Cable 1** (Teensy → Module 5)
-   - 12-conductor shielded cable (~7" total)
-   - Teensy end: 12-pin JST XH plug (6 signals + 6 grounds - only need 4)
-   - Level shifter end: Split 1" from board
-     - 6-pin JST XH plug for signals (actually 8-pin with 2 unused)
-     - 4-pin JST XH plug for grounds
-   - Crimp all terminals carefully
+7. **Prepare Cable 1** (Teensy → Module 5)
+   - Option A: 12× pre-made Dupont jumper wires (20cm)
+   - Option B: 10-conductor ribbon cable with Dupont housings
+   - Option C: Hand-crimped individual wires to exact length
+   - Label both ends: CLK, INT, NMI, WAIT, BUSREQ, RESET + 6 GND
    - Test continuity before connecting
+   - Bundle and secure with cable tie or shrink tubing
 
 **Component checklist:**
 - [ ] HW-221 Module 5
-- [ ] 2× 8-pin JST XH (signals)
-- [ ] 2× 4-pin JST XH (grounds on rails)
-- [ ] 1× 6-pin JST XH (power in)
-- [ ] 1× 2-pin JST XH (OE in)
-- [ ] 1× 10-pin header
+- [ ] 2× 12-pin headers (or breakaway strips)
+- [ ] 1× 6-pin header (power in)
+- [ ] 1× 2-pin header (OE in)
+- [ ] 1× 10-pin header (logic analyzer)
 - [ ] 1× 220µF capacitor
 - [ ] 2× 100nF capacitors
 - [ ] 1× 10kΩ resistor
-- [ ] Cable assembled
+- [ ] Cable/jumpers prepared
 
 ### Testing Phase 2
 
@@ -338,11 +336,10 @@ This document outlines the recommended assembly sequence and testing procedures 
 ### Assembly Steps (Per Module)
 
 1. **Install HW-221 module** at designated rows
-2. **Install connectors:**
-   - 8-pin JST XH for A-side signals
-   - 4-pin JST XH for A-side grounds (left rail)
-   - 8-pin JST XH for B-side signals
-   - 4-pin JST XH for B-side grounds (right rail)
+2. **Install headers:**
+   - 12-pin header for A-side (8 signals + VCCA + VB + OE + GND)
+   - 12-pin header for B-side (8 signals + power/control)
+   - Or: Use individual pins arranged as needed
    - 10-pin logic analyzer header
 3. **Power jumpers:**
    - VA pin → 3.3V rail
@@ -350,10 +347,10 @@ This document outlines the recommended assembly sequence and testing procedures 
    - GND pin → ground rail
 4. **OE connection:**
    - OE pin → row 61 (common OE bus)
-5. **Assemble cable:**
-   - 12-conductor shielded, ~7" total
-   - 12-pin plug for Teensy end
-   - Split: 8-pin + 4-pin plugs for level shifter end
+5. **Prepare cables:**
+   - 12× Dupont jumper wires per module
+   - Or: 10-conductor ribbon cable with Dupont connectors
+   - Label each connection clearly
 
 ### Testing Phase 3 (Per Module)
 
@@ -432,10 +429,10 @@ This document outlines the recommended assembly sequence and testing procedures 
    - 100nF ceramic: Vcc (row 11) to GND
    - Keep leads very short
 
-3. **Install input connectors** (rows 61-62)
-   - 5× 12-pin JST XH receptacles
+3. **Install input headers** (rows 61-62)
+   - 5× 12-pin headers (straight or right-angle)
    - Label: Module 1-5 to match level shifter cables
-   - Space for cable access
+   - Space for Dupont connector access
 
 4. **Install LEDs** (rows 23-60, every other row)
    - **Left side (rows 23,25,27...59):** 19 LEDs
@@ -471,7 +468,7 @@ This document outlines the recommended assembly sequence and testing procedures 
 - [ ] DIP-40 socket
 - [ ] 1× 10µF capacitor
 - [ ] 1× 100nF capacitor
-- [ ] 5× 12-pin JST XH
+- [ ] 5× 12-pin headers
 - [ ] 8× yellow LEDs
 - [ ] 16× green LEDs
 - [ ] 14× blue LEDs

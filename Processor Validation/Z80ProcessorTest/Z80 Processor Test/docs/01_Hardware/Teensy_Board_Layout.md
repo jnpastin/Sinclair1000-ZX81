@@ -75,8 +75,8 @@ Exposed columns:
 
 ### Row 1-2: Power Output Connectors
 
-**Main power connector to level shifter board:**
-- 6-pin JST XH connector
+**Main power header to level shifter board:**
+- 6-pin header (straight or right-angle)
 - Pinout:
   - Pin 1: VUSB (5V)
   - Pin 2: VUSB (5V) - duplicate for current capacity
@@ -85,14 +85,14 @@ Exposed columns:
   - Pin 5: GND
   - Pin 6: GND
 
-**Alternative: Separate connectors**
-- 3-pin JST XH for 5V + GND
-- 3-pin JST XH for 3.3V + GND
+**Alternative: Separate headers**
+- 3-pin header for 5V + GND
+- 3-pin header for 3.3V + GND
 
 ### Row 3: OE Control Output
 
-**OE control connector:**
-- 2-pin JST XH or single wire with pin header
+**OE control header:**
+- 2-pin header (straight or right-angle)
 - Pinout:
   - Pin 1: Teensy Pin 31 (OE control signal)
   - Pin 2: GND (reference)
@@ -165,19 +165,19 @@ VUSB pin (row 30, column D or G)
 
 ---
 
-## Rows 25-30: Signal Output Connectors
+## Rows 25-30: Signal Output Headers
 
-### Output Connectors to Level Shifter Board
+### Output Headers to Level Shifter Board
 
-**5× 12-pin JST XH connectors for signal groups:**
+**5× 12-pin headers for signal groups:**
 
-**Connector 1: Data Bus**
-- 8 signals: Teensy pins 6-13 (D0-D7)
-- 4 grounds
+**Header 1: Data Bus (Module 1)**
+- 8 signals: Teensy pins 10,12,11,13,8,7,36,37 (D0-D7)
+- 4 power/ground pins
 
-**Connector 2: Address Low Byte**
-- 8 signals: Teensy pins 14-21 (A0-A7)
-- 4 grounds
+**Header 2: Address Low Byte (Module 2)**
+- 8 signals: Teensy pins 19,18,14,15,40,41,17,16 (A0-A7)
+- 4 power/ground pins
 
 **Connector 3: Address High Byte**
 - 8 signals: Teensy pins 0-1, 22-27 (A8-A15)
@@ -218,24 +218,26 @@ VUSB pin (row 30, column D or G)
 
 ## Cable Connections
 
-### From Teensy Board to Level Shifter Board (5 cables)
+### From Teensy Board to Level Shifter Board (5 cables/bundles)
 
-**Each signal cable:**
-- 12-conductor shielded cable (~6" length)
-- Teensy end: 12-pin JST XH connector (rows 25-30)
-- Level shifter end: Splits into 8-pin + 4-pin JST XH
-- Shield grounded at level shifter board only
+**Each signal bundle:**
+- 12× Dupont jumper wires (~15-20cm length)
+- Or: 10-conductor ribbon cable with 12-pin Dupont housings
+- Teensy end: Connect to 12-pin header (rows 25-30)
+- Level shifter end: Connect to 12-pin header on module
+- Label clearly at both ends
 
-**Power cable:**
-- From power connector (row 1-2)
+**Power cables:**
+- From power header (row 1-2)
 - To level shifter board power input
 - Heavy gauge for VUSB (5V) - 22 AWG recommended
 - Multiple ground wires in parallel
+- Use separate Dupont wires or small grouped connector
 
 **OE control:**
-- From OE connector (row 3)
+- From OE header (row 3)
 - To level shifter board row 61 (OE junction)
-- Can be 2-conductor cable or single wire with ground reference
+- 2× Dupont wires (signal + ground reference)
 
 ---
 
@@ -280,18 +282,20 @@ VUSB pin (row 30, column D or G)
    - Double-check orientation (USB at top)
    - Verify pin 1 location
 
-2. **Install power output connector** (row 1-2)
-   - 6-pin JST XH or separate 3-pin connectors
+2. **Install power output header** (row 1-2)
+   - 6-pin header (straight or right-angle)
+   - Or: separate 3-pin headers for flexibility
    - Check pinout matches level shifter board input
 
-3. **Install OE control connector** (row 3)
-   - 2-pin JST XH or pin header
+3. **Install OE control header** (row 3)
+   - 2-pin header (straight or right-angle)
    - Connect to Pin 31 routing
 
-4. **Install signal output connectors** (rows 25-30)
-   - 5× 12-pin JST XH receptacles
-   - Space appropriately for cable access
-   - Label each connector (Module 1-5)
+4. **Install signal output headers** (rows 25-30)
+   - 5× 12-pin headers (straight or right-angle)
+   - Or: Use breakaway header strips cut to size
+   - Space appropriately for Dupont connector access
+   - Label each header (Module 1-5)
 
 5. **Solder Teensy 4.1**
    - Option A: Direct solder (permanent)
@@ -353,9 +357,9 @@ VUSB pin (row 30, column D or G)
 | Component                | Quantity | Notes                                  |
 |--------------------------|----------|----------------------------------------|
 | Teensy 4.1               | 1        | Main microcontroller                   |
-| 12-pin JST XH receptacle | 5        | Signal outputs                         |
-| 6-pin JST XH receptacle  | 1        | Power output (or 2× 3-pin)            |
-| 2-pin JST XH receptacle  | 1        | OE control output                      |
+| 12-pin header            | 5        | Signal outputs                         |
+| 6-pin header             | 1        | Power output (or 2× 3-pin)            |
+| 2-pin header             | 1        | OE control output                      |
 | 10µF electrolytic cap    | 2        | Bypass (VUSB, 3.3V)                   |
 | 100nF ceramic cap        | 2        | Bypass (VUSB, 3.3V)                   |
 | 22 AWG solid wire        | ~3 feet  | Power distribution, signal routing     |
