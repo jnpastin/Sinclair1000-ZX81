@@ -157,7 +157,7 @@ Detailed physical assembly design for three-board system.
 - Z80 board layout (socket + 38 LEDs, 63 rows)
 - Teensy board layout (30 rows)
 - Row-by-row component placement
-- Connector strategy (JST XH split cables)
+- Connector strategy (Dupont jumpers or ribbon cables with pin headers)
 - Power distribution on each board
 - Cable routing and management
 - 3D printed mounting plate design
@@ -200,9 +200,9 @@ Teensy 4.1 controller board with power distribution.
 - Teensy placement on 30-row proto board
 - VUSB power tap for 5V distribution
 - 3.3V power output
-- Signal output connectors (5× 12-pin JST XH)
-- Power output connector (6-pin JST XH)
-- OE control output (2-pin JST XH)
+- Signal output headers (5× 12-pin)
+- Power output header (6-pin)
+- OE control output (2-pin)
 - Bypass capacitor placement (VUSB and 3.3V)
 - Cable connection strategy
 - Power budget analysis
@@ -221,7 +221,8 @@ Complete bill of materials organized by board.
 **Topics Covered:**
 - Main components (Teensy, level shifters, proto boards)
 - Passive components (capacitors, resistors)
-- Connectors (JST XH all sizes and quantities)
+- Pin headers (0.1" breakaway strips for all boards)
+- Dupont jumper wires or ribbon cable with Dupont connectors
 - LEDs (38 total with color breakdown)
 - Wire and cable specifications
 - Mounting hardware (M3 inserts and screws)
@@ -233,7 +234,8 @@ Complete bill of materials organized by board.
 - 5× HW-221 level shifter modules
 - 38× LEDs (8 yellow, 16 green, 14 blue)
 - 38× 1.5kΩ resistors
-- 32× JST XH connectors (various sizes)
+- Pin headers (~200 pins total, or 5× 40-pin breakaway strips)
+- Dupont jumper wires (120+ wires or ribbon cable kits)
 - ~10 feet shielded cable
 - Bypass capacitors (10µF, 220µF, 100nF)
 

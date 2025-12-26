@@ -206,7 +206,7 @@ Columns A-E bus:
 - VUSB (5V) distributed to level shifter board and Z80 board
 - Teensy 3.3V pin distributed to level shifter board
 
-**OE Control:** Single wire or small 2-pin JST connector
+**OE Control:** 2× Dupont wires (signal + ground)
 - From Teensy Pin 31 to level shifter row 61
 
 ---
@@ -216,34 +216,32 @@ Columns A-E bus:
 ### Level Shifter Board
 
 **Per module (×5):**
-- 1× 8-pin JST XH (A-side signals)
-- 1× 4-pin JST XH (A-side grounds, on left power rail)
-- 1× 8-pin JST XH (B-side signals)
-- 1× 4-pin JST XH (B-side grounds, on right power rail)
+- 1× 12-pin header (A-side: 8 signals + VCCA + VB + OE + GND)
+- 1× 12-pin header (B-side: 8 signals + power/control)
+- Or: Individual pins arranged as needed
 - 1× 10-pin male header (logic analyzer, 2.54mm pitch)
 
 **Board total:**
-- 10× 8-pin JST XH receptacles
-- 10× 4-pin JST XH receptacles
-- 5× 10-pin headers
-- 1× 2-4 pin JST XH (power input from Teensy)
-- 1× 2-pin JST XH or wire terminal (OE control)
+- 5× 12-pin headers (A-side, Teensy connections)
+- 5× 12-pin headers (B-side, Z80 connections)
+- Or: ~120 individual header pins
+- 5× 10-pin headers (logic analyzer)
+- 1× 6-pin header (power input from Teensy)
+- 1× 2-pin header (OE control)
 
-### Cables (Teensy to Level Shifter)
+### Cables/Jumpers (Teensy to Level Shifter)
 
-**5 cables, each requires:**
-- 1× 12-pin JST XH plug (Teensy end)
-- 1× 8-pin JST XH plug (level shifter signals)
-- 1× 4-pin JST XH plug (level shifter grounds)
-- 12-conductor shielded cable (~6" + 1" split = 7" total)
+**5 bundles, each requires:**
+- 12× female-to-female Dupont jumper wires (20cm)
+- Or: 10-conductor ribbon cable with 12-pin Dupont housings
+- Label clearly at both ends
 
-### Cables (Level Shifter to Z80)
+### Cables/Jumpers (Level Shifter to Z80)
 
-**5 cables, each requires:**
-- 1× 8-pin JST XH plug (level shifter signals)
-- 1× 4-pin JST XH plug (level shifter grounds)
-- 1× 12-pin JST XH plug (Z80 board end)
-- 12-conductor shielded cable (~12" + 1" split = 13" total)
+**5 bundles, each requires:**
+- 12× female-to-female Dupont jumper wires (30cm)
+- Or: 10-conductor ribbon cable with 12-pin Dupont housings
+- Label clearly at both ends
 
 ---
 
@@ -255,11 +253,11 @@ Columns A-E bus:
    - Orient correctly (pin 1 indicator)
    - Ensure flush seating
 
-2. **Install JST XH receptacles**
-   - Column A positions (signal inputs)
-   - Column J positions (signal outputs)
-   - Ground rail positions (both sides)
-   - Check polarity marking
+2. **Install pin headers**
+   - Column A positions (signal inputs from Teensy)
+   - Column J positions (signal outputs to Z80)
+   - Or: Use individual header pins as needed
+   - Space appropriately for Dupont connector access
 
 3. **Install logic analyzer headers** (column C positions)
    - 10-pin headers for each module
@@ -300,10 +298,10 @@ Columns A-E bus:
 2. **Strip outer jacket** at split point (1")
 
 3. **Separate into two groups:**
-   - 8 signal wires → 8-pin JST XH
-   - 4 ground wires → 4-pin JST XH
+   - 8 signal wires → 8 pins of 12-pin Dupont housing
+   - 4 power/ground wires → 4 pins of 12-pin Dupont housing
 
-4. **Crimp JST terminals**
+4. **Assemble Dupont connectors**
    - Use proper crimping tool
    - Test crimp strength (gentle pull test)
    - Insert in correct pin order
@@ -385,9 +383,9 @@ Columns A-E bus:
 │  [Level Shifter Board]   │          [Z80 + LEDs]         │
 │       (63 rows)          │           (63 rows)           │
 │                          │                               │
-│  - 5 HW-221 modules      │      - DIP-40 socket          │
-│  - JST connectors        │      - 38 LEDs                │
-│  - Logic analyzer        │      - Input connectors       │
+│  - 5 HW-221 modules     │      - DIP-40 socket          │
+│  - Pin headers          │      - 38 LEDs                │
+│  - Logic analyzer       │      - Input headers          │
 │    headers               │                               │
 │                          │                               │
 │  ○ ○                     │                   ○ ○         │
@@ -415,13 +413,13 @@ Dimensions (approximate):
 
 **Z80 Board:**
 - DIP-40 socket centered, straddling gap
-- 5 input connectors (12-pin JST XH from level shifters)
+- 5 input headers (12-pin from level shifters)
 - LED arrays grouped by function
 - Bypass capacitors near Z80 socket
 
 **Teensy Board:**
 - Teensy 4.1 socketed or soldered
-- 5 output connectors (12-pin JST XH to level shifters)
+- 5 output headers (12-pin to level shifters)
 - Power distribution from USB
 - Bypass capacitors on 3.3V and VUSB
 - OE control output

@@ -211,7 +211,7 @@ When signal LOW (0V): No current, LED off ✅
 
 ### Row 61-62: Input Connectors
 
-**5× 12-pin JST XH connectors from level shifter board:**
+**5× 12-pin headers from level shifter board:**
 
 | Module | Signals                          | Connector Location        |
 |--------|----------------------------------|---------------------------|
@@ -310,7 +310,7 @@ Signals from level shifter board that must split to socket and LED:
    - Match to corresponding LED row
 
 5. **Install input connectors** (rows 61-62)
-   - 5× 12-pin JST XH receptacles
+   - 5× 12-pin headers
    - Check pinout matches level shifter board outputs
 
 6. **Power distribution wiring**
@@ -366,7 +366,7 @@ Signals from level shifter board that must split to socket and LED:
 | 1.5kΩ resistors (1/4W)  | 38       | Current limiting                         |
 | 10µF electrolytic cap   | 1        | Bypass capacitor                         |
 | 100nF ceramic cap       | 1        | Bypass capacitor                         |
-| 12-pin JST XH receptacle| 5        | Input connectors from level shifter      |
+| 12-pin header           | 5        | Input headers from level shifter         |
 | 22 AWG solid wire       | ~2 feet  | Power distribution, signal jumpers       |
 | Proto board (63 rows)   | 1        | Breadboard-style with power rails        |
 

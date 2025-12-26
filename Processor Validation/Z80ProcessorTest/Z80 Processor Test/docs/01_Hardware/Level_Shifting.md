@@ -445,64 +445,81 @@ void resetZ80() {
 
 ## Interconnect Cables
 
-### Selected Design: Shielded Cable with JST XH Connectors ✅
+### Selected Design: Dupont Jumpers or Ribbon Cable with Pin Headers ✅
 
-**Cable Type:** 15-conductor shielded cable
+**Cable Options:**
 
-**Connector:** JST XH series (2.5mm pitch)
-- Module 1 (Data): 12-pin (8 signals + 4 grounds)
-- Module 2 (Addr Low): 12-pin (8 signals + 4 grounds)
-- Module 3 (Addr High): 12-pin (8 signals + 4 grounds)
-- Module 4 (Control In): 12-pin (8 signals + 4 grounds)
-- Module 5 (Control Out): 10-pin (6 signals + 4 grounds)
-- Power: 4-6 pin (VUSB, 3.3V, multiple GNDs)
+**Option 1: Pre-made Dupont Jumpers (Easiest)**
+- Female-to-female Dupont wires in various lengths
+- 12 wires per module (8 signals + 4 power/ground)
+- Bundle and label by function
+- Flexible, easy to rework
+
+**Option 2: Ribbon Cable with Dupont Connectors**
+- 10-conductor ribbon cable per module
+- IDC or hand-crimped Dupont housings on ends
+- Cleaner appearance, better signal integrity
+
+**Option 3: Individual Hand-Crimped Wires**
+- Cut wires to exact length needed
+- Crimp Dupont terminals on both ends
+- Most time-consuming but most professional
+
+**Connector Type:** Standard 0.1" (2.54mm) Dupont connectors
+- Module 1 (Data): 12-pin header (8 signals + 4 power/ground)
+- Module 2 (Addr Low): 12-pin header (8 signals + 4 power/ground)
+- Module 3 (Addr High): 12-pin header (8 signals + 4 power/ground)
+- Module 4 (Control In): 12-pin header (8 signals + 4 power/ground)
+- Module 5 (Control Out): 10-pin header (6 signals + 4 power/ground)
+- Power: 6-pin header (VUSB×2, 3.3V, GND×3)
 
 **Cable Length Recommendations:**
 - **3.3V side (Teensy to Level Shifters):** ≤6" (keep short)
 - **5V side (Level Shifters to Z80):** ≤12" (can be longer)
 - **Rationale:** Z80 has stronger drive strength, Teensy side more sensitive to noise
 
-**Ground Distribution (Critical for Signal Integrity):**
+**Example 12-pin header pinout:**
 ```
-Example 12-pin connector pinout:
 Pin 1:  Signal 1
-Pin 2:  GND
-Pin 3:  Signal 2
-Pin 4:  Signal 3
-Pin 5:  GND
-Pin 6:  Signal 4
-Pin 7:  Signal 5
-Pin 8:  GND
-Pin 9:  Signal 6
-Pin 10: Signal 7
-Pin 11: GND
-Pin 12: Signal 8
+Pin 2:  Signal 2  
+Pin 3:  Signal 3
+Pin 4:  Signal 4
+Pin 5:  Signal 5
+Pin 6:  Signal 6
+Pin 7:  Signal 7
+Pin 8:  Signal 8
+Pin 9:  VCCA/VCCB
+Pin 10: VB/VA
+Pin 11: OE
+Pin 12: GND
 ```
 
-**Ground ratio:** 1 ground per 2-3 signals to prevent ground bounce
+**Grounding:** Distribute multiple ground wires throughout bundle
 
-**Shield Connection:**
-- Ground shield at **level shifter board only** (central point)
-- Leave floating at Teensy and Z80 boards
-- Prevents ground loop currents while maintaining EMI protection
-- Crimp shield wire into a ground pin or solder to connector housing
+**Wire Management:**
+- Bundle wires by function (use cable ties or braiding)
+- Keep signal bundles away from power wires when possible
+- For ribbon cable: ground conductor between signal groups
+- Label both ends clearly with function
 
-**Signal Integrity Benefits:**
-- ✅ Twisted conductor pairs reduce crosstalk
-- ✅ Shield provides EMI protection
-- ✅ Multiple ground returns minimize ground bounce
-- ✅ Controlled impedance better than ribbon cable
-- ✅ JST latching prevents accidental disconnects
+**Signal Integrity Considerations:**
+- ✅ Keep wires short (15-20cm maximum)
+- ✅ Use same wire type throughout (24-26 AWG)
+- ✅ Interleave ground wires between signal wires
+- ✅ Bundle wires to reduce loop areas
+- ✅ Pin headers allow easy connection/disconnection for debugging
 
 **Reflection Prevention (if needed):**
 - Add 47-100Ω series resistors on driving end if reflections observed
 - Monitor with logic analyzer for ringing, multiple edges, or slow rise times
 
 **Assembly Tips:**
-- Test continuity before connecting
-- Label both cable ends with heat shrink markers
-- Use strain relief (heat shrink over cable jacket at connector)
-- Plan pinout before crimping (JST XH terminals not reusable)
+- Test continuity of every wire before connecting
+- Label both cable ends with wire labels or heat shrink markers
+- Use strain relief (cable ties at connector to prevent pulling)
+- Color-code by function: data (green), address (blue), control (yellow/orange)
+- For Dupont: ensure connectors are fully seated (hear/feel click)
+- Check connections periodically as Dupont can work loose
 
 ---
 

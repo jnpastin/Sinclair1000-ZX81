@@ -65,26 +65,31 @@ USB Cable → Teensy
 
 ### 3. Interconnect Strategy ✓
 
-**Cable Type:** 15-conductor shielded cable with JST XH connectors
+**Cable Type:** Dupont jumper wires or ribbon cable with pin headers
 
 **Physical Layout:**
 - Teensy + Z80 on one proto board
 - 5x Level shifters on separate proto board
-- Removable cables for flexibility
+- Removable connections for flexibility and debugging
+
+**Cable Options:**
+- Pre-made Dupont jumpers (easiest, most flexible)
+- Ribbon cable with Dupont housings (cleaner, better signal integrity)
+- Hand-crimped individual wires (most professional)
 
 **Cable Lengths:**
-- 3.3V side (Teensy to shifters): ≤6"
-- 5V side (shifters to Z80): ≤12"
+- 3.3V side (Teensy to shifters): ≤20cm (keep short)
+- 5V side (shifters to Z80): ≤30cm (can be longer)
 
 **Ground Distribution:**
-- 1 ground wire per 2-3 signal wires
-- Shield grounded at level shifter board only
-- Prevents ground bounce and ground loops
+- Multiple ground wires distributed throughout bundles
+- Interleave grounds between signal wires
+- Prevents ground bounce and reduces crosstalk
 
-**Connector Sizes:**
-- Modules 1-4: 12-pin JST XH (8 signals + 4 grounds)
-- Module 5: 10-pin JST XH (6 signals + 4 grounds)
-- Power: 4-6 pin JST XH
+**Header Sizes:**
+- Modules 1-4: 12-pin headers (8 signals + 4 power/ground)
+- Module 5: 10-pin header (6 signals + 4 power/ground)
+- Power: 6-pin header (VUSB×2, 3.3V, GND×3)
 
 ### 4. Level Shifter Configuration ✓
 

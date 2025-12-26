@@ -52,7 +52,7 @@
 **Physical Implementation:**
 - **Teensy + Z80:** Proto board (wired like breadboard)
 - **Level Shifters:** Separate proto board (5x HW-221 modules)
-- **Interconnects:** 15-conductor shielded cable with JST XH connectors
+- **Interconnects:** Dupont jumper wires or ribbon cables with pin headers
 - **Power:** Single USB cable (VUSB + 3.3V rails)
 
 ---

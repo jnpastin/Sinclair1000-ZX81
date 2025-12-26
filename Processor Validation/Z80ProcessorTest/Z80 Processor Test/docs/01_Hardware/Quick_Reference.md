@@ -263,7 +263,7 @@ void setup() {
 | HW-221 Level Shifters   | 5   | $15-25    | TXS0108E modules            |
 | Z80 CPU (DIP-40)        | 1-3 | $10-30    | Buy spares                  |
 | Proto boards            | 3   | $15-25    | 2× 63-row, 1× 30-row        |
-| JST XH connectors       | Set | $15-20    | Various sizes               |
+| Pin headers (0.1")     | Set | $10-15    | Breakaway strips, various   |
 | LEDs (38 total)         | 1   | $4        | 8 yellow, 16 green, 14 blue |
 | Resistors (1.5kΩ)       | 40  | $1        | LED current limiting        |
 | Capacitors              | Set | $2        | 10µF, 220µF, 100nF          |
