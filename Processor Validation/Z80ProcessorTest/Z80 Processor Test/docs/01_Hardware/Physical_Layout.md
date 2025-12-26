@@ -43,16 +43,16 @@ Physical assembly uses three breadboard-style proto boards (PCB versions with pr
 **Layout:**
 - DIP-40 socket (centered, ~20 rows)
 - LED arrays (38 LEDs with resistors)
-- JST XH input connectors from level shifter board
+- Pin headers for input from level shifter board
 - Bypass capacitors
 
 ### Board 3: Teensy (30 rows)
 
-**Purpose:** Teensy 4.1 controller with output connectors
+**Purpose:** Teensy 4.1 controller with output headers
 
 **Layout:**
 - Teensy 4.1 (socketed or soldered)
-- JST XH output connectors to level shifter board
+- Pin headers for output to level shifter board
 - Bypass capacitors
 - USB cable entry point
 
@@ -89,8 +89,8 @@ Physical assembly uses three breadboard-style proto boards (PCB versions with pr
 |  11 | Jumper to Row 61 |   |            | OE |   |   | GND |   |   | Jumper to GND rail |
 +-----+------------------+---+------------+----+---+---+-----+---+---+--------------------+
 
-Left Ground Rail:  J1-GND (4-pin JST XH) - Ground wires from Teensy
-Right Ground Rail: J2-GND (4-pin JST XH) - Ground wires to Z80
+Left Ground Rail:  J1-GND (header pins) - Ground wires from Teensy
+Right Ground Rail: J2-GND (header pins) - Ground wires to Z80
 Left Power Rail:   3.3V distribution to all VA pins
 Right Power Rail:  5V distribution to all VB pins
 ```
