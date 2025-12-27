@@ -229,19 +229,69 @@ Columns A-E bus:
 - 1× 6-pin header (power input from Teensy)
 - 1× 2-pin header (OE control)
 
-### Cables/Jumpers (Teensy to Level Shifter)
+### Cables (Teensy to Level Shifter)
 
-**5 bundles, each requires:**
-- 12× female-to-female Dupont jumper wires (20cm)
-- Or: 10-conductor ribbon cable with 12-pin Dupont housings
-- Label clearly at both ends
+**5× 15-conductor shielded cables, 8 signals + 4 grounds + 3 NC per cable:**
 
-### Cables/Jumpers (Level Shifter to Z80)
+**Cable 6 - Data Bus (Module 1):**
+- 3.3V_D0-D7 (8 signals)
+- 4× GND (Black, Black/Blue, Black/Green, Blue)
+- 3× NC spare wires
 
-**5 bundles, each requires:**
-- 12× female-to-female Dupont jumper wires (30cm)
-- Or: 10-conductor ribbon cable with 12-pin Dupont housings
-- Label clearly at both ends
+**Cable 7 - Address Low (Module 2):**
+- 3.3V_A0-A7 (8 signals)
+- 4× GND
+- 3× NC spare wires
+
+**Cable 8 - Address High (Module 3):**
+- 3.3V_A8-A15 (8 signals)
+- 4× GND
+- 3× NC spare wires
+
+**Cable 9 - Control Inputs (Module 4):**
+- 3.3V_HALT, IORQ, MREQ, RD, WR, BUSAK, M1, RFSH (8 signals)
+- 4× GND
+- 3× NC spare wires
+
+**Cable 10 - Control Outputs (Module 5):**
+- 3.3V_CLK, INT, NMI, WAIT, BUSRQ, RESET (6 signals)
+- 4× GND
+- 5× NC spare wires
+
+**Shield:** Connect to ground at level shifter board only (one end)
+
+### Cables (Level Shifter to Z80)
+
+**5× 15-conductor shielded cables, 8 signals + 4 grounds + 3 NC per cable:**
+
+**Cable 1 - Data Bus (Module 1):**
+- 5V_D0-D7 (8 signals)
+- 4× GND (Black, Black/Blue, Black/Green, Blue)
+- 3× NC spare wires
+
+**Cable 2 - Address Low (Module 2):**
+- 5V_A0-A7 (8 signals)
+- 4× GND
+- 3× NC spare wires
+
+**Cable 3 - Address High (Module 3):**
+- 5V_A8-A15 (8 signals)
+- 4× GND
+- 3× NC spare wires
+
+**Cable 4 - Control Inputs (Module 4):**
+- 5V_HALT, IORQ, MREQ, RD, WR, BUSAK, M1, RFSH (8 signals)
+- 4× GND
+- 3× NC spare wires
+
+**Cable 5 - Control Outputs (Module 5):**
+- 5V_CLK, INT, NMI, WAIT, BUSRQ, RESET (6 signals)
+- 4× GND
+- 5× NC spare wires
+
+**Shield:** Connect to ground at level shifter board only (one end)
+
+**Complete cable color mapping available in:** `Z80 Cables - Sheet1.csv`
 
 ---
 
