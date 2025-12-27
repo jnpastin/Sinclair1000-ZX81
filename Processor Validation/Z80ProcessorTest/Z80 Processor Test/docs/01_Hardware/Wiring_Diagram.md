@@ -622,25 +622,35 @@ All modules connected, Z80 powered and clocked
 
 ---
 
-## Cable Management Tips
+## Cable Assembly Tips
 
-1. **Color Coding:**
-   - Red: Power (+5V, +3.3V)
-   - Black: Ground
-   - Yellow: Data bus
-   - Blue: Address bus
-   - Green: Control signals
-   - White/Orange: Clock
+**Cable Configuration:**
+- 10× 15-conductor shielded cables
+- Each cable: 8 signals + 4 grounds + 3 spares
+- See detailed pinouts in "Cable Pinout Details" section above
 
-2. **Grouping:**
-   - Use 8-wire ribbon cables for each module
-   - Keep data/address/control groups separate
-   - Route power lines separately from signals
+**Labeling:**
+- Label BOTH ends of each cable clearly
+- Use: "Cable 1: Z80-LS Data", "Cable 6: Teensy-LS Data", etc.
+- Heat shrink labels or wire markers work well
+- Document which wire color carries which signal
 
-3. **Length:**
-   - Keep all signal wires <15 cm (6 inches)
-   - Shorter is better for high-speed signals
-   - Power wires can be longer
+**Assembly:**
+- Test continuity of every wire before connecting
+- Verify no shorts between adjacent wires
+- Ground shield at level shifter board only (one end)
+- Leave shields floating at Teensy and Z80 ends
+
+**Cable Lengths:**
+- Teensy → Level Shifter: ~15-20cm (keep short)
+- Level Shifter → Z80: ~25-30cm (can be longer)
+- Avoid excessive length (increases capacitance)
+
+**Routing:**
+- Bundle cables by function if possible
+- Keep power cables separate from signal cables
+- Avoid sharp bends (minimum 1" radius)
+- Use cable ties to secure bundles
 
 ---
 
