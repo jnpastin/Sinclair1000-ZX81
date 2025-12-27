@@ -564,18 +564,63 @@ All modules connected, Z80 powered and clocked
 
 ---
 
-## Testing Points
+## Verification and Testing
 
-| Test Point | Signal              | Expected           | Measure With |  
-|------------|---------------------|--------------------|--------------|  
-| **TP1**    | Teensy 3.3V         | 3.3V ±0.1V        | Multimeter   |  
-| **TP2**    | Z80 +5V (pin 11)    | 5.0V ±0.1V        | Multimeter   |  
-| **TP3**    | Module VCCA (all)   | 3.3V               | Multimeter   |  
-| **TP4**    | Module VCCB (all)   | 5.0V               | Multimeter   |  
-| **TP5**    | Z80 CLK (pin 6)     | 1 MHz square wave  | Oscilloscope |  
-| **TP6**    | Teensy pin 36       | 1 MHz square wave  | Oscilloscope |  
-| **TP7**    | Z80 /RESET (pin 26) | 5V (inactive)      | Multimeter   |  
-| **TP8**    | Common ground       | 0V                 | Multimeter   |---
+### Power-On Checks (Multimeter)
+
+**Before connecting Z80:**
+1. Teensy 3.3V pin: 3.3V ±0.1V
+2. Level shifter board 3.3V rail: 3.3V ±0.1V
+3. Level shifter board 5V rail: 5.0V ±0.1V
+4. All module VCCA pins: 3.3V
+5. All module VCCB pins: 5.0V
+6. Ground continuity: 0Ω between all board grounds
+
+**After connecting Z80:**
+7. Z80 Pin 11 (+5V): 5.0V ±0.1V
+8. Z80 Pin 29 (GND): Connected to common ground
+9. Z80 Pin 26 (/RESET): 5V (inactive high)
+
+### Signal Verification (Oscilloscope/Logic Analyzer)
+
+**Clock Signal (Module 5):**
+- Probe Teensy Pin 28 (3.3V CLK output): Should see PWM signal
+- Probe Z80 Pin 6 (CLK input): Should see 5V square wave at configured frequency
+- Verify clean transitions, no ringing
+
+**Data Bus (Module 1 - Bidirectional):**
+- Test both directions with simple read/write cycles
+- Check signal integrity on both 3.3V and 5V sides
+- Verify level shifter switching speed
+
+**Address/Control Signals:**
+- Monitor with logic analyzer during Z80 operation
+- Verify all signals present and transitioning
+- Check timing relationships between signals
+
+### Functional Tests
+
+**Step 1: Clock Test**
+- Upload clock generation code to Teensy
+- Verify clock output on Z80 Pin 6
+- Adjust frequency if needed
+
+**Step 2: Reset Test**
+- Verify /RESET can be controlled from Teensy
+- Z80 should remain idle when /RESET is low
+- Z80 should start running when /RESET goes high
+
+**Step 3: NOP Loop Test**
+- Load simple NOP loop into memory simulation
+- Verify address bus cycles through expected sequence
+- Verify /MREQ pulses on memory accesses
+
+**Step 4: Interrupt Response Test**
+- Configure Teensy ISRs for /RD, /WR, /MREQ
+- Verify ISRs trigger on falling edges
+- Check ISR timing meets Z80 requirements
+
+---
 
 ## Cable Management Tips
 
