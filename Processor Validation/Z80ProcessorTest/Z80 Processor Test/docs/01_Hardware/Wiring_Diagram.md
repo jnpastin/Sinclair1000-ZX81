@@ -458,44 +458,31 @@ Note: Pin 28 driven by FlexPWM2_A (hardware PWM clock)
 
 ## Power Distribution
 
+**Power Flow:**
 ```
-┌──────────────────────────────────────────────────────────┐
-│                     Power Supply                         │
-│                                                          │
-│   USB 5V or External 5V Supply (1A minimum)              │
-└────┬──────────────────────────────────┬──────────────────┘
-     │                                  │
-     │  ┌───────────────┐               │
-     └──┤ Teensy VIN    │               │
-        │               │               │
-        │  3.3V Reg ────┼───┐           │
-        └───────────────┘   │           │
-                            │           │
-                            ▼           ▼
-                        ┌────────┐  ┌────────┐
-                        │ 3.3V   │  │  5V    │
-                        └───┬────┘  └───┬────┘
-                            │           │
-            ┌───────────────┼───────────┼───────────────┐
-            │               │           │               │
-            ▼               ▼           ▼               ▼
-    ┌─────────────┐   ┌─────────┐   ┌─────────┐   ┌─────────┐
-    │  Teensy     │   │ Level   │   │ Level   │   │   Z80   │
-    │  Internal   │   │ Shifter │   │ Shifter │   │   CPU   │
-    │    3.3V     │   │  VCCA   │   │  VCCB   │   │   5V    │
-    └─────────────┘   └─────────┘   └─────────┘   └─────────┘
-                           ↑               ↑
-                           │               │
-                      (5 modules)     (5 modules)
-                        3.3V side       5V side
+USB 5V (500mA max)
+    ↓
+Teensy VUSB pin
+    ├→ Teensy 3.3V regulator (internal)
+    │   └→ Level Shifters VCCA (3.3V side)
+    │
+    └→ Level Shifters VCCB (5V side)
+        └→ Z80 Vcc (Pin 11, 5V)
 ```
 
-**Critical:**
-- All grounds connected together (common ground)
-- Bypass capacitors on ALL ICs:
-  - Teensy: 100nF + 10µF on 3.3V pin
-  - Z80: 100nF + 10µF on pin 11 (+5V)
-  - Each TXS0108E: 100nF on VCCA and VCCB
+**Bypass Capacitors (Critical):**
+- Teensy VUSB: 10µF + 100nF
+- Teensy 3.3V: 10µF + 100nF  
+- Z80 Pin 11 (+5V): 10µF + 100nF
+- Each HW-221 module: 100nF on VCCA and VCCB
+
+**Current Budget:**
+- Teensy 4.1 internal: ~100mA
+- Level shifters (5× modules): ~50mA
+- Z80 CPU: ~100mA
+- **Total:** ~250mA (well within 500mA USB limit)
+
+See [Teensy_Board_Layout.md](Teensy_Board_Layout.md) and [Level_Shifting.md](Level_Shifting.md) for detailed power routing.
 
 ---
 
