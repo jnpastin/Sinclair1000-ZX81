@@ -533,47 +533,15 @@ Level Shifter Board Ground Rails
 
 ---
 
-## Physical Layout Recommendation
+## Physical Layout
 
-```
-┌────────────────────────────────────────┐
-│          Breadboard 1 (Top)            │
-│                                        │
-│  ┌──────────┐  ┌──────────┐            │
-│  │ Module 3 │  │ Module 4 │            │
-│  │ Addr Hi  │  │ Control  │            │
-│  └────┬─────┘  └────┬─────┘            │
-│       │             │                  │
-│  ┌────▼─────┐  ┌────▼─────┐            │
-│  │ Module 2 │  │ Module 5 │            │
-│  │ Addr Lo  │  │ Control  │            │
-│  └────┬─────┘  └────┬─────┘            │
-│       │             │                  │
-│  ┌────▼─────────────▼──────┐           │
-│  │     Teensy 4.1          │           │
-│  │     (mounted on         │           │
-│  │      female headers)    │           │
-│  └─────────────────────────┘           │
-└────────────────────────────────────────┘
+See [Physical_Layout.md](Physical_Layout.md) for detailed board arrangement and component placement.
 
-┌────────────────────────────────────────┐
-│         Breadboard 2 (Bottom)          │
-│                                        │
-│  ┌──────────────────────┐              │
-│  │   Module 1 (Data)    │              │
-│  └──────────┬───────────┘              │
-│             │                          │
-│  ┌──────────▼───────────┐              │
-│  │       Z80 CPU        │              │
-│  │     (40-pin DIP)     │              │
-│  │                      │              │
-│  └──────────────────────┘              │
-│                                        │
-└────────────────────────────────────────┘
-
-Wiring: Jumper wires between breadboards
-Modules: HW-221 mounted in breadboard IC positions
-```
+**Summary:**
+- **Level Shifter Board:** 5× HW-221 modules with signal headers
+- **Z80 Board:** DIP-40 socket, 38 LEDs, input headers
+- **Teensy Board:** Teensy 4.1 with output headers
+- **Cables:** 10× shielded 15-conductor cables between boards
 
 ---
 
