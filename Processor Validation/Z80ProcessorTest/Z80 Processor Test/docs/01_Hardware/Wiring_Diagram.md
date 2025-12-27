@@ -506,15 +506,29 @@ Note: Pin 28 driven by FlexPWM2_A (hardware PWM clock)
 ## Common Ground Network
 
 ```
-Teensy GND ─┬─ Z80 GND (pin 29)
-            ├─ Module 1 GND
-            ├─ Module 2 GND
-            ├─ Module 3 GND
-            ├─ Module 4 GND
-            ├─ Module 5 GND
-            └─ Power Supply GND
+USB Power Supply GND
+        ↓
+    Teensy GND
+        ↓
+[Cables 6-10: 20 ground wires total]
+        ↓
+Level Shifter Board Ground Rails
+        ↓
+    ├─ Module 1 GND
+    ├─ Module 2 GND
+    ├─ Module 3 GND
+    ├─ Module 4 GND
+    └─ Module 5 GND
+        ↓
+[Cables 1-5: 20 ground wires total]
+        ↓
+  Z80 Board Ground Rails
+        ↓
+    Z80 GND (pin 29)
 
-⚠️ CRITICAL: Single-point star ground to avoid ground loops
+⚠️ CRITICAL: Star ground topology - power and ground flow in same direction
+✅ 40 total ground wires (4 per cable × 10 cables) provides low-impedance ground path
+✅ No separate ground wires needed - ground flows through cable bundles naturally
 ```
 
 ---
