@@ -89,8 +89,6 @@ Teeensy GPIO → Dual-Row Headers → Level Shifter A-side
 
 **Optional:** Can probe 5V side with clip leads for Z80 signal verification
 
-```
-
 ---
 
 ## Module 1: Data Bus (Bidirectional)
@@ -98,14 +96,14 @@ Teeensy GPIO → Dual-Row Headers → Level Shifter A-side
 ```
 Teensy 4.1 (3.3V)              HW-221 Module 1           Z80 CPU (5V)
                               ┌─────────────┐
-Pin 10 (GPIO2[0])  ────────────┤A1        B1 ├──────────  Pin 14 (D0)
-Pin 12 (GPIO2[1])  ────────────┤A2        B2 ├──────────  Pin 15 (D1)
-Pin 11 (GPIO2[2])  ────────────┤A3        B3 ├──────────  Pin 12 (D2)
-Pin 13 (GPIO2[3])  ────────────┤A4        B4 ├──────────  Pin 8  (D3)
-Pin 8  (GPIO2[16]) ────────────┤A5        B5 ├──────────  Pin 7  (D4)
-Pin 7  (GPIO2[17]) ────────────┤A6        B6 ├──────────  Pin 9  (D5)
-Pin 36 (GPIO2[18]) ────────────┤A7        B7 ├──────────  Pin 10 (D6)
-Pin 37 (GPIO2[19]) ────────────┤A8        B8 ├──────────  Pin 13 (D7)
+Pin 10 (GPIO2[0])  ───────────┤A1        B1 ├──────────  Pin 14 (D0)
+Pin 12 (GPIO2[1])  ───────────┤A2        B2 ├──────────  Pin 15 (D1)
+Pin 11 (GPIO2[2])  ───────────┤A3        B3 ├──────────  Pin 12 (D2)
+Pin 13 (GPIO2[3])  ───────────┤A4        B4 ├──────────  Pin 8  (D3)
+Pin 8  (GPIO2[16]) ───────────┤A5        B5 ├──────────  Pin 7  (D4)
+Pin 7  (GPIO2[17]) ───────────┤A6        B6 ├──────────  Pin 9  (D5)
+Pin 36 (GPIO2[18]) ───────────┤A7        B7 ├──────────  Pin 10 (D6)
+Pin 37 (GPIO2[19]) ───────────┤A8        B8 ├──────────  Pin 13 (D7)
                               │             │
 3.3V ─────────────────────────┤VCCA     OE  ├──── Pin 31 (enable)
 GND ──────────────────────────┤GND    VCCB  ├──── 5V
@@ -468,7 +466,7 @@ Note: Pin 28 driven by FlexPWM2_A (hardware PWM clock)
 ┌──────────────────────────────────────────────────────────┐
 │                     Power Supply                         │
 │                                                          │
-│   USB 5V or External 5V Supply (1A minimum)             │
+│   USB 5V or External 5V Supply (1A minimum)              │
 └────┬──────────────────────────────────┬──────────────────┘
      │                                  │
      │  ┌───────────────┐               │
