@@ -216,6 +216,252 @@ Note: Pin 28 driven by FlexPWM2_A (hardware PWM clock)
 
 ---
 
+## Cable Pinout Details
+
+### Cable Overview
+
+**10 Shielded Cables Total:**
+- Cables 1-5: Z80 ↔ Level Shifter (5V side)
+- Cables 6-10: Teensy ↔ Level Shifter (3.3V side)
+
+**Each cable: 15-conductor shielded**
+- 8 signal wires
+- 4 ground wires
+- 3 spare wires (NC)
+- Shield (ground at level shifter only)
+
+---
+
+### Cable 1 & 6: Data Bus (Module 1)
+
+**Cable 1: Z80 → Level Shifter (5V side)**
+
+| Wire Color | Signal | Notes |
+|------------|--------|-------|
+| White/Green | 5V_D0 | Z80 Pin 14 |
+| White/Red | 5V_D1 | Z80 Pin 15 |
+| Red | 5V_D2 | Z80 Pin 12 |
+| Black/Red | 5V_D3 | Z80 Pin 8 |
+| Black/Orange | 5V_D4 | Z80 Pin 7 |
+| Green | 5V_D5 | Z80 Pin 9 |
+| Orange | 5V_D6 | Z80 Pin 10 |
+| White/Blue | 5V_D7 | Z80 Pin 13 |
+| Black | GND | Ground return |
+| Black/Blue | GND | Ground return |
+| Black/Green | GND | Ground return |
+| Blue | GND | Ground return |
+| Black/White | NC | Spare |
+| White | NC | Spare |
+| White/Black | NC | Spare |
+
+**Cable 6: Teensy → Level Shifter (3.3V side)**
+
+| Wire Color | Signal | Teensy Pin |
+|------------|--------|------------|
+| White/Green | 3.3V_D0 | Pin 10 |
+| White/Red | 3.3V_D1 | Pin 12 |
+| Red | 3.3V_D2 | Pin 11 |
+| Black/Red | 3.3V_D3 | Pin 13 |
+| Black/Orange | 3.3V_D4 | Pin 8 |
+| Green | 3.3V_D5 | Pin 7 |
+| Orange | 3.3V_D6 | Pin 36 |
+| White/Blue | 3.3V_D7 | Pin 37 |
+| Black | GND | Ground return |
+| Black/Blue | GND | Ground return |
+| Black/Green | GND | Ground return |
+| Blue | GND | Ground return |
+| Black/White | NC | Spare |
+| White | NC | Spare |
+| White/Black | NC | Spare |
+
+---
+
+### Cable 2 & 7: Address Low Byte (Module 2)
+
+**Cable 2: Z80 → Level Shifter (5V side)**
+
+| Wire Color | Signal | Z80 Pin |
+|------------|--------|---------|
+| Black/Orange | 5V_A0 | Pin 30 |
+| Black/Red | 5V_A1 | Pin 31 |
+| Green | 5V_A2 | Pin 32 |
+| Orange | 5V_A3 | Pin 33 |
+| Red | 5V_A4 | Pin 34 |
+| White/Blue | 5V_A5 | Pin 35 |
+| White/Green | 5V_A6 | Pin 36 |
+| White/Red | 5V_A7 | Pin 37 |
+| Black | GND | Ground return |
+| Black/Blue | GND | Ground return |
+| Black/Green | GND | Ground return |
+| Blue | GND | Ground return |
+| Black/White | NC | Spare |
+| White | NC | Spare |
+| White/Black | NC | Spare |
+
+**Cable 7: Teensy → Level Shifter (3.3V side)**
+
+| Wire Color | Signal | Teensy Pin |
+|------------|--------|------------|
+| Black/Orange | 3.3V_A0 | Pin 19 |
+| Black/Red | 3.3V_A1 | Pin 18 |
+| Green | 3.3V_A2 | Pin 14 |
+| Orange | 3.3V_A3 | Pin 15 |
+| Red | 3.3V_A4 | Pin 40 |
+| White/Blue | 3.3V_A5 | Pin 41 |
+| White/Green | 3.3V_A6 | Pin 17 |
+| White/Red | 3.3V_A7 | Pin 16 |
+| Black | GND | Ground return |
+| Black/Blue | GND | Ground return |
+| Black/Green | GND | Ground return |
+| Blue | GND | Ground return |
+| Black/White | NC | Spare |
+| White | NC | Spare |
+| White/Black | NC | Spare |
+
+---
+
+### Cable 3 & 8: Address High Byte (Module 3)
+
+**Cable 3: Z80 → Level Shifter (5V side)**
+
+| Wire Color | Signal | Z80 Pin |
+|------------|--------|---------|
+| Black/Orange | 5V_A8 | Pin 1 |
+| Black/Red | 5V_A9 | Pin 2 |
+| Green | 5V_A10 | Pin 3 |
+| Orange | 5V_A11 | Pin 4 |
+| Red | 5V_A12 | Pin 5 |
+| White/Blue | 5V_A13 | Pin 6 |
+| White/Green | 5V_A14 | Pin 38 |
+| White/Red | 5V_A15 | Pin 39 |
+| Black | GND | Ground return |
+| Black/Blue | GND | Ground return |
+| Black/Green | GND | Ground return |
+| Blue | GND | Ground return |
+| Black/White | NC | Spare |
+| White | NC | Spare |
+| White/Black | NC | Spare |
+
+**Cable 8: Teensy → Level Shifter (3.3V side)**
+
+| Wire Color | Signal | Teensy Pin |
+|------------|--------|------------|
+| Black/Orange | 3.3V_A8 | Pin 22 |
+| Black/Red | 3.3V_A9 | Pin 23 |
+| Green | 3.3V_A10 | Pin 20 |
+| Orange | 3.3V_A11 | Pin 21 |
+| Red | 3.3V_A12 | Pin 38 |
+| White/Blue | 3.3V_A13 | Pin 39 |
+| White/Green | 3.3V_A14 | Pin 26 |
+| White/Red | 3.3V_A15 | Pin 27 |
+| Black | GND | Ground return |
+| Black/Blue | GND | Ground return |
+| Black/Green | GND | Ground return |
+| Blue | GND | Ground return |
+| Black/White | NC | Spare |
+| White | NC | Spare |
+| White/Black | NC | Spare |
+
+---
+
+### Cable 4 & 9: Control Inputs - Z80 to Teensy (Module 4)
+
+**Cable 4: Z80 → Level Shifter (5V side)**
+
+| Wire Color | Signal | Z80 Pin | Direction |
+|------------|--------|---------|-----------|
+| Black/Orange | 5V_HALT | Pin 18 | Z80 → Teensy |
+| Black/Red | 5V_MREQ | Pin 19 | Z80 → Teensy |
+| Green | 5V_IORQ | Pin 20 | Z80 → Teensy |
+| Orange | 5V_RD | Pin 21 | Z80 → Teensy |
+| Red | 5V_WR | Pin 22 | Z80 → Teensy |
+| White/Blue | 5V_BUSAK | Pin 23 | Z80 → Teensy |
+| White/Green | 5V_M1 | Pin 27 | Z80 → Teensy |
+| White/Red | 5V_RFSH | Pin 28 | Z80 → Teensy |
+| Black | GND | Ground return | - |
+| Black/Blue | GND | Ground return | - |
+| Black/Green | GND | Ground return | - |
+| Blue | GND | Ground return | - |
+| Black/White | NC | Spare | - |
+| White | NC | Spare | - |
+| White/Black | NC | Spare | - |
+
+**Cable 9: Level Shifter → Teensy (3.3V side)**
+
+| Wire Color | Signal | Teensy Pin | Notes |
+|------------|--------|------------|-------|
+| Black/Orange | 3.3V_HALT | Pin 1 | |
+| Black/Red | 3.3V_MREQ | Pin 5 | Interrupt capable |
+| Green | 3.3V_IORQ | Pin 0 | |
+| Orange | 3.3V_RD | Pin 4 | Interrupt capable |
+| Red | 3.3V_WR | Pin 33 | Interrupt capable |
+| White/Blue | 3.3V_BUSAK | Pin 24 | |
+| White/Green | 3.3V_M1 | Pin 2 | |
+| White/Red | 3.3V_RFSH | Pin 3 | |
+| Black | GND | Ground return | |
+| Black/Blue | GND | Ground return | |
+| Black/Green | GND | Ground return | |
+| Blue | GND | Ground return | |
+| Black/White | NC | Spare | |
+| White | NC | Spare | |
+| White/Black | NC | Spare | |
+
+---
+
+### Cable 5 & 10: Control Outputs - Teensy to Z80 (Module 5)
+
+**Cable 5: Level Shifter → Z80 (5V side)**
+
+| Wire Color | Signal | Z80 Pin | Direction |
+|------------|--------|---------|-----------|
+| Black/Orange | 5V_CLK | Pin 6 | Teensy → Z80 |
+| Black/Red | 5V_INT | Pin 16 | Teensy → Z80 |
+| Green | 5V_NMI | Pin 17 | Teensy → Z80 |
+| Orange | 5V_WAIT | Pin 24 | Teensy → Z80 |
+| Red | 5V_BUSRQ | Pin 25 | Teensy → Z80 |
+| White/Blue | 5V_RESET | Pin 26 | Teensy → Z80 |
+| White/Green | NC | - | Spare |
+| White/Red | NC | - | Spare |
+| Black | GND | Ground return | - |
+| Black/Blue | GND | Ground return | - |
+| Black/Green | GND | Ground return | - |
+| Blue | GND | Ground return | - |
+| Black/White | NC | Spare | - |
+| White | NC | Spare | - |
+| White/Black | NC | Spare | - |
+
+**Cable 10: Teensy → Level Shifter (3.3V side)**
+
+| Wire Color | Signal | Teensy Pin | Notes |
+|------------|--------|------------|-------|
+| Black/Orange | 3.3V_CLK | Pin 28 | FlexPWM2_A (hardware PWM) |
+| Black/Red | 3.3V_INT | Pin 6 | |
+| Green | 3.3V_NMI | Pin 9 | |
+| Orange | 3.3V_WAIT | Pin 35 | |
+| Red | 3.3V_BUSRQ | Pin 32 | |
+| White/Blue | 3.3V_RESET | Pin 34 | |
+| White/Green | NC | - | Spare |
+| White/Red | NC | - | Spare |
+| Black | GND | Ground return | |
+| Black/Blue | GND | Ground return | |
+| Black/Green | GND | Ground return | |
+| Blue | GND | Ground return | |
+| Black/White | NC | Spare | |
+| White | NC | Spare | |
+| White/Black | NC | Spare | |
+
+---
+
+### Shield Connection
+
+**Critical:** Shield grounded at **Level Shifter Board ONLY**
+
+- Strip shield braid at level shifter end, solder to board ground
+- Leave shield floating (unconnected) at Teensy and Z80 ends
+- This prevents ground loops while maintaining EMI protection
+
+---
+
 ## Power Distribution
 
 ```
@@ -281,35 +527,35 @@ Teensy GND ─┬─ Z80 GND (pins 12, 29)
 ┌────────────────────────────────────────┐
 │          Breadboard 1 (Top)            │
 │                                        │
-│  ┌──────────┐  ┌──────────┐          │
-│  │ Module 3 │  │ Module 4 │          │
-│  │ Addr Hi  │  │ Control  │          │
-│  └────┬─────┘  └────┬─────┘          │
-│       │             │                 │
-│  ┌────▼─────┐  ┌────▼─────┐          │
-│  │ Module 2 │  │ Module 5 │          │
-│  │ Addr Lo  │  │ Control  │          │
-│  └────┬─────┘  └────┬─────┘          │
-│       │             │                 │
-│  ┌────▼─────────────▼──────┐         │
-│  │     Teensy 4.1           │         │
-│  │     (mounted on         │         │
-│  │      female headers)     │         │
-│  └──────────────────────────┘         │
+│  ┌──────────┐  ┌──────────┐            │
+│  │ Module 3 │  │ Module 4 │            │
+│  │ Addr Hi  │  │ Control  │            │
+│  └────┬─────┘  └────┬─────┘            │
+│       │             │                  │
+│  ┌────▼─────┐  ┌────▼─────┐            │
+│  │ Module 2 │  │ Module 5 │            │
+│  │ Addr Lo  │  │ Control  │            │
+│  └────┬─────┘  └────┬─────┘            │
+│       │             │                  │
+│  ┌────▼─────────────▼──────┐           │
+│  │     Teensy 4.1          │           │
+│  │     (mounted on         │           │
+│  │      female headers)    │           │
+│  └─────────────────────────┘           │
 └────────────────────────────────────────┘
 
 ┌────────────────────────────────────────┐
 │         Breadboard 2 (Bottom)          │
 │                                        │
-│  ┌──────────────────────┐             │
-│  │   Module 1 (Data)    │             │
-│  └──────────┬───────────┘             │
+│  ┌──────────────────────┐              │
+│  │   Module 1 (Data)    │              │
+│  └──────────┬───────────┘              │
 │             │                          │
-│  ┌──────────▼───────────┐             │
-│  │       Z80 CPU        │             │
-│  │     (40-pin DIP)     │             │
-│  │                      │             │
-│  └──────────────────────┘             │
+│  ┌──────────▼───────────┐              │
+│  │       Z80 CPU        │              │
+│  │     (40-pin DIP)     │              │
+│  │                      │              │
+│  └──────────────────────┘              │
 │                                        │
 └────────────────────────────────────────┘
 
