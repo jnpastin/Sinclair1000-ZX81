@@ -418,8 +418,8 @@ Note: Pin 28 driven by FlexPWM2_A (hardware PWM clock)
 | Orange | 5V_WAIT | Pin 24 | Teensy → Z80 |
 | Red | 5V_BUSRQ | Pin 25 | Teensy → Z80 |
 | White/Blue | 5V_RESET | Pin 26 | Teensy → Z80 |
-| White/Green | NC | - | Spare |
-| White/Red | NC | - | Spare |
+| White/Green | NC | Spare| - |
+| White/Red | NC | Spare| - |
 | Black | GND | Ground return | - |
 | Black/Blue | GND | Ground return | - |
 | Black/Green | GND | Ground return | - |
@@ -438,8 +438,8 @@ Note: Pin 28 driven by FlexPWM2_A (hardware PWM clock)
 | Orange | 3.3V_WAIT | Pin 35 | |
 | Red | 3.3V_BUSRQ | Pin 32 | |
 | White/Blue | 3.3V_RESET | Pin 34 | |
-| White/Green | NC | - | Spare |
-| White/Red | NC | - | Spare |
+| White/Green | NC | Spare| - |
+| White/Red | NC | Spare | - |
 | Black | GND | Ground return | |
 | Black/Blue | GND | Ground return | |
 | Black/Green | GND | Ground return | |
@@ -506,7 +506,7 @@ Note: Pin 28 driven by FlexPWM2_A (hardware PWM clock)
 ## Common Ground Network
 
 ```
-Teensy GND ─┬─ Z80 GND (pins 12, 29)
+Teensy GND ─┬─ Z80 GND (pin 29)
             ├─ Module 1 GND
             ├─ Module 2 GND
             ├─ Module 3 GND
