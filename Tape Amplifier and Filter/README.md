@@ -5,6 +5,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![KiCad](https://img.shields.io/badge/KiCad-9.0-blue.svg)](https://www.kicad.org/)
 
+![Completed Tape Interface Device](Tape%20Filter%20and%20Amp.jpg)
+*The completed tape interface with 3D-printed enclosure, featuring volume control, audio jacks, and LED indicators*
+
 ## Features
 
 - ✅ **Bidirectional Operation**: Load programs TO the TS1000 from tape/audio files, and save programs FROM the TS1000 to modern recording devices
@@ -209,6 +212,12 @@ A custom 3D-printed enclosure design is included (STEP file provided):
   - 2× LEDs (labeled: SIGNAL, WEAK)
 - Rear panel: Battery compartment access
 - Built-in TS-to-TRRS adapter (J3/J4 wired together inside enclosure)
+- **Threaded insert mounting system**:
+  - Holes for heat-set threaded inserts (M3 recommended)
+  - PCB mounts to enclosure via inserts
+  - Battery holder(s) mount to enclosure via inserts
+  - Case halves assemble together via inserts
+  - Provides secure, reusable assembly
 - Compact design suitable for desktop use
 
 ## Building the Circuit
@@ -219,6 +228,8 @@ A custom 3D-printed enclosure design is included (STEP file provided):
 - Multimeter for testing
 - Wire strippers and cutters
 - Small screwdrivers
+- Heat-set threaded inserts (M3 recommended) and soldering iron tip for installation
+- Appropriate machine screws for threaded inserts
 
 ### Assembly Steps
 
@@ -258,12 +269,18 @@ A custom 3D-printed enclosure design is included (STEP file provided):
    - Apply power and verify 6V at supply points, 5V at U1 output
 
 7. **Enclosure Assembly**
-   - Mount board in enclosure with standoffs or adhesive
+   - **Install threaded inserts first** (before final assembly):
+     - Use soldering iron with appropriate tip to heat inserts
+     - Press inserts into enclosure holes while hot
+     - Ensure inserts are flush and straight
+     - Allow to cool completely before use
+   - Mount PCB to enclosure using machine screws into threaded inserts
    - Position board so RV2, RV3 trimmers are accessible when enclosure is opened
-   - Install panel-mount components (jacks, RV1 switched pot, LEDs)
+   - Mount battery holder(s) using machine screws into threaded inserts
+   - Install panel-mount components (jacks, RV1 volume pot, LEDs)
    - Label front panel: VOLUME (note: turning clockwise from off position powers on), LOAD IN, LOAD OUT, SAVE IN, SAVE OUT, SIGNAL, WEAK
-   - Ensure battery access and trimmer access remain clear
-   - **Do not permanently seal** - you may need to adjust thresholds for different tape sources
+   - Assemble case halves together using machine screws into threaded inserts
+   - **Do not permanently seal** - you may need to reopen to adjust thresholds or replace batteries
 
 ### Safety Notes
 
